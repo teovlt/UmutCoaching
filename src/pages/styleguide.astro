@@ -1,0 +1,208 @@
+---
+// Internal reference page (noindex, left out of the sitemap): every token and
+// logo of the brand, rendered from tokens.css and src/assets/brand.
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import AppIcon from "@/assets/brand/umut-app-icon.svg";
+import Favicon from "@/assets/brand/umut-favicon.svg";
+import LockupDark from "@/assets/brand/umut-lockup-dark.svg";
+import Lockup from "@/assets/brand/umut-lockup.svg";
+import SymbolDark from "@/assets/brand/umut-symbol-dark.svg";
+import SymbolSmall from "@/assets/brand/umut-symbol-small.svg";
+import Symbol from "@/assets/brand/umut-symbol.svg";
+import WordmarkDark from "@/assets/brand/umut-wordmark-dark.svg";
+import WordmarkMono from "@/assets/brand/umut-wordmark-mono.svg";
+import Wordmark from "@/assets/brand/umut-wordmark.svg";
+
+// Class names are written out in full so Tailwind finds them
+const cobalt = [
+  { name: "cobalt-50", hex: "#EEF2FD", swatch: "bg-cobalt-50" },
+  { name: "cobalt-100", hex: "#DCE5FB", swatch: "bg-cobalt-100" },
+  { name: "cobalt-200", hex: "#B9CBF7", swatch: "bg-cobalt-200" },
+  { name: "cobalt-300", hex: "#A9BEFF", swatch: "bg-cobalt-300" },
+  { name: "cobalt-400", hex: "#7A9BFF", swatch: "bg-cobalt-400", role: "cobalt sur graphite" },
+  { name: "cobalt-500", hex: "#1F4FD8", swatch: "bg-cobalt-500", role: "action, point du logo" },
+  { name: "cobalt-600", hex: "#1A42B8", swatch: "bg-cobalt-600", role: "hover" },
+  { name: "cobalt-700", hex: "#17379A", swatch: "bg-cobalt-700", role: "pressed" },
+  { name: "cobalt-800", hex: "#122B78", swatch: "bg-cobalt-800" },
+  { name: "cobalt-900", hex: "#0D1F57", swatch: "bg-cobalt-900" },
+];
+
+const neutrals = [
+  { name: "white", hex: "#FFFFFF", swatch: "bg-white", role: "cartes, champs" },
+  { name: "labo", hex: "#F4F4F2", swatch: "bg-labo", role: "fond de page" },
+  { name: "subtle", hex: "#ECECE9", swatch: "bg-subtle", role: "séparateurs" },
+  { name: "line", hex: "#D9D9D6", swatch: "bg-line", role: "filets 1 px" },
+  { name: "muted", hex: "#9A9A9A", swatch: "bg-muted", role: "déco sur clair" },
+  { name: "disabled", hex: "#6E6E6E", swatch: "bg-disabled", role: "texte désactivé" },
+  { name: "mesure", hex: "#5E5E5E", swatch: "bg-mesure", role: "texte secondaire" },
+  { name: "edge-dark", hex: "#444444", swatch: "bg-edge-dark", role: "bordures sur graphite" },
+  { name: "line-dark", hex: "#333333", swatch: "bg-line-dark", role: "filets sur graphite" },
+  { name: "graphite", hex: "#1A1A1A", swatch: "bg-graphite", role: "texte, fonds sombres" },
+  { name: "ink", hex: "#000000", swatch: "bg-ink", role: "hover bouton dark" },
+];
+
+const states = [
+  { name: "success", hex: "#1F7A4D", swatch: "bg-success", role: "places dispo" },
+  { name: "warning", hex: "#8A5A00", swatch: "bg-warning", role: "dernières places" },
+  { name: "danger", hex: "#B3261E", swatch: "bg-danger", role: "erreurs" },
+];
+
+const palettes = [
+  { index: "01", label: "cobalt · signal", colors: cobalt },
+  { index: "02", label: "neutres · labo", colors: neutrals },
+  { index: "03", label: "états", colors: states },
+];
+
+const typeScale = [
+  { token: "text-display", sample: "umut.", className: "text-display font-bold", note: "Grotesk 700 · −6 % · 56 → 100" },
+  { token: "text-h1", sample: "Mesurer. Ajuster. Progresser.", className: "text-h1 font-bold", note: "Grotesk 700 · −4 % · 40 → 60" },
+  {
+    token: "text-h2",
+    sample: "Un protocole, pas une improvisation.",
+    className: "text-h2 font-bold",
+    note: "Grotesk 700 · −4 % · 32 → 46",
+  },
+  { token: "text-h3", sample: "Suivi en ligne", className: "text-h3 font-bold", note: "Grotesk 700 · −3 % · 22 → 26" },
+  {
+    token: "text-lead",
+    sample: "Un bilan de départ, un plan ajusté chaque semaine, une progression suivie au kilo près.",
+    className: "text-lead",
+    note: "Grotesk 400 · 19 / 1.55",
+  },
+  {
+    token: "text-body",
+    sample: "Séances individuelles, suivi nutritionnel et plan d’entraînement ajusté chaque semaine selon vos progrès.",
+    className: "text-body",
+    note: "Grotesk 400 · 17 / 1.6",
+  },
+  {
+    token: "text-small",
+    sample: "Toutes les 4 semaines, on compare les chiffres et on fixe la suite.",
+    className: "text-small",
+    note: "Grotesk 400 · 15 / 1.55",
+  },
+  { token: "text-label", sample: "Adresse e-mail", className: "label-mono", note: "Mono 400 · 12 · majuscules" },
+  { token: "text-data", sample: "120 kg × 5 reps", className: "text-data font-mono font-bold", note: "Mono 700 · 24 → 30" },
+  { token: "text-data-xl", sample: "12 sem.", className: "text-data-xl font-mono font-bold", note: "Mono 700 · 48 → 80" },
+];
+---
+
+<BaseLayout title="Styleguide" description="Référence interne des tokens et logos umut." noindex>
+  <div class="container-site section flex flex-col gap-16">
+    <header class="flex flex-col gap-3">
+      <p class="font-mono text-label font-bold uppercase text-cobalt-500">[06] Performance lab · Bleu cobalt</p>
+      <h1 class="text-h1">Styleguide</h1>
+      <p class="max-w-[62ch] text-mesure">
+        Tous les tokens de <code class="font-mono">src/styles/tokens.css</code> et les logos de{" "}
+        <code class="font-mono">src/assets/brand</code>. Page interne, non indexée.
+      </p>
+    </header>
+
+    <section aria-labelledby="sg-colors" class="flex flex-col gap-10">
+      <h2 id="sg-colors" class="section-label">
+        01 / couleurs
+      </h2>
+      {palettes.map((palette) => (
+        <div class="flex flex-col gap-4">
+          <h3 class="label-mono text-mesure">
+            {palette.index} · {palette.label}
+          </h3>
+          <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {palette.colors.map((color) => (
+              <li class="flex flex-col gap-2">
+                <div class:list={["h-20 border border-line", color.swatch]} />
+                <span class="text-small font-bold">{color.name}</span>
+                <span class="font-mono text-label text-mesure">
+                  {color.hex}
+                  {"role" in color && color.role ? ` · ${color.role}` : ""}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      <p class="text-small text-mesure">
+        Proportions : ~70 % labo/blanc · ~25 % graphite · ≤ 5 % cobalt. Sur graphite, le cobalt est toujours
+        <span class="font-mono">cobalt-400</span>.
+      </p>
+    </section>
+
+    <section aria-labelledby="sg-type" class="flex flex-col gap-8">
+      <h2 id="sg-type" class="section-label">
+        02 / typographie
+      </h2>
+      <ul class="flex flex-col">
+        {typeScale.map((item) => (
+          <li class="grid gap-2 border-t border-line py-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-8">
+            <div class="flex flex-col gap-1">
+              <span class="font-mono text-label font-bold">{item.token}</span>
+              <span class="font-mono text-label text-mesure">{item.note}</span>
+            </div>
+            <p class={item.className}>{item.sample}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="sg-logos" class="flex flex-col gap-8">
+      <h2 id="sg-logos" class="section-label">
+        03 / logos
+      </h2>
+      <div class="grid gap-4 lg:grid-cols-2">
+        <figure class="card flex flex-col items-center justify-center gap-4 p-10">
+          <Lockup class="h-24 w-auto" />
+          <figcaption class="font-mono text-label text-mesure">umut-lockup.svg</figcaption>
+        </figure>
+        <figure class="on-dark flex flex-col items-center justify-center gap-4 p-10">
+          <LockupDark class="h-24 w-auto" />
+          <figcaption class="font-mono text-label text-muted">umut-lockup-dark.svg</figcaption>
+        </figure>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-3">
+        <figure class="card flex flex-col items-center justify-center gap-4 p-8">
+          <Wordmark class="h-12 w-auto" />
+          <figcaption class="font-mono text-label text-mesure">umut-wordmark.svg</figcaption>
+        </figure>
+        <figure class="on-dark flex flex-col items-center justify-center gap-4 p-8">
+          <WordmarkDark class="h-12 w-auto" />
+          <figcaption class="font-mono text-label text-muted">umut-wordmark-dark.svg</figcaption>
+        </figure>
+        <figure class="card flex flex-col items-center justify-center gap-4 p-8">
+          <WordmarkMono class="h-12 w-auto" />
+          <figcaption class="font-mono text-label text-mesure">umut-wordmark-mono.svg</figcaption>
+        </figure>
+      </div>
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <figure class="card flex flex-col items-center justify-center gap-4 p-6">
+          <Symbol class="size-20" />
+          <figcaption class="font-mono text-label text-mesure">symbol</figcaption>
+        </figure>
+        <figure class="on-dark flex flex-col items-center justify-center gap-4 p-6">
+          <SymbolDark class="size-20" />
+          <figcaption class="font-mono text-label text-muted">symbol-dark</figcaption>
+        </figure>
+        <figure class="card flex flex-col items-center justify-center gap-4 p-6">
+          <SymbolSmall class="size-8" />
+          <figcaption class="font-mono text-label text-mesure">symbol-small · 32</figcaption>
+        </figure>
+        <figure class="card flex flex-col items-center justify-center gap-4 p-6">
+          <AppIcon class="size-18" />
+          <figcaption class="font-mono text-label text-mesure">app-icon</figcaption>
+        </figure>
+        <figure class="card flex flex-col items-center justify-center gap-4 p-6">
+          <div class="flex items-end gap-3">
+            <Favicon class="size-8" />
+            <Favicon class="size-4" />
+          </div>
+          <figcaption class="font-mono text-label text-mesure">favicon 32/16</figcaption>
+        </figure>
+      </div>
+      <p class="text-small text-mesure">
+        Wordmark HTML (header/footer uniquement) :{" "}
+        <span class="text-h3 font-bold">
+          umut<span class="brand-dot">.</span>
+        </span>
+      </p>
+    </section>
+  </div>
+</BaseLayout>

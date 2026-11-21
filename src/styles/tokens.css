@@ -1,0 +1,113 @@
+/* ==========================================================================
+   umut. — Design tokens · Proposition 06 « Performance lab » · Bleu cobalt
+   Source de vérité unique. Ne JAMAIS écrire une couleur/taille en dur ailleurs.
+   Tailwind v4 : chaque variable du bloc @theme génère ses utilitaires
+   (bg-cobalt-500, text-graphite, font-mono, text-display…).
+   ========================================================================== */
+
+@theme {
+  /* On repart de zéro : seules les couleurs de la marque existent. */
+  --color-*: initial;
+
+  /* ---- Signal : Bleu cobalt -------------------------------------------- */
+  --color-cobalt-50: #eef2fd; /* fond de mise en avant très léger          */
+  --color-cobalt-100: #dce5fb; /* sélection de texte, surlignage            */
+  --color-cobalt-200: #b9cbf7;
+  --color-cobalt-300: #a9beff; /* hover sur fond graphite                   */
+  --color-cobalt-400: #7a9bff; /* LE cobalt sur fond graphite (6,6:1)       */
+  --color-cobalt-500: #1f4fd8; /* LE cobalt : action, point du logo         */
+  --color-cobalt-600: #1a42b8; /* hover bouton primaire                     */
+  --color-cobalt-700: #17379a; /* pressed                                   */
+  --color-cobalt-800: #122b78;
+  --color-cobalt-900: #0d1f57;
+
+  /* ---- Neutres « labo » ------------------------------------------------ */
+  --color-white: #ffffff; /* cartes, champs                              */
+  --color-labo: #f4f4f2; /* fond de page                                */
+  --color-subtle: #ecece9; /* séparateurs internes, puce « complet »      */
+  --color-line: #d9d9d6; /* filets 1 px, bordures de carte              */
+  --color-muted: #9a9a9a; /* DÉCO UNIQUEMENT sur clair (2,8:1) ; OK sur graphite */
+  --color-disabled: #6e6e6e; /* texte désactivé (4,6:1 sur labo)            */
+  --color-mesure: #5e5e5e; /* texte secondaire (5,9:1 sur labo)           */
+  --color-line-dark: #333333; /* filets sur graphite                         */
+  --color-edge-dark: #444444; /* bordures de contrôles sur graphite          */
+  --color-graphite: #1a1a1a; /* texte, fonds sombres, bouton secondaire plein */
+  --color-ink: #000000; /* hover du bouton dark uniquement             */
+
+  /* ---- États ----------------------------------------------------------- */
+  --color-success: #1f7a4d; /* « places dispo » (5,3:1 sur blanc)          */
+  --color-warning: #8a5a00; /* « dernières places » (5,9:1)                */
+  --color-danger: #b3261e; /* erreurs de formulaire (6,5:1)               */
+
+  /* ---- Typographie ----------------------------------------------------- */
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* Échelle fluide 375 px → 1280 px. [taille, interlignage, approche] */
+  --text-display: clamp(3.5rem, 2.2rem + 5.6vw, 6.25rem); /* 56 → 100 */
+  --text-display--line-height: 0.88;
+  --text-display--letter-spacing: -0.06em;
+  --text-h1: clamp(2.5rem, 1.9rem + 2.6vw, 3.75rem); /* 40 → 60 */
+  --text-h1--line-height: 1;
+  --text-h1--letter-spacing: -0.04em;
+  --text-h2: clamp(2rem, 1.65rem + 1.5vw, 2.875rem); /* 32 → 46 */
+  --text-h2--line-height: 1.02;
+  --text-h2--letter-spacing: -0.04em;
+  --text-h3: clamp(1.375rem, 1.25rem + 0.55vw, 1.625rem); /* 22 → 26 */
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.03em;
+  --text-lead: 1.1875rem; /* 19 */
+  --text-lead--line-height: 1.55;
+  --text-body: 1.0625rem; /* 17 */
+  --text-body--line-height: 1.6;
+  --text-small: 0.9375rem; /* 15 */
+  --text-small--line-height: 1.55;
+  --text-label: 0.75rem; /* 12 — mono, MAJ */
+  --text-label--line-height: 1.4;
+  --text-data: clamp(1.5rem, 1.25rem + 1vw, 1.875rem); /* 24 → 30 — mono bold */
+  --text-data--line-height: 1.1;
+  --text-data-xl: clamp(3rem, 2.2rem + 3.4vw, 5rem); /* 48 → 80 — gros chiffres */
+  --text-data-xl--line-height: 0.9;
+  --text-data-xl--letter-spacing: -0.04em;
+
+  /* ---- Rayons : angles droits partout --------------------------------- */
+  --radius-none: 0;
+  --radius-icon: 22%; /* uniquement l'icône d'app */
+  --radius-full: 9999px; /* uniquement les pastilles d'état (points) */
+
+  /* ---- Mise en page ---------------------------------------------------- */
+  --container-site: 75rem; /* 1200 px de contenu */
+  --breakpoint-sm: 40rem; /* 640  */
+  --breakpoint-md: 48rem; /* 768  */
+  --breakpoint-lg: 64rem; /* 1024 */
+  --breakpoint-xl: 80rem; /* 1280 */
+
+  /* ---- Mouvement ------------------------------------------------------- */
+  --ease-labo: cubic-bezier(0.2, 0, 0, 1);
+  --animate-draw: draw 1.2s var(--ease-labo) both;
+
+  @keyframes draw {
+    from {
+      stroke-dashoffset: var(--path-length, 200);
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+/* Tokens non-Tailwind (utilisés en CSS natif) */
+:root {
+  --gutter: clamp(1.25rem, 0.6rem + 2.8vw, 4rem); /* 20 → 64 px : marge latérale */
+  --section-y: clamp(4rem, 2.8rem + 5vw, 8rem); /* 64 → 128 px : rythme vertical */
+  --header-h: 4.75rem; /* 76 px desktop */
+  --header-h-mobile: 4rem; /* 64 px mobile */
+  --border: 1px solid var(--color-line);
+  --border-strong: 1px solid var(--color-graphite);
+  --focus-ring: 2px solid var(--color-cobalt-500);
+  --focus-ring-dark: 2px solid var(--color-cobalt-400);
+  --focus-offset: 2px;
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --tap-min: 44px;
+}

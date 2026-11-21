@@ -1,0 +1,41 @@
+---
+import "@/styles/global.css";
+import { site } from "@/data/site";
+
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const { title, description = `${site.tagline} Coaching musculation et bodybuilding.`, noindex = false } = Astro.props;
+const fullTitle = title === site.brand ? `${site.brand} — coach musculation` : `${title} — ${site.brand} coach musculation`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <a
+      href="#contenu"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-graphite focus:px-4 focus:py-3 focus:text-white"
+    >
+      Aller au contenu
+    </a>
+    <slot name="header" />
+    <main id="contenu">
+      <slot />
+    </main>
+    <slot name="footer" />
+  </body>
+</html>

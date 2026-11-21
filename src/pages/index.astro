@@ -1,0 +1,16 @@
+---
+// Temporary home page: the real one is built section by section in Phase 4.
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { site } from "@/data/site";
+---
+
+<BaseLayout title={site.brand}>
+  <section class="container-site section flex flex-col gap-6">
+    <p class="section-label">// coach · bodybuilding · data</p>
+    <h1 class="text-h1">{site.tagline}</h1>
+    <p class="text-lead max-w-[62ch] text-mesure">Site en construction. Phase 0 : socle technique et styleguide.</p>
+    <a href="/styleguide" class="font-mono font-bold text-cobalt-500 no-underline">
+      [ voir le styleguide ]
+    </a>
+  </section>
+</BaseLayout>
