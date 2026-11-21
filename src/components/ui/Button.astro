@@ -1,0 +1,119 @@
+---
+// docs/03-design-system.md §6 Button. Renders an <a> when `href` is set,
+// otherwise a <button>. On a `.on-dark` background the variants adapt on
+// their own (on-dark: variant).
+import type { HTMLAttributes } from "astro/types";
+
+type Variant = "primary" | "dark" | "secondary" | "ghost";
+type Size = "md" | "sm" | "icon";
+
+interface Props {
+  variant?: Variant | undefined;
+  size?: Size | undefined;
+  href?: string | undefined;
+  icon?: "arrow" | undefined;
+  disabled?: boolean | undefined;
+  /** 8 px cobalt-400 dot before the label: header CTA (variant dark) */
+  dot?: boolean | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
+  /** Required for size="icon", which has no visible text */
+  label?: string | undefined;
+  /** Styleguide only: show a hover or pressed state without interaction */
+  forceState?: "hover" | "active" | undefined;
+  class?: string | undefined;
+  attrs?: (HTMLAttributes<"a"> & HTMLAttributes<"button">) | undefined;
+}
+
+const {
+  variant = "primary",
+  size = "md",
+  href,
+  icon,
+  disabled = false,
+  dot = false,
+  type = "button",
+  label,
+  forceState,
+  class: className,
+  attrs = {},
+} = Astro.props;
+
+const isGhost = variant === "ghost";
+const showArrow = icon === "arrow" || size === "icon";
+
+const base = isGhost
+  ? "group inline-flex min-h-11 items-center font-mono font-bold text-cobalt-500 no-underline decoration-1 underline-offset-4 hover:text-cobalt-500 hover:underline on-dark:text-cobalt-400 on-dark:hover:text-cobalt-300"
+  : "group inline-flex items-center justify-center gap-2.5 rounded-none font-bold no-underline transition-colors duration-120 ease-labo";
+
+const sizes: Record<Size, string> = {
+  md: "h-13 px-6 text-body",
+  sm: "h-11 px-4 font-mono text-small font-normal",
+  icon: "size-13",
+};
+
+// Repos / hover / pressed, light background then .on-dark overrides
+const variants: Record<Exclude<Variant, "ghost">, string> = {
+  primary: "bg-cobalt-500 text-white hover:bg-cobalt-600 hover:text-white active:bg-cobalt-700",
+  dark: "bg-graphite text-white hover:bg-ink hover:text-white active:translate-y-px active:bg-ink on-dark:border on-dark:border-edge-dark",
+  secondary:
+    "border border-graphite bg-white text-graphite hover:bg-graphite hover:text-white on-dark:border-white on-dark:bg-transparent on-dark:text-white on-dark:hover:bg-white on-dark:hover:text-graphite",
+};
+
+// Complete class sets for a frozen state, used instead of the variant's
+// interactive classes (mixing both would let the resting colors win)
+const forced: Record<Exclude<Variant, "ghost">, Record<"hover" | "active", string>> = {
+  primary: { hover: "bg-cobalt-600 text-white", active: "bg-cobalt-700 text-white" },
+  dark: {
+    hover: "bg-ink text-white on-dark:border on-dark:border-edge-dark",
+    active: "translate-y-px bg-ink text-white on-dark:border on-dark:border-edge-dark",
+  },
+  secondary: {
+    hover: "border border-graphite bg-graphite text-white on-dark:border-white on-dark:bg-white on-dark:text-graphite",
+    active: "border border-graphite bg-graphite text-white on-dark:border-white on-dark:bg-white on-dark:text-graphite",
+  },
+};
+
+const disabledClass =
+  "cursor-not-allowed border border-dashed border-muted bg-transparent text-disabled on-dark:border-edge-dark on-dark:text-muted";
+
+const classes = isGhost
+  ? [base, forceState && "underline", className]
+  : [base, sizes[size], disabled ? disabledClass : forceState ? forced[variant][forceState] : variants[variant], className];
+
+const Tag = href && !disabled ? "a" : "button";
+const elementAttrs =
+  Tag === "a"
+    ? { href }
+    : {
+        type,
+        disabled,
+      };
+---
+
+<Tag class:list={classes} aria-label={size === "icon" ? label : undefined} {...elementAttrs} {...attrs}>
+  {dot && <span class="size-2 rounded-full bg-cobalt-400" aria-hidden="true" />}
+  {isGhost ? (
+    <span>
+      [ <slot /> ]
+    </span>
+  ) : (
+    size !== "icon" && <slot />
+  )}
+  {showArrow && !isGhost && (
+    <svg
+      class:list={[
+        size === "icon" ? "size-5" : "size-4.5",
+        "transition-transform duration-200 ease-labo group-hover:translate-x-0.5",
+        disabled && "group-hover:translate-x-0",
+      ]}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="square"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  )}
+</Tag>

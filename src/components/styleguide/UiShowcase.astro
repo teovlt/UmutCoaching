@@ -1,0 +1,136 @@
+---
+// Every ui/ component in every state, for /styleguide. Rendered twice: on the
+// labo background and inside `.on-dark`, where the components adapt on their own.
+import Button from "@/components/ui/Button.astro";
+import Field from "@/components/ui/Field.astro";
+import Metric from "@/components/ui/Metric.astro";
+import ProgressChart from "@/components/ui/ProgressChart.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import StatusBadge from "@/components/ui/StatusBadge.astro";
+import Tag from "@/components/ui/Tag.astro";
+
+interface Props {
+  /** Keeps field ids unique when the showcase is rendered twice */
+  prefix: string;
+}
+
+const { prefix } = Astro.props;
+
+// Illustrative data from docs/04-contenu.md (S01 80 kg → S12 100 kg),
+// captioned as an example
+const benchPress = [80, 82.5, 82.5, 85, 85, 87.5, 90, 90, 92.5, 95, 97.5, 100].map((value, i) => ({
+  label: `S${String(i + 1).padStart(2, "0")}`,
+  value,
+}));
+
+const demoLabel = "label-mono text-mesure on-dark:text-muted";
+---
+
+<div class="flex flex-col gap-12">
+  <div class="flex flex-col gap-5">
+    <h4 class={demoLabel}>Button · md · repos / hover / pressed / désactivé</h4>
+    <div class="grid gap-4 lg:grid-cols-4">
+      {(["primary", "dark", "secondary"] as const).map((variant) => (
+        <div class="flex flex-col items-start gap-3">
+          <span class="font-mono text-micro text-mesure on-dark:text-muted">{variant}</span>
+          <Button variant={variant} icon={variant === "primary" ? "arrow" : undefined}>
+            {variant === "primary" ? "Réserver une séance" : variant === "dark" ? "Voir les programmes" : "Secondaire"}
+          </Button>
+          <Button variant={variant} forceState="hover">
+            Hover
+          </Button>
+          <Button variant={variant} forceState="active">
+            Pressed
+          </Button>
+        </div>
+      ))}
+      <div class="flex flex-col items-start gap-3">
+        <span class="font-mono text-micro text-mesure on-dark:text-muted">désactivé · ghost</span>
+        <Button disabled>Indisponible</Button>
+        <Button variant="ghost" href="#">
+          en savoir plus
+        </Button>
+        <Button variant="ghost" href="#" forceState="hover">
+          hover
+        </Button>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+      <Button variant="dark" dot href="#">
+        Réserver une séance
+      </Button>
+      <Button variant="secondary" size="sm">
+        petit · 44px
+      </Button>
+      <Button size="icon" label="Suivant" />
+      <Button size="icon" variant="dark" label="Suivant" />
+    </div>
+  </div>
+
+  <div class="grid gap-8 lg:grid-cols-2">
+    <div class="flex flex-col gap-5">
+      <h4 class={demoLabel}>Tag</h4>
+      <div class="flex flex-wrap gap-2">
+        <Tag>#musculation</Tag>
+        <Tag>#bodybuilding</Tag>
+        <Tag>#force</Tag>
+        <Tag variant="solid">#suivi-en-ligne</Tag>
+      </div>
+      <h4 class={demoLabel}>StatusBadge</h4>
+      <div class="flex flex-wrap gap-2">
+        <StatusBadge status="new" />
+        <StatusBadge status="available" />
+        <StatusBadge status="few" />
+        <StatusBadge status="full" />
+      </div>
+      <h4 class={demoLabel}>SectionLabel</h4>
+      <SectionLabel index="02" label="programmes" />
+    </div>
+
+    <div class="flex flex-col gap-5">
+      <h4 class={demoLabel}>Field</h4>
+      <Field label="Adresse e-mail" name={`${prefix}-email`} type="email" placeholder="vous@exemple.ch" help="→ réponse sous 24 h" />
+      <Field
+        label="Adresse e-mail"
+        name={`${prefix}-email-error`}
+        type="email"
+        value="nom@exemple"
+        error="Format attendu : nom@exemple.ch"
+        required
+      />
+      <Field
+        label="Objectif"
+        name={`${prefix}-goal`}
+        as="select"
+        placeholder="Choisir un objectif"
+        options={[
+          { value: "force", label: "Gagner en force" },
+          { value: "masse", label: "Prise de masse" },
+          { value: "competition", label: "Préparer une compétition" },
+        ]}
+      />
+      <Field label="Téléphone" name={`${prefix}-phone`} type="tel" placeholder="Indisponible" disabled />
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-5">
+    <h4 class={demoLabel}>Metric · une valeur « [À CONFIRMER] » n'est pas affichée</h4>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <Metric value="12" unit="sem." label="durée d'un cycle" />
+      <Metric value="120" unit="kg" label="exemple de charge" trend="up" />
+      <Metric value="24" unit="h" label="délai de réponse" highlight />
+      <Metric value="[À CONFIRMER]" unit="ans" label="d'expérience" />
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-5">
+    <h4 class={demoLabel}>ProgressChart · données illustratives</h4>
+    <ProgressChart
+      class="max-w-2xl"
+      points={benchPress}
+      unit="kg"
+      caption="exemple de suivi · développé couché"
+      title="Exemple de suivi au développé couché : de 80 kg en semaine 1 à 100 kg en semaine 12"
+    />
+  </div>
+</div>

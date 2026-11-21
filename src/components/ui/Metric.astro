@@ -1,0 +1,52 @@
+---
+// docs/03-design-system.md §6 Metric: the "lab" signature. Renders nothing
+// while its value is still a placeholder, so no unconfirmed figure is shown.
+import { isPlaceholder } from "@/data/site";
+
+interface Props {
+  value: string | number;
+  unit?: string | undefined;
+  label: string;
+  trend?: "up" | "flat" | undefined;
+  highlight?: boolean | undefined;
+  class?: string | undefined;
+}
+
+const { value, unit, label, trend, highlight = false, class: className } = Astro.props;
+const text = String(value);
+const hidden = typeof value === "string" && isPlaceholder(text);
+const trendLabel = trend === "up" ? "en hausse" : trend === "flat" ? "stable" : undefined;
+---
+
+{!hidden && (
+  <div class:list={["flex flex-col gap-3 border-t border-graphite pt-4 on-dark:border-edge-dark", className]}>
+    <p class="flex items-baseline gap-2" data-metric>
+      <span
+        class:list={[
+          "font-mono text-data-xl font-bold tabular-nums",
+          highlight ? "text-cobalt-500 on-dark:text-cobalt-400" : "text-graphite on-dark:text-white",
+        ]}
+      >
+        {text}
+      </span>
+      {unit && <span class="font-mono text-data font-bold text-mesure on-dark:text-muted">{unit}</span>}
+      {trend && (
+        <span class="font-mono text-data text-mesure on-dark:text-muted">
+          <svg
+            class="inline size-[0.8em]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="square"
+            aria-hidden="true"
+          >
+            <path d={trend === "up" ? "M7 17L17 7M9 7h8v8" : "M5 12h14M13 6l6 6-6 6"} />
+          </svg>
+          <span class="sr-only">{trendLabel}</span>
+        </span>
+      )}
+    </p>
+    <p class="label-mono text-mesure on-dark:text-muted">{label}</p>
+  </div>
+)}

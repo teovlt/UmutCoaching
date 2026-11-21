@@ -64,6 +64,8 @@
   --text-small--line-height: 1.55;
   --text-label: 0.75rem; /* 12 — mono, MAJ */
   --text-label--line-height: 1.4;
+  --text-micro: 0.6875rem; /* 11 — mono : aide de champ, badges d'état, graduations */
+  --text-micro--line-height: 1.4;
   --text-data: clamp(1.5rem, 1.25rem + 1vw, 1.875rem); /* 24 → 30 — mono bold */
   --text-data--line-height: 1.1;
   --text-data-xl: clamp(3rem, 2.2rem + 3.4vw, 5rem); /* 48 → 80 — gros chiffres */

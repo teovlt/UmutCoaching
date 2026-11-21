@@ -1,0 +1,115 @@
+---
+// docs/03-design-system.md §6 Field: mono label above, 48 px control, help and
+// error text linked through aria-describedby. Meant for light backgrounds:
+// on graphite, `danger` text fails contrast, so the error text turns white and
+// the red border alone carries the color.
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  label: string;
+  name: string;
+  id?: string | undefined;
+  as?: "input" | "textarea" | "select" | undefined;
+  type?: "text" | "email" | "tel" | "url" | "number" | "password" | "date" | undefined;
+  value?: string | undefined;
+  placeholder?: string | undefined;
+  help?: string | undefined;
+  error?: string | undefined;
+  required?: boolean | undefined;
+  disabled?: boolean | undefined;
+  autocomplete?: string | undefined;
+  options?: Option[] | undefined;
+  rows?: number | undefined;
+  class?: string | undefined;
+}
+
+const {
+  label,
+  name,
+  id = `field-${name}`,
+  as = "input",
+  type = "text",
+  value,
+  placeholder,
+  help,
+  error,
+  required = false,
+  disabled = false,
+  autocomplete,
+  options = [],
+  rows = 5,
+  class: className,
+} = Astro.props;
+
+const helpId = help ? `${id}-help` : undefined;
+const errorId = error ? `${id}-error` : undefined;
+const describedBy = [errorId, helpId].filter(Boolean).join(" ") || undefined;
+
+const control = [
+  "w-full rounded-none border bg-white px-3.5 font-sans text-small text-graphite placeholder:text-mesure",
+  "disabled:cursor-not-allowed disabled:border-dashed disabled:border-muted disabled:bg-subtle disabled:text-disabled",
+  error ? "border-danger" : "border-graphite",
+];
+
+const shared = {
+  id,
+  name,
+  required,
+  disabled,
+  "aria-invalid": error ? ("true" as const) : undefined,
+  "aria-describedby": describedBy,
+};
+---
+
+<div class:list={["flex flex-col gap-1.5", className]}>
+  <label for={id} class="label-mono text-graphite on-dark:text-white">
+    {label}
+    {required && <span aria-hidden="true"> *</span>}
+  </label>
+  {as === "textarea" ? (
+    <textarea class:list={[control, "min-h-32 py-3"]} rows={rows} placeholder={placeholder} {...shared}>
+        {value}
+      </textarea>
+  ) : as === "select" ? (
+    <div class="relative">
+      <select class:list={[control, "h-12 appearance-none pr-10"]} {...shared}>
+        {placeholder && (
+          <option value="" selected={!value}>
+            {placeholder}
+          </option>
+        )}
+        {options.map((option) => (
+          <option value={option.value} selected={option.value === value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <svg
+        class="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-graphite"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="square"
+        aria-hidden="true"
+      >
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </div>
+  ) : (
+    <input class:list={[control, "h-12"]} type={type} value={value} placeholder={placeholder} autocomplete={autocomplete} {...shared} />
+  )}
+  {error && (
+    <p id={errorId} class="font-mono text-micro text-danger on-dark:text-white">
+      {error}
+    </p>
+  )}
+  {help && (
+    <p id={helpId} class="font-mono text-micro text-mesure on-dark:text-muted">
+      {help}
+    </p>
+  )}
+</div>

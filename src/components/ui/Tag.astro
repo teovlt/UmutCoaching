@@ -1,0 +1,21 @@
+---
+// docs/03-design-system.md §6 Tag: `#musculation`. Mono 12, square corners.
+interface Props {
+  variant?: "default" | "solid" | undefined;
+  class?: string | undefined;
+}
+
+const { variant = "default", class: className } = Astro.props;
+---
+
+<span
+  class:list={[
+    "inline-flex items-center px-3 py-1.5 font-mono text-label",
+    variant === "solid"
+      ? "bg-graphite text-white on-dark:bg-white on-dark:text-graphite"
+      : "border border-graphite bg-white text-graphite on-dark:border-edge-dark on-dark:bg-transparent on-dark:text-white",
+    className,
+  ]}
+>
+  <slot />
+</span>

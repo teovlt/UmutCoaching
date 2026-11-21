@@ -2,6 +2,7 @@
 // Internal reference page (noindex, left out of the sitemap): every token and
 // logo of the brand, rendered from tokens.css and src/assets/brand.
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import UiShowcase from "@/components/styleguide/UiShowcase.astro";
 import AppIcon from "@/assets/brand/umut-app-icon.svg";
 import Favicon from "@/assets/brand/umut-favicon.svg";
 import LockupDark from "@/assets/brand/umut-lockup-dark.svg";
@@ -122,7 +123,7 @@ const typeScale = [
         </div>
       ))}
       <p class="text-small text-mesure">
-        Proportions : ~70 % labo/blanc · ~25 % graphite · ≤ 5 % cobalt. Sur graphite, le cobalt est toujours
+        Proportions : ~70 % labo/blanc · ~25 % graphite · ≤ 5 % cobalt. Sur graphite, le cobalt est toujours{" "}
         <span class="font-mono">cobalt-400</span>.
       </p>
     </section>
@@ -204,5 +205,21 @@ const typeScale = [
         </span>
       </p>
     </section>
+
+    <section aria-labelledby="sg-ui" class="flex flex-col gap-8">
+      <h2 id="sg-ui" class="section-label">
+        04 / composants · fond labo
+      </h2>
+      <UiShowcase prefix="light" />
+    </section>
   </div>
+
+  <section aria-labelledby="sg-ui-dark" class="on-dark">
+    <div class="container-site section flex flex-col gap-8">
+      <h2 id="sg-ui-dark" class="section-label">
+        05 / composants · fond graphite (.on-dark)
+      </h2>
+      <UiShowcase prefix="dark" />
+    </div>
+  </section>
 </BaseLayout>

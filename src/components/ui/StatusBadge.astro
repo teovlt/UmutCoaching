@@ -1,0 +1,29 @@
+---
+// docs/03-design-system.md §6 StatusBadge. The marker's shape (square for
+// new/full, round for available/few) doubles the color, so the state does not
+// rely on hue alone.
+type Status = "new" | "available" | "few" | "full";
+
+interface Props {
+  status: Status;
+  /** Overrides the default French label */
+  label?: string | undefined;
+  class?: string | undefined;
+}
+
+const { status, label, class: className } = Astro.props;
+
+const config: Record<Status, { text: string; marker: string; box: string }> = {
+  new: { text: "Nouveau", marker: "bg-cobalt-500 on-dark:bg-cobalt-400", box: "border border-line bg-white text-graphite" },
+  available: { text: "Places dispo", marker: "rounded-full bg-success", box: "border border-line bg-white text-graphite" },
+  few: { text: "Dernières places", marker: "rounded-full bg-warning", box: "border border-line bg-white text-graphite" },
+  full: { text: "Complet", marker: "bg-muted", box: "border border-subtle bg-subtle text-mesure" },
+};
+
+const { text, marker, box } = config[status];
+---
+
+<span class:list={["inline-flex items-center gap-1.5 px-2.5 py-1 font-mono text-micro uppercase", box, className]}>
+  <span class:list={["size-1.75 shrink-0", marker]} aria-hidden="true"></span>
+  {label ?? text}
+</span>

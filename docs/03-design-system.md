@@ -50,7 +50,8 @@ Exception : un **bouton** cobalt-500 plein avec texte blanc reste valide sur fon
 | `text-lead` | Grotesk 400 | 19 / 1.55 | Chapeaux |
 | `text-body` | Grotesk 400 | 17 / 1.6 | Texte courant (max 68 caractères/ligne → `max-w-[62ch]` ou `max-w-prose`) |
 | `text-small` | Grotesk 400 | 15 / 1.55 | Notes, légendes longues |
-| `text-label` + `font-mono uppercase` | Mono 400/700 | 12 | Labels de section, de champ, tags d'état |
+| `text-label` + `font-mono uppercase` | Mono 400/700 | 12 | Labels de section, de champ, tags |
+| `text-micro` + `font-mono` | Mono 400 | 11 | Aide de champ, badges d'état, graduations de graphique |
 | `font-mono` 14 | Mono 400 | 14 | Navigation, liens tertiaires |
 | `text-data` + `font-mono font-bold` | Mono 700 | 24 → 30 | Valeurs : `120 kg × 5 reps` |
 | `text-data-xl` + `font-mono font-bold` | Mono 700 | 48 → 80 | Gros chiffres du bandeau |
@@ -66,6 +67,10 @@ signe de multiplication `×` (pas `x`) · flèche `→` pour les progressions ·
 - **Filets** : `border border-line` (cartes), `border-graphite` (mise en avant, champs), `border-dashed border-muted` (désactivé).
 - Signature graphique : le **trait de section** `01 / logo ————` (`.section-label`) et les **crochets** `[ ]` du symbole,
   réutilisables pour encadrer un chiffre clé ou un lien tertiaire.
+
+### Variante `on-dark:`
+Variante Tailwind (définie dans `global.css`) active dans toute zone `.on-dark` : un composant gère les deux fonds
+sans prop, ex. `text-cobalt-500 on-dark:text-cobalt-400`.
 
 ## 5. Logo
 Fichiers dans `src/assets/brand/` :
