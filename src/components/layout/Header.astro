@@ -1,0 +1,53 @@
+---
+// docs/02-architecture.md § Header & navigation. Sticky, white, 1 px bottom
+// rule, no shadow. Desktop (≥ 1024): symbol + wordmark, numbered mono links,
+// dark CTA with a cobalt dot (the solid cobalt is kept for the page's main
+// CTA). Below 1024: wordmark + square menu button opening MobileMenu.
+import SymbolSmall from "@/assets/brand/umut-symbol-small.svg";
+import Button from "@/components/ui/Button.astro";
+import { bookingCta, isActive, mainNav } from "@/data/navigation";
+import MobileMenu from "./MobileMenu.astro";
+
+const path = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-white">
+  <div class="container-site flex h-16 items-center justify-between gap-6 lg:h-19">
+    <a href="/" class="flex items-center gap-2.5 text-graphite no-underline hover:text-graphite" aria-label="umut. — accueil">
+      <SymbolSmall class="hidden size-8 lg:block" aria-hidden="true" />
+      <span class="text-h3 font-bold" aria-hidden="true">
+        umut<span class="brand-dot">.</span>
+      </span>
+    </a>
+
+    <nav aria-label="Navigation principale" class="hidden lg:block">
+      <ul class="flex items-center gap-8 font-mono text-small">
+        {mainNav.map((item) => {
+          const active = isActive(path, item.href);
+          return (
+            <li>
+              <a
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                class:list={[
+                  "inline-flex min-h-11 items-center no-underline hover:underline",
+                  active ? "text-cobalt-500" : "text-graphite hover:text-graphite",
+                ]}
+              >
+                {item.index} {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    <div class="hidden lg:block">
+      <Button variant="dark" dot href={bookingCta.href}>
+        {bookingCta.label}
+      </Button>
+    </div>
+
+    <MobileMenu path={path} />
+  </div>
+</header>
