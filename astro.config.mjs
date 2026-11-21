@@ -20,5 +20,13 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    // In development the API runs apart (cd server && pnpm dev): forward /api
+    // there, as nginx does in production, so uploaded images and the admin's
+    // calls work on the same origin
+    server: {
+      proxy: {
+        "/api": process.env.API_URL ?? "http://localhost:4000",
+      },
+    },
   },
 });

@@ -35,6 +35,7 @@ pnpm build        # doit passer sans warning avant chaque commit
 pnpm check        # astro check (types)
 cd server && pnpm dev        # API → http://localhost:4000 (lit server/.env)
 cd server && pnpm seed:user  # crée un compte admin (interactif)
+cd server && pnpm seed:content  # contenu de départ de docs/04-contenu.md (ne réécrit jamais l'existant)
 docker compose up --build    # stack complète (voir README)
 ```
 

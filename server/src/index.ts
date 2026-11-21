@@ -2,7 +2,11 @@ import express from "express";
 import { connectDB } from "./config/db.js";
 import { errorHandler, notFoundHandler } from "./middleware/error.middleware.js";
 import { authRouter } from "./routes/auth.routes.js";
+import { faqRouter, programmeRouter, temoignageRouter } from "./routes/content.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
+import { messageRouter } from "./routes/message.routes.js";
+import { settingsRouter } from "./routes/settings.routes.js";
+import { uploadRouter } from "./routes/upload.routes.js";
 
 const app = express();
 
@@ -18,6 +22,12 @@ app.use(express.json({ limit: "1mb" }));
 
 app.use("/api/health", healthRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/programmes", programmeRouter);
+app.use("/api/faqs", faqRouter);
+app.use("/api/temoignages", temoignageRouter);
+app.use("/api/settings", settingsRouter);
+app.use("/api/messages", messageRouter);
+app.use("/api/uploads", uploadRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -12,18 +12,22 @@
     "build": "tsc",
     "start": "node --env-file-if-exists=.env dist/index.js",
     "typecheck": "tsc --noEmit",
-    "seed:user": "tsx --env-file-if-exists=.env src/seed/seedUser.ts"
+    "seed:user": "tsx --env-file-if-exists=.env src/seed/seedUser.ts",
+    "seed:content": "tsx --env-file-if-exists=.env src/seed/seedContent.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "express": "^5.3.0",
     "express-rate-limit": "^8.7.5",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.12.3"
+    "mongoose": "^9.12.3",
+    "multer": "^2.5.0",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.3.0",
     "@types/node": "^24.0.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3"

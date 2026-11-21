@@ -3,9 +3,12 @@
 // Graphite, 4 columns on desktop, line-dark rules. Unconfirmed details stay as
 // visible [À CONFIRMER] placeholders; a social network without a URL is shown
 // as text, not as a dead link.
-import { isPlaceholder, site } from "@/data/site";
+import { getSettings } from "@/lib/api";
+import { isPlaceholder } from "@/data/site";
 import { bookingCta, legalNav, mainNav } from "@/data/navigation";
 
+// Edited from /admin; falls back to the site.ts placeholders
+const site = await getSettings();
 const year = new Date().getFullYear();
 const phoneHref = isPlaceholder(site.phone) ? undefined : `tel:${site.phone.replace(/[^+\d]/g, "")}`;
 const emailHref = isPlaceholder(site.email) ? undefined : `mailto:${site.email}`;

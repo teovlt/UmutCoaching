@@ -8,10 +8,18 @@ import { User } from "../models/User.js";
 // Interactive creation of an admin account, so credentials never live in .env.
 // In production: `docker compose exec api node dist/seed/seedUser.js`
 const run = async () => {
-  const rl = createInterface({ input, output });
-  const username = (await rl.question("Username: ")).trim();
-  const email = (await rl.question("Email: ")).toLowerCase().trim();
-  const password = await rl.question("Password (12 characters min): ");
+  // Reading through the line iterator (rather than rl.question) also works
+  // when the answers are piped in, where rl.question drops early lines
+  const rl = createInterface({ input, terminal: false });
+  const lines = rl[Symbol.asyncIterator]();
+  const ask = async (prompt: string) => {
+    output.write(prompt);
+    const { value } = await lines.next();
+    return typeof value === "string" ? value : "";
+  };
+  const username = (await ask("Username: ")).trim();
+  const email = (await ask("Email: ")).toLowerCase().trim();
+  const password = await ask("Password (12 characters min): ");
   rl.close();
 
   if (!username || !email || !password) throw new Error("Username, email and password are required");

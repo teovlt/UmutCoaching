@@ -86,8 +86,12 @@ pour ne pas plomber la perf et ne pas déposer de cookies tiers sans action. Fal
 ## Modèle de contenu (MongoDB via l'API — voir D2/D9 dans `05-decisions.md`)
 
 Le contenu éditable vit dans MongoDB (modèles Mongoose dans `server/src/models/`), servi par l'API
-(`/api/programmes`, `/api/faqs`, `/api/temoignages`, `/api/settings`, `/api/uploads`) et modifiable depuis `/admin`.
-Les pages Astro le lisent côté serveur (`API_URL`). Champs (repris du modèle prévu par le kit) :
+(`/api/programmes`, `/api/faqs`, `/api/temoignages`, `/api/settings`, `/api/uploads`, `/api/messages`) et modifiable depuis `/admin`.
+Les pages Astro le lisent côté serveur via `src/lib/api.ts` (`API_URL`, cache 5 s, repli sur `src/data/site.ts` si l'API ne répond pas).
+Champs : modèle prévu par le kit ci-dessous, avec en plus côté API — programmes : `priceUnit` (« / mois »), `priceLabel`
+(remplace le prix, ex. « sur devis »), `status` (badge), `image {url, alt}`, `visible` ; témoignages : `consentDate` obligatoire ;
+settings : `metrics` (bandeau chiffres, masqué si vide), `about {title, text, tags}`, `photos {hero, about}`.
+Les photos envoyées sont converties en WebP (2000 px max, métadonnées EXIF/GPS supprimées).
 
 ```ts
 programmes: {

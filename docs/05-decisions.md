@@ -14,6 +14,7 @@
 | D9 | **API Express 5 + MongoDB** (`server/`), admin `/admin` | Umut modifie lui-même prix, programmes, FAQ, témoignages, photos et infos. Même architecture que portfolioFreelance (auth JWT, CRUD générique, uploads sharp) |
 | D10 | **Dokploy sur VPS** : `docker-compose.yml` avec `nginx` (entrée, port 80) → `web` (Astro, 4321) + `api` (4000), volume `uploads` | Même hébergement que les autres projets ; `/api` sur la même origine, donc pas de CORS |
 | D11 | `/admin` en pages Astro + scripts vanilla, sans React | Respecte D5 ; quelques formulaires CRUD ne justifient pas un framework |
+| D12 | Contenu de départ chargé par `seed:content` (idempotent) ; programme Nutrition créé **masqué** (Q4) ; aucun témoignage | Ne jamais inventer ; les modifications faites dans `/admin` ne sont jamais écrasées |
 
 ## Questions à poser au client (bloquantes avant mise en ligne)
 | # | Question | Impact | Hypothèse par défaut |

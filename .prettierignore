@@ -4,3 +4,6 @@ node_modules/
 pnpm-lock.yaml
 design-reference/
 src/assets/brand/
+docs/
+CLAUDE.md
+.claude/
