@@ -1,0 +1,73 @@
+---
+// /admin screen editing part of the single settings document (Infos du site,
+// Photos). Only the fields of this screen are sent, the others are kept.
+import AdminForm from "@/components/admin/AdminForm.astro";
+import Button from "@/components/ui/Button.astro";
+import { infoFields, photoFields } from "@/lib/admin/schemas";
+
+interface Props {
+  section: "infos" | "photos";
+  title: string;
+  intro: string;
+}
+
+const { section, title, intro } = Astro.props;
+const fields = section === "infos" ? infoFields : photoFields;
+---
+
+<section data-settings={section} class="flex max-w-2xl flex-col gap-8">
+  <div class="flex flex-col gap-2">
+    <h1 class="text-h2">{title}</h1>
+    <p class="text-mesure">{intro}</p>
+  </div>
+  <form data-form novalidate class="card flex flex-col gap-6 p-6">
+    <AdminForm fields={fields} idPrefix={section} />
+    <p data-form-error role="alert" class="font-mono text-small text-danger empty:hidden"></p>
+    <div class="flex flex-wrap items-center gap-4">
+      <Button type="submit">Enregistrer</Button>
+      <p data-status role="status" class="font-mono text-small text-mesure">
+        Chargement…
+      </p>
+    </div>
+  </form>
+</section>
+
+<script>
+  import { infoFields, photoFields } from "@/lib/admin/schemas";
+  import { api, errorText, requireLogin } from "@/scripts/admin/api";
+  import { fillForm, readForm, setupImages } from "@/scripts/admin/form";
+
+  requireLogin();
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-settings]")) {
+    const fields = root.dataset.settings === "infos" ? infoFields : photoFields;
+    const form = root.querySelector<HTMLFormElement>("[data-form]") as HTMLFormElement;
+    const status = root.querySelector<HTMLElement>("[data-status]") as HTMLElement;
+    const error = root.querySelector<HTMLElement>("[data-form-error]") as HTMLElement;
+    setupImages(form);
+
+    api<Record<string, unknown>>("/settings")
+      .then((settings) => {
+        fillForm(form, fields, settings);
+        status.textContent = "";
+      })
+      .catch((err) => {
+        status.textContent = errorText(err);
+      });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      error.textContent = "";
+      if (!form.reportValidity()) return;
+      status.textContent = "Enregistrement…";
+      try {
+        const settings = await api<Record<string, unknown>>("/settings", { method: "PUT", json: readForm(form, fields) });
+        fillForm(form, fields, settings);
+        status.textContent = "Enregistré. Le site est à jour.";
+      } catch (err) {
+        status.textContent = "";
+        error.textContent = errorText(err);
+      }
+    });
+  }
+</script>

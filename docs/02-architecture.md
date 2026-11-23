@@ -61,7 +61,7 @@ versions `/de/` ou `/tr/` (i18n Astro), espace client.
 | 05 | **Tarifs (aperçu)** | 2–3 `PricingCard`, « à partir de », lien vers /tarifs. | labo |
 | 06 | **À propos (court)** | Photo + 3 lignes + diplômes en tags mono. | blanc |
 | 07 | **FAQ** | 5–6 questions (`<details>`), depuis `src/content/faq`. | labo |
-| 08 | **CTA final** | Bandeau graphite : « Premier bilan : on mesure où tu en es. » + CTA cobalt (cobalt-500 sur graphite OK car c'est un aplat bouton avec texte blanc 6,6:1). | graphite |
+| 08 | **CTA final** | Bandeau graphite : « Première séance : on mesure où vous en êtes. » + CTA cobalt (cobalt-500 sur graphite OK car c'est un aplat bouton avec texte blanc 6,6:1). | graphite |
 | — | **Footer** | Wordmark, coordonnées, horaires, réseaux, liens légaux, `© année umut.` en mono. | graphite |
 
 ## Pages internes — gabarit commun
@@ -119,6 +119,11 @@ document unique `settings` dans l'API ; `src/data/site.ts` en donne les valeurs 
 ## Admin `/admin` (noindex)
 Connexion (JWT) → écrans : Programmes & tarifs · FAQ · Témoignages (case consentement obligatoire) · Photos ·
 Infos du site · Messages reçus. Pages Astro + scripts vanilla, aux couleurs de la marque.
+
+Routes (statiques, `prerender = true` ; les données sont chargées dans le navigateur après connexion) :
+`/admin/connexion` · `/admin` (messages) · `/admin/programmes` · `/admin/faq` · `/admin/temoignages` · `/admin/photos` · `/admin/infos`.
+Les champs des formulaires sont décrits une seule fois dans `src/lib/admin/schemas.ts` (rendu par `AdminForm.astro`,
+lus et remplis par `src/scripts/admin/form.ts`). Le jeton JWT est gardé dans `localStorage` (7 jours) ; un 401 renvoie à la connexion.
 
 ## SEO technique
 - `<title>` : `{Page} — umut. coach musculation [Ville]` ; description 140–160 car. par page.

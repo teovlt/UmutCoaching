@@ -1,0 +1,58 @@
+---
+import Button from "@/components/ui/Button.astro";
+import Field from "@/components/ui/Field.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+
+export const prerender = true;
+---
+
+<AdminLayout title="Connexion" bare>
+  <div class="mx-auto flex max-w-md flex-col gap-8">
+    <div class="flex flex-col gap-2">
+      <h1 class="text-h2">Connexion</h1>
+      <p class="text-mesure">Espace réservé à Umut : programmes, tarifs, FAQ, photos et messages.</p>
+    </div>
+    <form data-login class="card flex flex-col gap-6 p-6" novalidate>
+      <Field label="E-mail ou identifiant" name="identifier" autocomplete="username" required />
+      <Field label="Mot de passe" name="password" type="password" autocomplete="current-password" required />
+      <p data-error role="alert" class="font-mono text-small text-danger empty:hidden"></p>
+      <Button type="submit">Se connecter</Button>
+    </form>
+  </div>
+</AdminLayout>
+
+<script>
+  import { api, errorText, getToken, setToken } from "@/scripts/admin/api";
+
+  // Only paths inside /admin, so the link can't send the user elsewhere
+  const next = () => {
+    const target = new URLSearchParams(location.search).get("next") ?? "";
+    return /^\/admin(\/[a-z-]*)?$/.test(target) && target !== "/admin/connexion" ? target : "/admin";
+  };
+
+  if (getToken()) location.replace(next());
+
+  const form = document.querySelector<HTMLFormElement>("[data-login]") as HTMLFormElement;
+  const error = form.querySelector<HTMLElement>("[data-error]") as HTMLElement;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    error.textContent = "";
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (submit) submit.disabled = true;
+    try {
+      const { token } = await api<{ token: string }>("/auth/login", {
+        method: "POST",
+        json: { identifier: data.get("identifier"), password: data.get("password") },
+      });
+      setToken(token);
+      location.replace(next());
+    } catch (err) {
+      error.textContent = errorText(err);
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  });
+</script>

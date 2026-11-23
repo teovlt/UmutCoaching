@@ -1,0 +1,83 @@
+---
+// One /admin screen for a collection of the API: list (order, show / hide,
+// edit, delete) and an editing form in a native <dialog> (focus stays inside,
+// Escape closes it). Behaviour: src/scripts/admin/collection.ts.
+import AdminForm from "@/components/admin/AdminForm.astro";
+import Button from "@/components/ui/Button.astro";
+import { type CollectionKey, collectionFields } from "@/lib/admin/schemas";
+
+interface Props {
+  collection: CollectionKey;
+  title: string;
+  intro: string;
+  /** Singular, for buttons and the dialog title: "une offre" */
+  itemName: string;
+}
+
+const { collection, title, intro, itemName } = Astro.props;
+---
+
+<section data-collection={collection} data-item-name={itemName} class="flex flex-col gap-8">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="flex max-w-[62ch] flex-col gap-2">
+      <h1 class="text-h2">{title}</h1>
+      <p class="text-mesure">{intro}</p>
+    </div>
+    <Button attrs={{ "data-add": "" }}>Ajouter {itemName}</Button>
+  </div>
+
+  <p data-status role="status" class="font-mono text-small text-mesure">
+    Chargement…
+  </p>
+  <ol data-list class="flex flex-col border-t border-line"></ol>
+
+  <dialog
+    data-editor
+    aria-labelledby={`${collection}-editor-title`}
+    class="m-auto max-h-[90dvh] w-[min(42rem,calc(100%-2rem))] border border-graphite bg-labo p-0 backdrop:bg-graphite/70"
+  >
+    <form data-form novalidate class="flex flex-col">
+      <div class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-line bg-white px-6 py-4">
+        <h2 id={`${collection}-editor-title`} class="text-h3" data-editor-title>
+          Modifier
+        </h2>
+        <button
+          type="button"
+          data-close
+          class="flex size-11 items-center justify-center border border-line bg-white text-graphite hover:border-graphite"
+          aria-label="Fermer sans enregistrer"
+        >
+          <svg
+            class="size-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="square"
+            aria-hidden="true"
+          >
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="px-6 py-6">
+        <AdminForm fields={collectionFields[collection]} idPrefix={collection} />
+      </div>
+      <div class="sticky bottom-0 flex flex-col gap-3 border-t border-line bg-white px-6 py-4">
+        <p data-form-error role="alert" class="font-mono text-small text-danger empty:hidden"></p>
+        <div class="flex flex-wrap gap-3">
+          <Button type="submit">Enregistrer</Button>
+          <Button variant="secondary" attrs={{ "data-close": "" }}>
+            Annuler
+          </Button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+</section>
+
+<script>
+  import { mountCollection } from "@/scripts/admin/collection";
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-collection]")) mountCollection(root);
+</script>

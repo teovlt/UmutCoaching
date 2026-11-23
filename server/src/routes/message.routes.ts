@@ -11,7 +11,7 @@ const sendLimiter = rateLimit({
   limit: 5,
   standardHeaders: "draft-8",
   legacyHeaders: false,
-  message: { message: "Trop de messages envoyés. Réessaie plus tard ou écris directement par e-mail." },
+  message: { message: "Trop de messages envoyés. Réessayez plus tard ou écrivez directement par e-mail." },
 });
 
 const text = (value: unknown) => (typeof value === "string" ? value : "");

@@ -1,0 +1,14 @@
+---
+import SettingsEditor from "@/components/admin/SettingsEditor.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+
+export const prerender = true;
+---
+
+<AdminLayout title="Photos">
+  <SettingsEditor
+    section="photos"
+    title="Photos"
+    intro="Vos photos de l'accueil et de la page « À propos ». Envoyez l'original : il est redimensionné et compressé automatiquement. Les photos des offres et des témoignages se règlent dans leur écran."
+  />
+</AdminLayout>

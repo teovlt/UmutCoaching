@@ -1,0 +1,126 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+
+export const prerender = true;
+---
+
+<AdminLayout title="Messages">
+  <section class="flex flex-col gap-8">
+    <div class="flex max-w-[62ch] flex-col gap-2">
+      <h1 class="text-h2">Messages</h1>
+      <p class="text-mesure">Les demandes envoyées depuis le formulaire du site, les plus récentes en haut.</p>
+    </div>
+    <p data-status role="status" class="font-mono text-small text-mesure">
+      Chargement…
+    </p>
+    <ol data-messages class="flex flex-col border-t border-line"></ol>
+  </section>
+</AdminLayout>
+
+<script>
+  import { api, errorText, requireLogin } from "@/scripts/admin/api";
+
+  requireLogin();
+
+  type Message = {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    goal: string;
+    message: string;
+    read: boolean;
+    createdAt: string;
+  };
+
+  const list = document.querySelector<HTMLOListElement>("[data-messages]") as HTMLOListElement;
+  const status = document.querySelector<HTMLElement>("[data-status]") as HTMLElement;
+  let messages: Message[] = [];
+
+  const summary = () => {
+    const unread = messages.filter((m) => !m.read).length;
+    status.textContent = messages.length
+      ? `${messages.length} message${messages.length > 1 ? "s" : ""}, dont ${unread} non lu${unread > 1 ? "s" : ""}.`
+      : "Aucun message pour l'instant.";
+  };
+
+  const el = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string) => {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+
+  const button = (label: string, accessibleName: string) => {
+    const b = el(
+      "button",
+      "inline-flex min-h-11 items-center border border-line bg-white px-3 font-mono text-small text-graphite hover:border-graphite",
+      label,
+    );
+    b.type = "button";
+    b.setAttribute("aria-label", accessibleName);
+    return b;
+  };
+
+  const render = () => {
+    list.replaceChildren();
+    for (const m of messages) {
+      const li = el("li", "flex flex-col gap-3 border-b border-line py-6");
+      const date = new Date(m.createdAt).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" });
+
+      const head = el("div", "flex flex-wrap items-center gap-x-4 gap-y-1");
+      if (!m.read) head.append(el("span", "font-mono text-micro text-white uppercase bg-graphite px-2 py-0.5", "nouveau"));
+      head.append(el("p", "font-bold", m.name), el("p", "font-mono text-label text-mesure", date));
+
+      const contact = el("p", "flex flex-wrap gap-x-4 font-mono text-small");
+      const mail = el("a", "text-graphite", m.email);
+      mail.href = `mailto:${m.email}`;
+      contact.append(mail);
+      if (m.phone) {
+        const tel = el("a", "text-graphite", m.phone);
+        tel.href = `tel:${m.phone.replace(/[^+\d]/g, "")}`;
+        contact.append(tel);
+      }
+      if (m.goal) contact.append(el("span", "text-mesure", `objectif : ${m.goal}`));
+
+      const body = el("p", "max-w-[72ch] whitespace-pre-line", m.message);
+
+      const actions = el("div", "flex flex-wrap gap-2");
+      const toggle = button(m.read ? "Marquer non lu" : "Marquer lu", `${m.read ? "Marquer non lu" : "Marquer lu"} : message de ${m.name}`);
+      toggle.addEventListener("click", async () => {
+        try {
+          const updated = await api<Message>(`/messages/${m.id}`, { method: "PATCH", json: { read: !m.read } });
+          messages = messages.map((x) => (x.id === m.id ? updated : x));
+          render();
+        } catch (err) {
+          status.textContent = errorText(err);
+        }
+      });
+      const remove = button("Supprimer", `Supprimer le message de ${m.name}`);
+      remove.addEventListener("click", async () => {
+        if (!confirm(`Supprimer le message de ${m.name} ? C'est définitif.`)) return;
+        try {
+          await api(`/messages/${m.id}`, { method: "DELETE" });
+          messages = messages.filter((x) => x.id !== m.id);
+          render();
+        } catch (err) {
+          status.textContent = errorText(err);
+        }
+      });
+      actions.append(toggle, remove);
+
+      li.append(head, contact, body, actions);
+      list.append(li);
+    }
+    summary();
+  };
+
+  api<Message[]>("/messages")
+    .then((data) => {
+      messages = data;
+      render();
+    })
+    .catch((err) => {
+      status.textContent = errorText(err);
+    });
+</script>

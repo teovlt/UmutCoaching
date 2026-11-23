@@ -1,0 +1,15 @@
+---
+import CollectionEditor from "@/components/admin/CollectionEditor.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+
+export const prerender = true;
+---
+
+<AdminLayout title="FAQ">
+  <CollectionEditor
+    collection="faqs"
+    title="FAQ"
+    itemName="une question"
+    intro="Les questions fréquentes. Choisissez sur quelles pages chacune apparaît."
+  />
+</AdminLayout>

@@ -1,0 +1,14 @@
+---
+import SettingsEditor from "@/components/admin/SettingsEditor.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+
+export const prerender = true;
+---
+
+<AdminLayout title="Infos du site">
+  <SettingsEditor
+    section="infos"
+    title="Infos du site"
+    intro="Coordonnées, horaires, réseaux, chiffres clés et texte « À propos ». Un champ vide s'affiche « [À CONFIRMER] » sur le site."
+  />
+</AdminLayout>

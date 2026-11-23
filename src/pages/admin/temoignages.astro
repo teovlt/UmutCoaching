@@ -1,0 +1,15 @@
+---
+import CollectionEditor from "@/components/admin/CollectionEditor.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+
+export const prerender = true;
+---
+
+<AdminLayout title="Témoignages">
+  <CollectionEditor
+    collection="temoignages"
+    title="Témoignages"
+    itemName="un témoignage"
+    intro="Uniquement avec l'accord écrit du client (gardez-en une trace). La section Résultats apparaît sur l'accueil dès qu'un témoignage est affiché."
+  />
+</AdminLayout>

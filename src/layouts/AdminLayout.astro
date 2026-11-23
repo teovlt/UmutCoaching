@@ -1,0 +1,103 @@
+---
+// Layout of /admin: not indexed, no public header or footer. Pages are
+// static shells; their data comes from the API in the browser, after login.
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  /** The login page has no navigation */
+  bare?: boolean;
+}
+
+const { title, bare = false } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, "");
+
+const nav = [
+  { href: "/admin", label: "Messages" },
+  { href: "/admin/programmes", label: "Programmes & tarifs" },
+  { href: "/admin/faq", label: "FAQ" },
+  { href: "/admin/temoignages", label: "Témoignages" },
+  { href: "/admin/photos", label: "Photos" },
+  { href: "/admin/infos", label: "Infos du site" },
+];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — admin umut.</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a
+      href="#contenu"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-graphite focus:px-4 focus:py-3 focus:text-white"
+    >
+      Aller au contenu
+    </a>
+    <header class="border-b border-line bg-white">
+      <div class="container-site flex flex-col gap-3 py-4">
+        <div class="flex items-center justify-between gap-4">
+          <p class="flex items-baseline gap-3">
+            <span class="text-h3 font-bold">
+              umut<span class="brand-dot">.</span>
+            </span>
+            <span class="font-mono text-label text-mesure uppercase">admin</span>
+          </p>
+          {!bare && (
+            <div class="flex items-center gap-2">
+              <a href="/" class="hidden min-h-11 items-center px-2 font-mono text-small whitespace-nowrap text-graphite sm:inline-flex">
+                Voir le site
+              </a>
+              <button
+                type="button"
+                data-logout
+                class="inline-flex min-h-11 items-center border border-line bg-white px-3 font-mono text-small whitespace-nowrap text-graphite hover:border-graphite"
+              >
+                Se déconnecter
+              </button>
+            </div>
+          )}
+        </div>
+        {!bare && (
+          <nav aria-label="Administration">
+            <ul class="flex flex-wrap gap-x-5 gap-y-1 font-mono text-small">
+              {nav.map((item) => {
+                const active = path === item.href;
+                return (
+                  <li>
+                    <a
+                      href={item.href}
+                      aria-current={active ? "page" : undefined}
+                      class:list={[
+                        "inline-flex min-h-11 items-center no-underline hover:underline",
+                        active ? "text-cobalt-500" : "text-graphite hover:text-graphite",
+                      ]}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        )}
+      </div>
+    </header>
+    <main id="contenu" class="container-site py-10 lg:py-14">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<script>
+  import { LOGIN_PATH, clearToken } from "@/scripts/admin/api";
+
+  document.querySelector("[data-logout]")?.addEventListener("click", () => {
+    clearToken();
+    location.assign(LOGIN_PATH);
+  });
+</script>

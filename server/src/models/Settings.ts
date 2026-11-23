@@ -9,7 +9,7 @@ const settingsSchema = new Schema(
     key: { type: String, default: "site", unique: true, immutable: true },
     city: { type: String, default: "", trim: true },
     country: { type: String, default: "", trim: true },
-    currency: { type: String, enum: ["CHF", "EUR"], default: "CHF" },
+    currency: { type: String, enum: ["CHF", "EUR"], default: "EUR" },
     gym: { type: String, default: "", trim: true },
     address: { type: String, default: "", trim: true },
     phone: { type: String, default: "", trim: true },

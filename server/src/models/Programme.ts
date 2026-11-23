@@ -18,7 +18,7 @@ const programmeSchema = new Schema(
     priceUnit: { type: String, default: "", trim: true },
     // Replaces the price when set, e.g. "sur devis"
     priceLabel: { type: String, default: "", trim: true },
-    currency: { type: String, enum: ["CHF", "EUR"], default: "CHF" },
+    currency: { type: String, enum: ["CHF", "EUR"], default: "EUR" },
     includes: { type: [String], default: [] },
     steps: { type: [{ label: { type: String, trim: true }, text: { type: String, trim: true } }], default: [] },
     // At most one programme should be featured ("Recommandé" on /tarifs)

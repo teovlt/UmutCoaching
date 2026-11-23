@@ -32,14 +32,20 @@ export const site: SiteSettings = {
   brand: "umut.",
   descriptor: "coach / bodybuilding / data",
   tagline: "Mesurer. Ajuster. Progresser.",
+  // Confirmed by Umut on 23/11/2026 (docs/05-decisions.md); city and gym are
+  // still open (Q14)
   city: `${PLACEHOLDER} ville`,
-  country: `${PLACEHOLDER} pays`,
-  currency: "CHF",
+  country: "France",
+  currency: "EUR",
   gym: `${PLACEHOLDER} salle`,
   address: `${PLACEHOLDER} adresse salle`,
-  phone: `${PLACEHOLDER} téléphone`,
-  email: `${PLACEHOLDER} e-mail`,
-  hours: `lun–ven 07:00–21:00 ${PLACEHOLDER}`,
+  phone: "06 31 76 49 99",
+  email: "umut.coachsportif@gmail.com",
+  hours: "lun–ven 09:00–18:00 · sam 09:00–15:00",
+  // No booking tool yet: /reserver uses the contact form (D16)
   bookingUrl: "",
-  socials: [{ label: "Instagram", url: "" }],
+  socials: [
+    { label: "Instagram", url: "https://www.instagram.com/umut.coachsportif" },
+    { label: "TikTok", url: "https://www.tiktok.com/@umut.coachsportif" },
+  ],
 };

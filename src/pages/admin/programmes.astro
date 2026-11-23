@@ -1,0 +1,15 @@
+---
+import CollectionEditor from "@/components/admin/CollectionEditor.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+
+export const prerender = true;
+---
+
+<AdminLayout title="Programmes & tarifs">
+  <CollectionEditor
+    collection="programmes"
+    title="Programmes & tarifs"
+    itemName="une offre"
+    intro="Vos offres et leurs prix, tels qu'ils apparaissent sur l'accueil, /programmes et /tarifs. Une offre masquée reste ici mais disparaît du site."
+  />
+</AdminLayout>

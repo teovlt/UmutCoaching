@@ -83,10 +83,11 @@ export const getSettings = async (): Promise<Settings> => {
   };
 };
 
-/** "dès 89 CHF / mois", "sur devis", or the placeholder while no price is set */
+/** "dès 90 € / mois", "sur devis", or the placeholder while no price is set */
 export const formatPrice = (p: Pick<Programme, "priceFrom" | "priceUnit" | "priceLabel" | "currency">): string => {
   if (p.priceLabel) return p.priceLabel;
   if (p.priceFrom === undefined || p.priceFrom === null) return "dès [À CONFIRMER]";
-  const amount = new Intl.NumberFormat("fr-CH", { maximumFractionDigits: 2 }).format(p.priceFrom);
-  return `dès ${amount} ${p.currency}${p.priceUnit ? ` ${p.priceUnit}` : ""}`;
+  const amount = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(p.priceFrom);
+  const symbol = p.currency === "EUR" ? "€" : p.currency;
+  return `dès ${amount} ${symbol}${p.priceUnit ? ` ${p.priceUnit}` : ""}`;
 };

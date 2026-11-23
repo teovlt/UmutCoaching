@@ -1,0 +1,111 @@
+---
+// Renders the controls of an /admin form from its field list
+// (src/lib/admin/schemas.ts). Values are filled in and read back by
+// src/scripts/admin/form.ts, using each control's `name`.
+import Field from "@/components/ui/Field.astro";
+import type { FieldDef } from "@/lib/admin/schemas";
+
+interface Props {
+  fields: FieldDef[];
+  /** Prefix for ids, so two forms on one page don't clash */
+  idPrefix: string;
+}
+
+const { fields, idPrefix } = Astro.props;
+const idOf = (name: string) => `${idPrefix}-${name.replace(/\./g, "-")}`;
+---
+
+<div class="flex flex-col gap-6">
+  {fields.map((field) => {
+    const id = idOf(field.name);
+    switch (field.kind) {
+      case "checkbox":
+        return (
+          <div class="flex flex-col gap-1.5" data-kind="checkbox">
+            <label for={id} class="flex min-h-11 cursor-pointer items-center gap-3 text-small">
+              <input
+                id={id}
+                type="checkbox"
+                name={field.name}
+                required={field.required}
+                class="size-5 shrink-0 rounded-none accent-cobalt-500"
+                aria-describedby={field.help ? `${id}-help` : undefined}
+              />
+              <span>
+                {field.label}
+                {field.required && <span aria-hidden="true"> *</span>}
+              </span>
+            </label>
+            {field.help && (
+              <p id={`${id}-help`} class="font-mono text-micro text-mesure">
+                {field.help}
+              </p>
+            )}
+          </div>
+        );
+      case "image":
+        return (
+          <fieldset class="flex flex-col gap-3 border border-line p-4" data-image={field.name}>
+            <legend class="label-mono px-1 text-graphite">{field.label}</legend>
+            <input type="hidden" name={`${field.name}.url`} />
+            <div class="flex flex-wrap items-start gap-4">
+              <div class="flex size-32 shrink-0 items-center justify-center border border-line bg-subtle">
+                <img data-image-preview alt="" class="hidden size-full object-cover" width="128" height="128" />
+                <span data-image-empty class="font-mono text-micro text-mesure">
+                  aucune photo
+                </span>
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="inline-flex min-h-11 cursor-pointer items-center border border-graphite bg-white px-4 font-mono text-small text-graphite hover:bg-graphite hover:text-white focus-within:outline-2 focus-within:outline-cobalt-500">
+                  Choisir une photo
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+                    class="sr-only"
+                    data-image-file
+                  />
+                </label>
+                <button type="button" class="min-h-11 text-left font-mono text-small text-mesure underline" data-image-remove>
+                  Retirer la photo
+                </button>
+                <p class="font-mono text-micro text-mesure" data-image-status role="status" />
+              </div>
+            </div>
+            <Field
+              label="Description de la photo (alt)"
+              name={`${field.name}.alt`}
+              id={`${id}-alt`}
+              help={field.help ?? "Ce que montre la photo, pour les lecteurs d'écran et Google."}
+            />
+          </fieldset>
+        );
+      case "textarea":
+      case "lines":
+      case "rows":
+        return (
+          <Field
+            as="textarea"
+            label={field.label}
+            name={field.name}
+            id={id}
+            help={field.help}
+            required={field.kind === "textarea" ? field.required : false}
+            rows={field.rows ?? 4}
+          />
+        );
+      case "select":
+        return <Field as="select" label={field.label} name={field.name} id={id} help={field.help} options={field.options} />;
+      default:
+        return (
+          <Field
+            label={field.label}
+            name={field.name}
+            id={id}
+            type={field.kind}
+            help={field.help}
+            required={"required" in field ? field.required : false}
+          />
+        );
+    }
+  })}
+</div>
