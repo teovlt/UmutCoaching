@@ -1,0 +1,54 @@
+---
+// docs/02-architecture.md § Accueil 05: prices of the visible programmes and
+// the conditions Umut confirmed (docs/04-contenu.md § Tarifs). VAT stays a
+// placeholder until his legal status is known (Q16).
+import Button from "@/components/ui/Button.astro";
+import PricingCard from "@/components/ui/PricingCard.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import type { Programme } from "@/lib/types";
+
+interface Props {
+  /** Section number, given by the page: "02" */
+  index: string;
+  programmes: Programme[];
+}
+
+const { programmes, index } = Astro.props;
+
+const conditions = [
+  "Bilan de départ inclus dans les offres",
+  "Annulation gratuite jusqu'à 24 h avant, sinon la séance est due",
+  "Paiement en espèces ou par virement",
+  "TVA : [À CONFIRMER]",
+];
+---
+
+{programmes.length > 0 && (
+  <section class="section border-t border-line" aria-labelledby="tarifs-title">
+    <div class="container-site flex flex-col gap-12">
+      <div class="flex flex-col gap-4">
+        <SectionLabel index={index} label="tarifs" />
+        <h2 id="tarifs-title" class="max-w-[22ch] text-h2">
+          Des tarifs clairs, sans engagement caché.
+        </h2>
+      </div>
+      <ul class:list={["grid gap-4 md:grid-cols-2", programmes.length >= 3 && "lg:grid-cols-3"]}>
+        {programmes.map((programme) => (
+          <li>
+            <PricingCard programme={programme} />
+          </li>
+        ))}
+      </ul>
+      <ul class="flex flex-col gap-2 border-t border-line pt-6 font-mono text-label text-mesure md:flex-row md:flex-wrap md:gap-x-8">
+        {conditions.map((condition) => (
+          <li>{condition}</li>
+        ))}
+      </ul>
+      <div>
+        <Button variant="ghost" href="/tarifs">
+          voir les tarifs
+        </Button>
+      </div>
+    </div>
+  </section>
+)}

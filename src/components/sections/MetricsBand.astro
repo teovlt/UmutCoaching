@@ -1,0 +1,24 @@
+---
+// docs/02-architecture.md § Accueil 01: key figures, only the ones Umut
+// confirmed (edited in /admin). A single figure doesn't make a band: below
+// two, the section is not rendered (D19). The response time is also stated
+// in the hero.
+import Metric from "@/components/ui/Metric.astro";
+import type { Metric as MetricData } from "@/lib/types";
+
+interface Props {
+  metrics: MetricData[];
+}
+
+const { metrics } = Astro.props;
+---
+
+{metrics.length >= 2 && (
+  <section class="border-y border-line bg-white" aria-label="Chiffres clés">
+    <div class="container-site grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
+      {metrics.map((m) => (
+        <Metric value={m.value} unit={m.unit} label={m.label} />
+      ))}
+    </div>
+  </section>
+)}

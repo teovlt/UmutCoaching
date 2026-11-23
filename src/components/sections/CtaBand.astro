@@ -1,0 +1,30 @@
+---
+// docs/03-design-system.md §6 CtaBand: graphite band closing every page.
+// The solid cobalt button is fine here: white text on cobalt-500 is 6.6:1.
+import Button from "@/components/ui/Button.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+
+interface Props {
+  index: string;
+  title?: string | undefined;
+}
+
+const { index, title = "Première séance : on mesure où vous en êtes." } = Astro.props;
+---
+
+<section class="on-dark section" aria-labelledby="cta-title">
+  <div class="container-site flex flex-col gap-8">
+    <SectionLabel index={index} label="prochaine étape" />
+    <h2 id="cta-title" class="max-w-[22ch] text-h2">
+      {title}
+    </h2>
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+      <Button href="/reserver" icon="arrow">
+        Réserver une séance
+      </Button>
+      <Button variant="ghost" href="/reserver#contact">
+        poser une question
+      </Button>
+    </div>
+  </div>
+</section>

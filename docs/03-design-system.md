@@ -8,7 +8,7 @@
 2. **Un seul signal.** Le cobalt indique *où agir* et *ce qui compte*. S'il est partout, il ne dit plus rien.
 3. **Tout ce qui se mesure est en mono.** 120 kg × 5 reps, 12 semaines, 89 CHF, 01 / 02.
 4. **Angles droits, pas d'ombre, pas de dégradé.** La hiérarchie vient de la taille, du poids et des fonds.
-5. **Factuel.** Un ton de coach-ingénieur : précis, direct, tutoiement possible dans les accroches (à valider).
+5. **Factuel.** Un ton de coach-ingénieur : précis, direct, **vouvoiement partout** (D14).
 
 ## 2. Couleurs
 

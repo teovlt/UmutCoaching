@@ -21,6 +21,7 @@
 | D16 | **Pas d'agenda en ligne** pour l'instant : `/reserver` = formulaire de contact + téléphone / WhatsApp / e-mail. `bookingUrl` reste vide (éditable dans `/admin` quand il aura un outil) | Q2 : il prend ses rendez-vous par message ; paiement surtout en espèces, pas de paiement en ligne |
 | D17 | Offres affichées : **Coaching individuel** (salle) et **Coaching en ligne**. Créées **masquées** : Nutrition (avec Manon, Q4), Pré / post-natal (Q18). Préparation compétition retirée du seed (pas proposée) | Réponses Q11 / Q12 ; les offres masquées n'apparaissent qu'une fois leurs conditions confirmées |
 | D18 | Bandeau chiffres : seul `24 h` (délai de réponse, confirmé) est affiché. Pas de « ans d'expérience » : Umut est coach débutant (4 ans de pratique personnelle du bodybuilding, ce qui n'est pas une expérience de coach) | Ne pas induire en erreur |
+| D19 | Accueil : le bandeau chiffres n'apparaît qu'à partir de **2 chiffres** confirmés (un seul ne fait pas un bandeau ; « réponse sous 24 h » est repris dans le hero). Les photos envoyées depuis `/admin` sont affichées en `<img>` (dimensions fixes 4:5 / 3:2, `object-cover`) et non via `astro:assets` | Les photos viennent de l'API à l'exécution, déjà compressées en WebP ≤ 2000 px par sharp à l'upload ; `astro:assets` ne traite que les images connues au build |
 
 ## Questions au client — réponses reçues (Google doc « umut. — What I need for your site », 23/11/2026)
 | # | Question | Réponse |

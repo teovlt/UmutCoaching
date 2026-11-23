@@ -1,0 +1,53 @@
+---
+// docs/02-architecture.md § Accueil 04: real testimonials only. The API only
+// stores them with the client's written consent (D8); with none, the whole
+// section is left out.
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import type { Temoignage } from "@/lib/types";
+
+interface Props {
+  /** Section number, given by the page: "02" */
+  index: string;
+  temoignages: Temoignage[];
+}
+
+const { temoignages, index } = Astro.props;
+---
+
+{temoignages.length > 0 && (
+  <section class="on-dark section" aria-labelledby="resultats-title">
+    <div class="container-site flex flex-col gap-12">
+      <div class="flex flex-col gap-4">
+        <SectionLabel index={index} label="résultats" />
+        <h2 id="resultats-title" class="text-h2">
+          Les chiffres parlent.
+        </h2>
+      </div>
+      <ul class="grid gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        {temoignages.map((t) => (
+          <li>
+            <figure class="flex h-full flex-col gap-5 border-t border-line-dark pt-6">
+              {t.photo.url && (
+                <img
+                  src={t.photo.url}
+                  alt={t.photo.alt}
+                  width="600"
+                  height="400"
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[3/2] w-full object-cover"
+                />
+              )}
+              {t.metric && <p class="font-mono text-data font-bold text-cobalt-400">{t.metric}</p>}
+              <blockquote class="text-h3 font-normal tracking-normal">«&nbsp;{t.quote}&nbsp;»</blockquote>
+              <figcaption class="mt-auto label-mono text-muted">
+                {t.name}
+                {t.context && ` · ${t.context}`}
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

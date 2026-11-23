@@ -1,0 +1,55 @@
+---
+// docs/02-architecture.md § Accueil 02, texts from docs/04-contenu.md (Méthode).
+import Button from "@/components/ui/Button.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+
+const steps = [
+  {
+    index: "01",
+    title: "Mesurer",
+    text: "Première séance : mensurations détaillées, vos objectifs et votre historique, photo de départ si vous le souhaitez.",
+  },
+  {
+    index: "02",
+    title: "Ajuster",
+    text: "Un programme écrit pour vous, revu chaque semaine selon vos charges, votre récupération et votre ressenti.",
+  },
+  {
+    index: "03",
+    title: "Progresser",
+    text: "Chaque séance est notée. On compare régulièrement les chiffres et on fixe la suite.",
+  },
+];
+
+interface Props {
+  /** Section number, given by the page: "02" */
+  index: string;
+}
+
+const { index } = Astro.props;
+---
+
+<section class="section" aria-labelledby="methode-title">
+  <div class="container-site flex flex-col gap-12">
+    <div class="flex flex-col gap-4">
+      <SectionLabel index={index} label="méthode" />
+      <h2 id="methode-title" class="max-w-[20ch] text-h2">
+        Un protocole, pas une improvisation.
+      </h2>
+    </div>
+    <ol class="grid gap-10 md:grid-cols-3 md:gap-8">
+      {steps.map((step) => (
+        <li class="flex flex-col gap-4 border-t border-graphite pt-5">
+          <span class="font-mono text-data font-bold">{step.index}</span>
+          <h3 class="text-h3">{step.title}</h3>
+          <p class="text-mesure">{step.text}</p>
+        </li>
+      ))}
+    </ol>
+    <div>
+      <Button variant="ghost" href="/methode">
+        découvrir la méthode
+      </Button>
+    </div>
+  </div>
+</section>

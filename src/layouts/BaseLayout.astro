@@ -8,11 +8,15 @@ interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
+  /** Structured data (schema.org), serialised into a JSON-LD script */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[] | undefined;
 }
 
-const { title, description = `${site.tagline} Coaching musculation et bodybuilding.`, noindex = false } = Astro.props;
+const { title, description = `${site.tagline} Coaching musculation et bodybuilding.`, noindex = false, jsonLd } = Astro.props;
 const fullTitle = title === site.brand ? `${site.brand} — coach musculation` : `${title} — ${site.brand} coach musculation`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+// "</" can't appear inside a script element: escape it in the JSON
+const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, "\\u003c") : undefined;
 ---
 
 <!doctype html>
@@ -24,8 +28,15 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="generator" content={Astro.generator} />
+    {jsonLdText && <script type="application/ld+json" set:html={jsonLdText} />}
   </head>
   <body>
     <a

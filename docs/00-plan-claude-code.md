@@ -3,6 +3,33 @@
 Une phase = une session (ou un `/clear`) = un commit. Copier-coller le prompt de chaque phase.
 Après chaque phase : `pnpm build`, vérifier dans le navigateur, puis `/design-review`.
 
+## État au 24/11/2026 — reprendre ici
+
+| Phase | État |
+|---|---|
+| 0 → 3 | ✅ Faites |
+| 3b Admin | ✅ Faite et testée de bout en bout (connexion, offres, ordre, masquer, témoignages avec consentement, upload photo, infos, messages) |
+| 4 Accueil | ✅ Faite (sections dans `src/components/sections/`, `ProgramCard`, `PricingCard`, OG + JSON-LD). **Reste les corrections de la revue design ci-dessous** |
+| 5 → 7 | ⏳ À faire |
+
+Réponses du client (Google doc du 23/11/2026) reportées dans `05-decisions.md` (D13–D19) et `04-contenu.md`.
+Questions encore ouvertes : Q12–Q20 dans `05-decisions.md` (prix, diplôme / carte pro, mentions légales, ville et salle, domaine…).
+
+### À faire en premier (revue design de l'accueil, non corrigée)
+- [ ] `src/components/sections/Hero.astro` : H1 en `text-display` → le design system prévoit `text-h1` (le titre passe sur 3 lignes à 1280 px au lieu de 2). Corriger, ou documenter l'exception dans `03-design-system.md`.
+- [ ] `src/components/sections/Results.astro` : `alt` vide possible sur la photo d'un témoignage → repli `` `Photo de ${t.name}` ``.
+- [ ] Espaces insécables manquantes avant `:` / `kg` : `Hero.astro` (`title` du graphique), `ui/ProgramCard.astro` (`aria-label`), `pages/index.astro` (meta description).
+- [ ] (Phase 5) Les conditions de `PricingPreview.astro` (annulation, paiement, TVA) sont en dur : les rendre éditables dans « Infos du site » en faisant `/tarifs`.
+
+### Ensuite
+- Phase 5 (pages internes) : les liens de l'accueil pointent déjà vers `/methode`, `/programmes`, `/programmes/[slug]`, `/tarifs`, `/a-propos`, `/reserver` (encore en 404). `/reserver` = **formulaire de contact + téléphone / WhatsApp / e-mail, sans agenda** (D16), le formulaire poste sur `/api/messages`.
+- Les sections prennent un prop `index` : la page calcule la numérotation (pas de trou quand une section est masquée), voir `src/pages/index.astro`.
+
+### Environnement de dev (à savoir)
+- **Node ≥ 22.23 obligatoire** (Astro 7). Le Node système est en 22.14 : `fnm use 22` (Node 22.23.5 installé avec fnm) avant `pnpm dev` / `pnpm check`.
+- **Ne pas déclencher de fenêtre du pare-feu Windows** : tout serveur de test doit écouter sur `127.0.0.1` uniquement (`astro dev --host 127.0.0.1` ; l'API écoute sur toutes les interfaces par défaut, la lancer avec un `--import` qui force `127.0.0.1` ou ajouter une variable `HOST` à `server/src/index.ts`). Arrêter les serveurs après chaque test.
+- Pas de MongoDB local ni Docker démarré : pour tester, base jetable `mongodb-memory-server` (hors du projet) sur `127.0.0.1:27999`, puis `seed:content` et `seed:user`.
+
 ---
 
 ### Phase 0 — Initialisation

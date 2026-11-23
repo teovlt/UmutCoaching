@@ -82,12 +82,3 @@ export const getSettings = async (): Promise<Settings> => {
     photos: { hero: api.photos?.hero ?? emptyImage, about: api.photos?.about ?? emptyImage },
   };
 };
-
-/** "dès 90 € / mois", "sur devis", or the placeholder while no price is set */
-export const formatPrice = (p: Pick<Programme, "priceFrom" | "priceUnit" | "priceLabel" | "currency">): string => {
-  if (p.priceLabel) return p.priceLabel;
-  if (p.priceFrom === undefined || p.priceFrom === null) return "dès [À CONFIRMER]";
-  const amount = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(p.priceFrom);
-  const symbol = p.currency === "EUR" ? "€" : p.currency;
-  return `dès ${amount} ${symbol}${p.priceUnit ? ` ${p.priceUnit}` : ""}`;
-};

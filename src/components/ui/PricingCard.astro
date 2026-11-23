@@ -1,0 +1,61 @@
+---
+// docs/03-design-system.md §6 PricingCard: like ProgramCard with the price as
+// the headline figure. `featured` (one per grid): graphite border and a
+// "Recommandé" tag with a cobalt square.
+import { priceParts, programmeMeta } from "@/lib/format";
+import type { Programme } from "@/lib/types";
+
+interface Props {
+  programme: Programme;
+  class?: string | undefined;
+}
+
+const { programme: p, class: className } = Astro.props;
+const price = priceParts(p);
+---
+
+<article
+  class:list={["card flex h-full flex-col gap-6 p-6", p.featured && "border-graphite", className]}
+  aria-label={p.featured ? `${p.title} (recommandé)` : undefined}
+>
+  <div class="flex items-start justify-between gap-4">
+    <h3 class="text-h3">{p.title}</h3>
+    {p.featured && (
+      <span class="inline-flex shrink-0 items-center gap-1.5 border border-graphite px-2.5 py-1 font-mono text-micro uppercase">
+        <span class="size-1.75 bg-cobalt-500" aria-hidden="true" />
+        Recommandé
+      </span>
+    )}
+  </div>
+
+  <p class="flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-graphite pt-4" data-metric>
+    {price.kind === "amount" && (
+      <>
+        <span class="font-mono text-label text-mesure uppercase">dès</span>
+        <span class="font-mono text-data-xl font-bold">{price.amount}</span>
+        <span class="font-mono text-data font-bold text-mesure">{price.currency}</span>
+        {price.unit && <span class="font-mono text-label text-mesure">{price.unit}</span>}
+      </>
+    )}
+    {price.kind === "label" && <span class="font-mono text-data font-bold">{price.text}</span>}
+    {price.kind === "unknown" && (
+      <>
+        <span class="font-mono text-label text-mesure uppercase">dès</span>
+        <span class="font-mono text-data font-bold">[À CONFIRMER]</span>
+      </>
+    )}
+  </p>
+
+  <p class="font-mono text-label text-mesure uppercase">{programmeMeta(p)}</p>
+
+  {p.includes.length > 0 && (
+    <ul class="flex flex-col gap-2 text-small">
+      {p.includes.map((item) => (
+        <li class="flex gap-3">
+          <span class="mt-2 size-1.5 shrink-0 bg-graphite" aria-hidden="true" />
+          {item}
+        </li>
+      ))}
+    </ul>
+  )}
+</article>

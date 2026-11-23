@@ -1,16 +1,101 @@
 ---
-// Temporary home page: the real one is built section by section in Phase 4.
+// Home page: docs/02-architecture.md § Accueil, texts from docs/04-contenu.md.
+// Content comes from the API at request time (edited in /admin); with the API
+// down, every section falls back to its placeholders or is left out.
+import AboutShort from "@/components/sections/AboutShort.astro";
+import CtaBand from "@/components/sections/CtaBand.astro";
+import Faq from "@/components/sections/Faq.astro";
+import Hero from "@/components/sections/Hero.astro";
+import Method from "@/components/sections/Method.astro";
+import MetricsBand from "@/components/sections/MetricsBand.astro";
+import PricingPreview from "@/components/sections/PricingPreview.astro";
+import Programs from "@/components/sections/Programs.astro";
+import Results from "@/components/sections/Results.astro";
+import { isPlaceholder } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { site } from "@/data/site";
+import { getFaqs, getProgrammes, getSettings, getTemoignages } from "@/lib/api";
+import { priceText } from "@/lib/format";
+
+const [settings, programmes, temoignages, faqs] = await Promise.all([getSettings(), getProgrammes(), getTemoignages(), getFaqs("accueil")]);
+
+// Sections are numbered 01, 02… in reading order. A section left out (no
+// testimonial, no FAQ…) must not leave a gap in the numbering.
+const shown = [
+  "methode",
+  "programmes",
+  temoignages.length > 0 && "resultats",
+  programmes.length > 0 && "tarifs",
+  "a-propos",
+  faqs.length > 0 && "faq",
+  "cta",
+].filter((id): id is string => Boolean(id));
+const number = (id: string) => String(shown.indexOf(id) + 1).padStart(2, "0");
+
+const description =
+  "Coaching musculation en salle et en ligne : un bilan de départ, un programme ajusté chaque semaine, une progression suivie au kilo près.";
+
+// schema.org: only confirmed values (no placeholder ends up in Google)
+const known = (value: string) => (isPlaceholder(value) ? undefined : value);
+const siteUrl = new URL("/", Astro.site).href;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "@id": `${siteUrl}#coach`,
+    name: "Umut Coaching",
+    alternateName: settings.brand,
+    description,
+    url: siteUrl,
+    // "06 31 …" → "+33631…" (international format expected by schema.org)
+    telephone: known(settings.phone)
+      ?.replace(/[^\d+]/g, "")
+      .replace(/^0/, "+33"),
+    email: known(settings.email),
+    areaServed: known(settings.city),
+    address: known(settings.address) && {
+      "@type": "PostalAddress",
+      streetAddress: settings.address,
+      addressLocality: known(settings.city),
+      addressCountry: "FR",
+    },
+    sameAs: settings.socials.map((s) => s.url).filter(Boolean),
+    founder: { "@type": "Person", name: settings.name },
+    hasOfferCatalog: programmes.length
+      ? {
+          "@type": "OfferCatalog",
+          name: "Programmes",
+          itemListElement: programmes.map((p) => ({
+            "@type": "Offer",
+            itemOffered: { "@type": "Service", name: p.title, description: p.summary || undefined },
+            ...(typeof p.priceFrom === "number" && !p.priceLabel
+              ? { price: p.priceFrom, priceCurrency: p.currency, description: priceText(p) }
+              : {}),
+          })),
+        }
+      : undefined,
+  },
+  ...(faqs.some((f) => !isPlaceholder(f.answer))
+    ? [
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs
+            .filter((f) => !isPlaceholder(f.answer))
+            .map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
+        },
+      ]
+    : []),
+];
 ---
 
-<BaseLayout title={site.brand}>
-  <section class="container-site section flex flex-col gap-6">
-    <p class="section-label">// coach · bodybuilding · data</p>
-    <h1 class="text-h1">{site.tagline}</h1>
-    <p class="text-lead max-w-[62ch] text-mesure">Site en construction. Phase 0 : socle technique et styleguide.</p>
-    <a href="/styleguide" class="font-mono font-bold text-cobalt-500 no-underline">
-      [ voir le styleguide ]
-    </a>
-  </section>
+<BaseLayout title={settings.brand} description={description} jsonLd={jsonLd}>
+  <Hero settings={settings} />
+  <MetricsBand metrics={settings.metrics} />
+  <Method index={number("methode")} />
+  <Programs programmes={programmes} index={number("programmes")} />
+  <Results temoignages={temoignages} index={number("resultats")} />
+  <PricingPreview programmes={programmes} index={number("tarifs")} />
+  <AboutShort settings={settings} index={number("a-propos")} />
+  <Faq faqs={faqs} index={number("faq")} />
+  <CtaBand index={number("cta")} />
 </BaseLayout>
