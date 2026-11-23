@@ -62,10 +62,22 @@ export const prerender = true;
     return b;
   };
 
+  // The list is redrawn after each change: put the keyboard back on the
+  // message's "Marquer lu" button, or on the status line if it is gone
+  const focusMessage = (id: string | undefined) => {
+    const target = id ? list.querySelector<HTMLElement>(`li[data-id="${CSS.escape(id)}"] [data-action="toggle"]`) : null;
+    if (target) target.focus();
+    else {
+      status.tabIndex = -1;
+      status.focus();
+    }
+  };
+
   const render = () => {
     list.replaceChildren();
     for (const m of messages) {
       const li = el("li", "flex flex-col gap-3 border-b border-line py-6");
+      li.dataset.id = m.id;
       const date = new Date(m.createdAt).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" });
 
       const head = el("div", "flex flex-wrap items-center gap-x-4 gap-y-1");
@@ -92,6 +104,7 @@ export const prerender = true;
           const updated = await api<Message>(`/messages/${m.id}`, { method: "PATCH", json: { read: !m.read } });
           messages = messages.map((x) => (x.id === m.id ? updated : x));
           render();
+          focusMessage(m.id);
         } catch (err) {
           status.textContent = errorText(err);
         }
@@ -101,12 +114,15 @@ export const prerender = true;
         if (!confirm(`Supprimer le message de ${m.name} ? C'est définitif.`)) return;
         try {
           await api(`/messages/${m.id}`, { method: "DELETE" });
+          const index = messages.findIndex((x) => x.id === m.id);
           messages = messages.filter((x) => x.id !== m.id);
           render();
+          focusMessage(messages[Math.min(index, messages.length - 1)]?.id);
         } catch (err) {
           status.textContent = errorText(err);
         }
       });
+      toggle.dataset.action = "toggle";
       actions.append(toggle, remove);
 
       li.append(head, contact, body, actions);

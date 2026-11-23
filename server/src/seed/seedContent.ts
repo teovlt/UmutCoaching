@@ -17,11 +17,11 @@ const programmes = [
   {
     slug: "coaching-individuel",
     title: "Coaching individuel",
-    summary: "Séances 1:1 en salle : technique, charges et progression suivies de près.",
+    summary: "Séances 1:1 en salle : technique, charges et progression suivies de près.",
     audience: "Perte ou prise de poids, prise de muscle, gain de force, posture.",
     format: "salle",
     duration: "45–75 min",
-    includes: ["Première séance : mensurations détaillées et objectifs", "Programme écrit et ajusté chaque semaine"],
+    includes: ["Première séance : mensurations détaillées et objectifs", "Programme écrit et ajusté chaque semaine"],
     order: 0,
   },
   {
@@ -58,27 +58,27 @@ const programmes = [
 
 const faqs = [
   {
-    question: "Je débute complètement, c'est pour moi ?",
+    question: "Je débute complètement, c'est pour moi ?",
     answer: "Oui. La première séance sert justement à partir de votre niveau réel.",
   },
   {
-    question: "Combien de séances par semaine ?",
+    question: "Combien de séances par semaine ?",
     answer: "En général 1 à 2 séances avec moi, selon votre objectif et votre emploi du temps.",
   },
   {
-    question: "Comment se passe le coaching en ligne ?",
+    question: "Comment se passe le coaching en ligne ?",
     answer: "Votre programme est dans un Google Sheets, on échange sur WhatsApp, bilan chaque dimanche, réponse sous 24 h.",
   },
   {
-    question: "Faut-il un abonnement à une salle ?",
-    answer: "[À CONFIRMER : salle partenaire / accès inclus ?]",
+    question: "Faut-il un abonnement à une salle ?",
+    answer: "[À CONFIRMER : salle partenaire / accès inclus ?]",
   },
   {
-    question: "Puis-je annuler une séance ?",
+    question: "Puis-je annuler une séance ?",
     answer: "Oui, gratuitement jusqu'à 24 h avant. Au-delà, la séance est due.",
   },
   {
-    question: "Comment se passe la première séance ?",
+    question: "Comment se passe la première séance ?",
     answer: "Mensurations détaillées, échange sur vos objectifs et votre historique, photo de départ si vous le souhaitez.",
   },
 ];

@@ -42,6 +42,15 @@ const defaults: Record<CollectionKey, Record<string, unknown>> = {
   temoignages: { consent: false, visible: true },
 };
 
+const slugify = (text: string) =>
+  text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/œ/g, "oe")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 const iconButton = (label: string, path: string) => {
   const button = document.createElement("button");
   button.type = "button";
@@ -91,6 +100,7 @@ export const mountCollection = (root: HTMLElement) => {
     items.forEach((item, index) => {
       const { title, meta } = describe[key](item);
       const li = document.createElement("li");
+      li.dataset.id = item.id;
       li.className = "flex flex-col gap-4 border-b border-line py-5 lg:flex-row lg:items-center lg:justify-between";
 
       const text = document.createElement("div");
@@ -119,8 +129,8 @@ export const mountCollection = (root: HTMLElement) => {
       const down = iconButton(`Descendre « ${title} »`, "M12 5v14M6 13l6 6 6-6");
       up.disabled = index === 0;
       down.disabled = index === items.length - 1;
-      up.addEventListener("click", () => move(index, -1, up));
-      down.addEventListener("click", () => move(index, 1, down));
+      up.addEventListener("click", () => move(index, -1));
+      down.addEventListener("click", () => move(index, 1));
 
       const toggle = textButton(
         item.visible === false ? "Afficher" : "Masquer",
@@ -132,10 +142,25 @@ export const mountCollection = (root: HTMLElement) => {
       const remove = textButton("Supprimer", `Supprimer « ${title} »`);
       remove.addEventListener("click", () => removeItem(item, title));
 
+      up.dataset.action = "up";
+      down.dataset.action = "down";
+      toggle.dataset.action = "toggle";
+      edit.dataset.action = "edit";
+      remove.dataset.action = "remove";
       actions.append(up, down, toggle, edit, remove);
       li.append(text, actions);
       list.append(li);
     });
+  };
+
+  // Every change redraws the list: put the keyboard back on the same button
+  // of the same row (or its "Modifier" if that one is now disabled)
+  const focusRow = (id: string, action: string) => {
+    const row = list.querySelector<HTMLElement>(`li[data-id="${CSS.escape(id)}"]`);
+    const target =
+      row?.querySelector<HTMLButtonElement>(`[data-action="${action}"]:not(:disabled)`) ??
+      row?.querySelector<HTMLButtonElement>('[data-action="edit"]');
+    target?.focus();
   };
 
   const load = async () => {
@@ -148,7 +173,7 @@ export const mountCollection = (root: HTMLElement) => {
     }
   };
 
-  const move = async (index: number, delta: number, button: HTMLButtonElement) => {
+  const move = async (index: number, delta: number) => {
     const next = [...items];
     const [moved] = next.splice(index, 1);
     next.splice(index + delta, 0, moved as Item);
@@ -156,9 +181,7 @@ export const mountCollection = (root: HTMLElement) => {
       items = await api<Item[]>(`/${key}/reorder`, { method: "PUT", json: { ids: next.map((item) => item.id) } });
       render();
       say("Ordre enregistré.");
-      // Keep the keyboard on the moved row's same button
-      const label = button.getAttribute("aria-label");
-      list.querySelector<HTMLButtonElement>(`button[aria-label="${CSS.escape(label ?? "")}"]:not(:disabled)`)?.focus();
+      focusRow((moved as Item).id, delta < 0 ? "up" : "down");
     } catch (err) {
       say(errorText(err));
     }
@@ -169,6 +192,7 @@ export const mountCollection = (root: HTMLElement) => {
       const updated = await api<Item>(`/${key}/${item.id}`, { method: "PUT", json: { visible: item.visible === false } });
       items = items.map((i) => (i.id === item.id ? updated : i));
       render();
+      focusRow(item.id, "toggle");
       say(updated.visible === false ? "Masqué sur le site." : "Affiché sur le site.");
     } catch (err) {
       say(errorText(err));
@@ -179,8 +203,13 @@ export const mountCollection = (root: HTMLElement) => {
     if (!confirm(`Supprimer « ${title} » ? C'est définitif. Pour le retirer du site sans le perdre, utilisez « Masquer ».`)) return;
     try {
       await api(`/${key}/${item.id}`, { method: "DELETE" });
+      const index = items.findIndex((i) => i.id === item.id);
       items = items.filter((i) => i.id !== item.id);
       render();
+      // Next row (or the previous one if it was the last), else "Ajouter"
+      const neighbour = items[Math.min(index, items.length - 1)];
+      if (neighbour) focusRow(neighbour.id, "edit");
+      else root.querySelector<HTMLElement>("[data-add]")?.focus();
       say("Supprimé.");
     } catch (err) {
       say(errorText(err));
@@ -199,7 +228,10 @@ export const mountCollection = (root: HTMLElement) => {
 
   const closeEditor = () => dialog.close();
 
-  dialog.addEventListener("close", () => opener?.focus());
+  // After a save the list is redrawn and the opener is gone: focusRow takes over
+  dialog.addEventListener("close", () => {
+    if (opener?.isConnected) opener.focus();
+  });
   for (const button of root.querySelectorAll("[data-close]")) button.addEventListener("click", closeEditor);
   root.querySelector<HTMLElement>("[data-add]")?.addEventListener("click", (event) => openEditor(null, event.currentTarget as HTMLElement));
   setupImages(form);
@@ -210,17 +242,24 @@ export const mountCollection = (root: HTMLElement) => {
     // Native checks (required fields, e-mail…), shown by the browser
     if (!form.reportValidity()) return;
     const data = readForm(form, fields);
+    // Umut doesn't have to know URL rules: "Coaching Pré-natal" → coaching-pre-natal
+    if (key === "programmes") data.slug = slugify(String(data.slug || data.title || ""));
     const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     if (submit) submit.disabled = true;
     try {
+      let saved: Item;
       if (editing) {
-        const updated = await api<Item>(`/${key}/${editing.id}`, { method: "PUT", json: data });
-        items = items.map((i) => (i.id === updated.id ? updated : i));
+        saved = await api<Item>(`/${key}/${editing.id}`, { method: "PUT", json: data });
+        items = items.map((i) => (i.id === saved.id ? saved : i));
       } else {
-        items = [...items, await api<Item>(`/${key}`, { method: "POST", json: data })];
+        saved = await api<Item>(`/${key}`, { method: "POST", json: data });
+        items = [...items, saved];
       }
+      // The dialog's close event fires later: don't let it send focus back to the opener
+      opener = null;
       closeEditor();
       render();
+      focusRow(saved.id, "edit");
       say("Enregistré. Le site est à jour.");
     } catch (err) {
       formError.textContent = errorText(err);
