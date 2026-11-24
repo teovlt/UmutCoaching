@@ -163,7 +163,8 @@ Voir `02-architecture.md` § Header. Footer `.on-dark`, 4 colonnes desktop, file
 - Photos d'illustration (Unsplash, `src/data/stock.ts`) : toujours en traitement labo `grayscale contrast-110`, via `<Image>` d'`astro:assets`.
   Les photos d'Umut (envoyées dans `/admin`) restent telles quelles.
 - Photos d'Umut : `ui/UmutPicture.astro` affiche celle envoyée dans `/admin` (telle quelle), sinon sa photo par défaut
-  livrée avec le site (`src/data/umut.ts`, `src/assets/images/umut/`), en traitement labo `grayscale contrast-110`.
+  livrée avec le site (`src/data/umut.ts`, `src/assets/images/umut/`), **en couleur** comme celles de l'admin
+  (le N&B est réservé aux illustrations Unsplash, ce qui distingue le vrai coach des illustrations).
   Jamais de photo d'illustration à sa place.
 - `ui/ProgrammePhoto.astro` : photo 3:2 d'une offre (celle de l'admin, sinon la photo d'Umut associée à son format), en tête de `ProgramCard` et sur la fiche programme.
 

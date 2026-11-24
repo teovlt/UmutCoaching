@@ -1,8 +1,8 @@
 ---
 // One of Umut's photos: the one uploaded in /admin › Photos if any (already
 // WebP from the API, D19, shown as is), else the bundled default from
-// src/data/umut.ts, optimised by astro:assets in the "labo" black and white
-// treatment (D23).
+// src/data/umut.ts, optimised by astro:assets. Both in colour (D23): black
+// and white is kept for the stock illustrations.
 import { Image } from "astro:assets";
 import type { UmutPhoto } from "@/data/umut";
 import type { Image as Uploaded } from "@/lib/types";
@@ -52,6 +52,6 @@ const eager = priority ? "eager" : loading;
     sizes={sizes}
     loading={eager}
     fetchpriority={priority ? "high" : undefined}
-    class:list={[classes, "grayscale contrast-110"]}
+    class:list={classes}
   />
 )}

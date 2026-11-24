@@ -1,7 +1,7 @@
 ---
 // A programme's 3:2 picture: the photo uploaded in /admin if any (already
 // WebP from the API, D19), else Umut's default photo for its format
-// (src/data/umut.ts), optimised by astro:assets and shown in black and white.
+// (src/data/umut.ts), optimised by astro:assets, in colour.
 import { Image } from "astro:assets";
 import { programmeDefault } from "@/data/umut";
 import type { Programme } from "@/lib/types";
@@ -33,6 +33,6 @@ const classes = ["aspect-[3/2] w-full object-cover", className];
     widths={[480, 800, 1200]}
     sizes={sizes}
     loading={loading}
-    class:list={[classes, "grayscale contrast-110"]}
+    class:list={classes}
   />
 )}

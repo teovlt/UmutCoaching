@@ -1,8 +1,8 @@
 // Umut's own photos, sent by him (24/11/2026) and bundled with the site as
 // defaults: a photo uploaded in /admin › Photos always takes their place.
 // Cropped, resized to 1600 px max and stripped of metadata (EXIF/GPS) before
-// being committed. Shown in the "labo" black and white treatment, like the
-// stock photos (docs/03-design-system.md §7, docs/05-decisions.md D23).
+// being committed. Shown in colour, like the photos uploaded in /admin; only
+// the stock illustrations are black and white (docs/05-decisions.md D23).
 import type { ImageMetadata } from "astro";
 import bilanPhoto from "@/assets/images/umut/bilan-photo.jpg";
 import dosSalle from "@/assets/images/umut/dos-salle.jpg";
