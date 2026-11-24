@@ -7,6 +7,6 @@ server
 docs
 design-reference
 Dockerfile
-docker-compose.yml
+compose.yaml
 nginx.conf
 *.md

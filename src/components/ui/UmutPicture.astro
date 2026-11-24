@@ -1,0 +1,57 @@
+---
+// One of Umut's photos: the one uploaded in /admin › Photos if any (already
+// WebP from the API, D19, shown as is), else the bundled default from
+// src/data/umut.ts, optimised by astro:assets in the "labo" black and white
+// treatment (D23).
+import { Image } from "astro:assets";
+import type { UmutPhoto } from "@/data/umut";
+import type { Image as Uploaded } from "@/lib/types";
+
+interface Props {
+  /** Photo from the API ({ url: "" } when none was uploaded) */
+  uploaded?: Uploaded | undefined;
+  fallback: UmutPhoto;
+  ratio?: "4/5" | "3/2" | undefined;
+  sizes?: string | undefined;
+  loading?: "lazy" | "eager" | undefined;
+  /** For the hero, the page's largest image */
+  priority?: boolean | undefined;
+  class?: string | undefined;
+}
+
+const {
+  uploaded,
+  fallback,
+  ratio = "4/5",
+  sizes = "(min-width: 1024px) 40vw, 100vw",
+  loading = "lazy",
+  priority = false,
+  class: className,
+} = Astro.props;
+const portrait = ratio === "4/5";
+const classes = [portrait ? "aspect-[4/5]" : "aspect-[3/2]", "w-full object-cover", className];
+const eager = priority ? "eager" : loading;
+---
+
+{uploaded?.url ? (
+  <img
+    src={uploaded.url}
+    alt={uploaded.alt || fallback.alt}
+    width={portrait ? 800 : 900}
+    height={portrait ? 1000 : 600}
+    loading={eager}
+    fetchpriority={priority ? "high" : undefined}
+    decoding="async"
+    class:list={classes}
+  />
+) : (
+  <Image
+    src={fallback.src}
+    alt={fallback.alt}
+    widths={[480, 800, 1200]}
+    sizes={sizes}
+    loading={eager}
+    fetchpriority={priority ? "high" : undefined}
+    class:list={[classes, "grayscale contrast-110"]}
+  />
+)}

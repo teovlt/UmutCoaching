@@ -95,7 +95,7 @@ Liste dans docs/05-decisions.md tous les placeholders encore présents (grep "À
 
 ### Phase 7 — Déploiement
 ```
-Dokploy : docker-compose.yml (nginx → web + api, volume uploads) déjà en place depuis la Phase 0.
+Dokploy : compose.yaml (nginx → web + api, volume uploads) déjà en place depuis la Phase 0.
 Ajouter : redirection www/non-www selon le domaine, en-têtes de sécurité (CSP), sauvegardes MongoDB,
 formulaire branché. Rédige un guide d'utilisation de /admin pour Umut.
 ```

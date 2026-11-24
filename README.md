@@ -37,16 +37,35 @@ pnpm dev               # http://localhost:4321 · styleguide : /styleguide
 | `pnpm check`  | vérification des types (`astro check`)   |
 | `pnpm format` | Prettier sur tout le projet              |
 
-## Déploiement (Dokploy)
+## Déploiement sur le VPS
 
-1. Créer une application **Docker Compose** pointant sur ce dépôt (`docker-compose.yml`).
-2. Créer une base MongoDB (dans Dokploy ou ailleurs) et renseigner dans l'onglet _Environment_ :
-   `SITE_URL`, `MONGODB_URI`, `JWT_SECRET` (voir `.env.example`).
-3. Attacher le domaine au service **`nginx`**, port **80**.
-4. Après le premier déploiement, créer le compte admin :
+### Avec Dokploy (sous-domaine)
+
+1. **DNS** : un enregistrement `A` (ou `CNAME`) du sous-domaine, par ex. `umut.mondomaine.fr`, vers l'IP du VPS.
+2. **Base** : créer une base **Mongo** dans le même projet Dokploy (utiliser son URI interne) ou une base Atlas (autoriser l'IP du VPS dans _Network Access_).
+3. Application **Compose** pointant sur ce dépôt (branche `main`, fichier **`compose.yaml`**).
+4. Onglet **Environment** : coller `.env.example` et remplir `SITE_URL` (l'URL du sous-domaine, en `https://`), `MONGODB_URI`, `JWT_SECRET` (`openssl rand -hex 32`).
+5. Onglet **Domains** : le sous-domaine, **Service Name = `nginx`**, **Container Port = `80`**, HTTPS activé (Let's Encrypt).
+6. Déployer. `nginx` est branché sur le réseau `dokploy-network` (déclaré dans `compose.yaml`) pour que Traefik le joigne — sans lui, « Bad Gateway ». `web` et `api` restent sur le réseau interne de la stack.
+7. Après le premier déploiement, dans l'onglet **Terminal** du conteneur `api` (ou en SSH, `docker compose exec`) :
    ```bash
-   docker compose exec -it api node dist/seed/seedUser.js
-   docker compose exec api node dist/seed/seedContent.js
+   node dist/seed/seedUser.js      # crée le compte admin (interactif)
+   node dist/seed/seedContent.js   # contenu de départ, sans écraser l'existant
    ```
 
-Les photos envoyées depuis l'admin sont stockées dans le volume `uploads`.
+`SITE_URL` est lue au build : après l'avoir changée, redéployer. Les photos envoyées depuis l'admin sont stockées dans le volume `uploads` (conservé entre les déploiements).
+
+**Dépannage**
+
+- `Bad Gateway` : le domaine n'est pas rattaché au service `nginx` / port `80`, ou l'API ne joint pas MongoDB (voir les logs du service `api`).
+- `querySrv ESERVFAIL` / `ETIMEOUT` : le DNS du VPS ne résout pas les URI `mongodb+srv://` ; utiliser la forme standard `mongodb://hote-00:27017,hote-01:27017,…/umut?ssl=true&replicaSet=…&authSource=admin` (Atlas › _Connect › Drivers_, ancienne version du driver Node).
+
+### Sans Dokploy
+
+Retirer `dokploy-network` de `compose.yaml` (service `nginx` et section `networks`), publier le port de `nginx` (`ports: ["127.0.0.1:8080:80"]`), créer `.env` à partir de `.env.example`, puis :
+
+```bash
+docker compose up -d --build
+```
+
+et placer un reverse proxy HTTPS devant (Caddy : `reverse_proxy 127.0.0.1:8080`). Dans ce cas, un seul proxy est devant nginx : `TRUST_PROXY: 2` reste correct.

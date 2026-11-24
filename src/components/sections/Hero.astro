@@ -1,9 +1,10 @@
 ---
 // docs/02-architecture.md § Accueil 00 Hero, texts from docs/04-contenu.md.
-// Right column: Umut's photo once uploaded in /admin › Photos, otherwise a
-// visible placeholder frame (the illustrative ProgressChart is on /methode).
+// Right column: Umut's photo (the one uploaded in /admin › Photos, else the
+// bundled default). The illustrative ProgressChart is on /methode.
 import Button from "@/components/ui/Button.astro";
-import PhotoPlaceholder from "@/components/ui/PhotoPlaceholder.astro";
+import UmutPicture from "@/components/ui/UmutPicture.astro";
+import { umut } from "@/data/umut";
 import type { Settings } from "@/lib/api";
 
 interface Props {
@@ -11,7 +12,6 @@ interface Props {
 }
 
 const { settings } = Astro.props;
-const photo = settings.photos.hero;
 ---
 
 <section class="container-site grid items-center gap-12 py-12 lg:grid-cols-12 lg:gap-8 lg:py-20" aria-labelledby="hero-title">
@@ -38,19 +38,6 @@ const photo = settings.photos.hero;
   </div>
 
   <div class="lg:col-span-5">
-    {photo.url ? (
-      <img
-        src={photo.url}
-        alt={photo.alt || "Umut, coach musculation"}
-        width="800"
-        height="1000"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        class="aspect-[4/5] w-full border border-line object-cover"
-      />
-    ) : (
-      <PhotoPlaceholder label="photo d'Umut en salle" />
-    )}
+    <UmutPicture uploaded={settings.photos.hero} fallback={umut.hero} priority class="border border-line" />
   </div>
 </section>

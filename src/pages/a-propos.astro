@@ -4,9 +4,11 @@
 import CtaBand from "@/components/sections/CtaBand.astro";
 import PageHeader from "@/components/sections/PageHeader.astro";
 import Button from "@/components/ui/Button.astro";
-import PhotoPlaceholder from "@/components/ui/PhotoPlaceholder.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import Tag from "@/components/ui/Tag.astro";
+import UmutPicture from "@/components/ui/UmutPicture.astro";
+import { umut, umutGallery } from "@/data/umut";
+import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSettings } from "@/lib/api";
 
@@ -32,19 +34,13 @@ const facts = [
 
   <section class="section" aria-labelledby="parcours-title">
     <div class="container-site grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
-      {photos.about.url ? (
-        <img
-          src={photos.about.url}
-          alt={photos.about.alt || "Umut à la salle"}
-          width="800"
-          height="1000"
-          loading="eager"
-          decoding="async"
-          class="aspect-[4/5] w-full border border-line object-cover sm:max-w-sm lg:col-span-5 lg:max-w-none"
-        />
-      ) : (
-        <PhotoPlaceholder label="portrait d'Umut" class="sm:max-w-sm lg:col-span-5 lg:max-w-none" />
-      )}
+      <UmutPicture
+        uploaded={photos.about}
+        fallback={umut.portrait}
+        loading="eager"
+        sizes="(min-width: 1024px) 40vw, (min-width: 640px) 384px, 100vw"
+        class="border border-line sm:max-w-sm lg:col-span-5 lg:max-w-none"
+      />
       <div class="flex flex-col gap-6 lg:col-span-6 lg:col-start-7">
         <SectionLabel index="01" label="parcours" />
         <h2 id="parcours-title" class="sr-only">
@@ -64,10 +60,33 @@ const facts = [
     </div>
   </section>
 
+  <section class="section border-t border-line" aria-labelledby="salle-title">
+    <div class="container-site flex flex-col gap-8">
+      <SectionLabel index="02" label="en salle" />
+      <h2 id="salle-title" class="sr-only">
+        En salle
+      </h2>
+      <ul class="grid gap-4 sm:grid-cols-3">
+        {umutGallery.map((photo) => (
+          <li>
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              widths={[400, 640, 900]}
+              sizes="(min-width: 640px) 33vw, 100vw"
+              loading="lazy"
+              class="aspect-[4/5] w-full border border-line object-cover grayscale contrast-110"
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
   <section class="section border-y border-line bg-white" aria-labelledby="fiche-title">
     <div class="container-site grid gap-8 lg:grid-cols-12">
       <div class="flex flex-col gap-4 lg:col-span-5">
-        <SectionLabel index="02" label="fiche" />
+        <SectionLabel index="03" label="fiche" />
         <h2 id="fiche-title" class="text-h2">
           En bref.
         </h2>
@@ -85,7 +104,7 @@ const facts = [
 
   <section class="section" aria-labelledby="methode-lien-title">
     <div class="container-site flex flex-col gap-6">
-      <SectionLabel index="03" label="méthode" />
+      <SectionLabel index="04" label="méthode" />
       <h2 id="methode-lien-title" class="max-w-[22ch] text-h2">
         Mesurer. Ajuster. Progresser.
       </h2>
@@ -100,5 +119,5 @@ const facts = [
     </div>
   </section>
 
-  <CtaBand index="04" />
+  <CtaBand index="05" />
 </BaseLayout>

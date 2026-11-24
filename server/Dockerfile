@@ -13,7 +13,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 COPY --from=builder /app/dist ./dist
 ENV NODE_ENV=production
-# Uploaded photos live in a volume mounted here (see docker-compose.yml)
+# Uploaded photos live in a volume mounted here (see compose.yaml)
 RUN mkdir -p /app/uploads && chown node:node /app/uploads
 USER node
 EXPOSE 4000

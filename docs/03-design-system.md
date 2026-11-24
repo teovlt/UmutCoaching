@@ -162,8 +162,10 @@ Voir `02-architecture.md` § Header. Footer `.on-dark`, 4 colonnes desktop, file
 - Formats : portrait 4:5 (hero, à propos), paysage 3:2 (programmes). Toujours `alt` descriptif.
 - Photos d'illustration (Unsplash, `src/data/stock.ts`) : toujours en traitement labo `grayscale contrast-110`, via `<Image>` d'`astro:assets`.
   Les photos d'Umut (envoyées dans `/admin`) restent telles quelles.
-- Photo d'Umut manquante : `ui/PhotoPlaceholder.astro` (cadre `bg-subtle` + filet `line`, icône appareil photo, label mono « photo d'Umut… · [À CONFIRMER] »). Jamais de photo d'illustration à sa place.
-- `ui/ProgrammePhoto.astro` : photo 3:2 d'une offre (celle de l'admin, sinon celle d'illustration de son format), en tête de `ProgramCard` et sur la fiche programme.
+- Photos d'Umut : `ui/UmutPicture.astro` affiche celle envoyée dans `/admin` (telle quelle), sinon sa photo par défaut
+  livrée avec le site (`src/data/umut.ts`, `src/assets/images/umut/`), en traitement labo `grayscale contrast-110`.
+  Jamais de photo d'illustration à sa place.
+- `ui/ProgrammePhoto.astro` : photo 3:2 d'une offre (celle de l'admin, sinon la photo d'Umut associée à son format), en tête de `ProgramCard` et sur la fiche programme.
 
 ## 8. Mouvement
 - Durées : 120 ms (hover couleur), 200 ms (transform), 1,2 s (tracé de courbe).

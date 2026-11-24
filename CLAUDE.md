@@ -25,7 +25,7 @@ tout ce qui se mesure est en monospace. Promesse : « Mesurer. Ajuster. Progress
   `src/data/site.ts` garde les valeurs par défaut / placeholders si l'API ne répond pas.
 - Images : `astro:assets` (`<Image />`, AVIF/WebP, dimensions explicites)
 - SEO : `@astrojs/sitemap`, balises meta/OG par page, JSON-LD (voir architecture)
-- Hébergement : **VPS avec Dokploy**, `docker-compose.yml` (services `nginx` → `web` + `api`). Voir `docs/05-decisions.md`
+- Hébergement : **VPS avec Dokploy**, `compose.yaml` (services `nginx` → `web` + `api`). Voir `docs/05-decisions.md`
 
 ## Commandes
 Gestionnaire de paquets : **pnpm** (version épinglée dans `packageManager`).
@@ -56,7 +56,7 @@ src/
     global.css      base + classes de marque (.section-label, .card, .on-dark…)
 public/             favicon.svg, og-image, robots.txt
 server/             API Express + MongoDB (models/, routes/, seed/)
-Dockerfile, server/Dockerfile, docker-compose.yml, nginx.conf   déploiement Dokploy
+Dockerfile, server/Dockerfile, compose.yaml, nginx.conf   déploiement Dokploy
 ```
 
 ## Règles absolues (design)
