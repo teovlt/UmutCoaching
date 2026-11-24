@@ -3,7 +3,8 @@
 // Rendered as a <p> by default; pass `as="h2"` when it titles a section that
 // has no other heading.
 interface Props {
-  index: string;
+  /** Omitted on pages outside the numbered navigation (legal pages) */
+  index?: string | undefined;
   label: string;
   as?: "p" | "h2" | "h3" | "span" | undefined;
   id?: string | undefined;
@@ -14,5 +15,5 @@ const { index, label, as: Element = "p", id, class: className } = Astro.props;
 ---
 
 <Element id={id} class:list={["section-label", className]}>
-  {index} / {label}
+  {index ? `${index} / ${label}` : label}
 </Element>

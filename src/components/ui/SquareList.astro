@@ -1,0 +1,26 @@
+---
+// "Ce qui est inclus": bullets as small squares, cobalt for a programme's
+// highlights (docs/02-architecture.md § /programmes/[slug]), graphite elsewhere.
+interface Props {
+  items: string[];
+  tone?: "cobalt" | "graphite" | undefined;
+  class?: string | undefined;
+}
+
+const { items, tone = "graphite", class: className } = Astro.props;
+---
+
+<ul class:list={["flex flex-col gap-3", className]}>
+  {items.map((item) => (
+    <li class="flex gap-3">
+      <span
+        class:list={[
+          "mt-2.5 size-1.75 shrink-0",
+          tone === "cobalt" ? "bg-cobalt-500 on-dark:bg-cobalt-400" : "bg-graphite on-dark:bg-white",
+        ]}
+        aria-hidden="true"
+      />
+      <span>{item}</span>
+    </li>
+  ))}
+</ul>

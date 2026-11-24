@@ -1,26 +1,22 @@
 ---
 // docs/02-architecture.md § Accueil 05: prices of the visible programmes and
-// the conditions Umut confirmed (docs/04-contenu.md § Tarifs). VAT stays a
-// placeholder until his legal status is known (Q16).
+// the conditions edited in /admin (Infos du site; VAT in Mentions légales).
 import Button from "@/components/ui/Button.astro";
 import PricingCard from "@/components/ui/PricingCard.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
+import type { Settings } from "@/lib/api";
+import { pricingConditions } from "@/lib/format";
 import type { Programme } from "@/lib/types";
 
 interface Props {
   /** Section number, given by the page: "02" */
   index: string;
   programmes: Programme[];
+  settings: Settings;
 }
 
-const { programmes, index } = Astro.props;
-
-const conditions = [
-  "Bilan de départ inclus dans les offres",
-  "Annulation gratuite jusqu'à 24 h avant, sinon la séance est due",
-  "Paiement en espèces ou par virement",
-  "TVA : [À CONFIRMER]",
-];
+const { programmes, settings, index } = Astro.props;
+const conditions = pricingConditions(settings);
 ---
 
 {programmes.length > 0 && (

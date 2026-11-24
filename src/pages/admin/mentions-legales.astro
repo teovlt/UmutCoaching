@@ -1,0 +1,14 @@
+---
+import SettingsEditor from "@/components/admin/SettingsEditor.astro";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+
+export const prerender = true;
+---
+
+<AdminLayout title="Mentions légales">
+  <SettingsEditor
+    section="legal"
+    title="Mentions légales"
+    intro="Informations obligatoires affichées sur /mentions-legales. Un champ vide s'affiche « [À CONFIRMER] » sur le site."
+  />
+</AdminLayout>

@@ -1,5 +1,6 @@
 // Display helpers shared by the public pages.
-import type { Programme, ProgrammeFormat } from "./types";
+import { isPlaceholder } from "@/data/site";
+import type { Legal, Programme, ProgrammeFormat } from "./types";
 
 export const formatLabels: Record<ProgrammeFormat, string> = {
   salle: "en salle",
@@ -35,3 +36,9 @@ export const priceText = (p: Pick<Programme, "priceFrom" | "priceUnit" | "priceL
   if (parts.kind === "unknown") return `dès${NBSP}[À CONFIRMER]`;
   return `dès${NBSP}${parts.amount}${NBSP}${parts.currency}${parts.unit ? `${NBSP}${parts.unit}` : ""}`;
 };
+
+/** Conditions under the prices, VAT last: "TVA : [À CONFIRMER]" until the legal status is known (Q16) */
+export const pricingConditions = (s: { pricingTerms: string[]; legal: Pick<Legal, "vat"> }): string[] => [
+  ...s.pricingTerms,
+  isPlaceholder(s.legal.vat) ? "TVA : [À CONFIRMER]" : s.legal.vat,
+];

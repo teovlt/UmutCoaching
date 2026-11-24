@@ -1,0 +1,28 @@
+---
+// docs/02-architecture.md § Pages internes, gabarit commun: section label,
+// the page's only <h1>, a lead paragraph, then an optional slot (CTA, meta).
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+
+interface Props {
+  /** "02" — matches the main navigation's numbering; none on legal pages */
+  index?: string | undefined;
+  label: string;
+  title: string;
+  lead?: string | undefined;
+}
+
+const { index, label, title, lead } = Astro.props;
+---
+
+<header class="border-b border-line bg-white">
+  <div class="container-site flex flex-col gap-6 py-12 lg:py-20">
+    <SectionLabel index={index} label={label} />
+    <h1 class="max-w-[20ch] text-h1">{title}</h1>
+    {lead && <p class="max-w-[58ch] text-lead text-mesure">{lead}</p>}
+    {Astro.slots.has("default") && (
+      <div class="pt-2">
+        <slot />
+      </div>
+    )}
+  </div>
+</header>

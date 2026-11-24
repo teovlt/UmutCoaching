@@ -1,0 +1,72 @@
+---
+// /confidentialite — RGPD (France, D13). Describes what the site really
+// does: a contact form stored by the API, no tracking cookie, fonts served by
+// the site itself. Retention and host stay [À CONFIRMER] until decided.
+import LegalSection from "@/components/sections/LegalSection.astro";
+import PageHeader from "@/components/sections/PageHeader.astro";
+import { isPlaceholder } from "@/data/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getSettings } from "@/lib/api";
+
+const settings = await getSettings();
+const { legal } = settings;
+const emailHref = isPlaceholder(settings.email) ? undefined : `mailto:${settings.email}`;
+---
+
+<BaseLayout
+  title="Confidentialité"
+  description="Politique de confidentialité du site umut. : données du formulaire de contact, durée de conservation, cookies et vos droits (RGPD)."
+>
+  <PageHeader
+    label="confidentialité"
+    title="Confidentialité."
+    lead="Ce site collecte le minimum : ce que vous écrivez dans le formulaire de contact, pour vous répondre. Aucun cookie de mesure ni de publicité."
+  />
+
+  <div class="section">
+    <div class="container-site">
+      <LegalSection
+        index="01"
+        id="responsable"
+        title="Responsable du traitement"
+        items={[
+          { label: "Nom", value: legal.name },
+          { label: "Contact", value: settings.email, href: emailHref, mono: true },
+        ]}
+      />
+      <LegalSection
+        index="02"
+        id="formulaire"
+        title="Formulaire de contact"
+        items={[
+          { label: "Données", value: "Nom, e-mail, téléphone (facultatif), objectif (facultatif), message" },
+          { label: "Finalité", value: "Répondre à votre demande et organiser une éventuelle première séance" },
+          { label: "Base légale", value: "Mesures précontractuelles prises à votre demande (art. 6.1.b du RGPD)" },
+          { label: "Destinataire", value: `${settings.name}, seul. Les données ne sont ni vendues ni transmises à des tiers.` },
+          { label: "Stockage", value: legal.host },
+          { label: "Durée de conservation", value: "[À CONFIRMER] (la CNIL recommande 3 ans au plus après le dernier contact)" },
+        ]}
+      />
+      <LegalSection index="03" id="cookies" title="Cookies et mesure d'audience">
+        <p>
+          Ce site ne dépose aucun cookie de mesure d'audience ni de publicité. Les polices sont servies par le site lui-même : aucune donnée
+          n'est envoyée à Google Fonts.
+        </p>
+        <p>Les liens vers Instagram, TikTok ou WhatsApp mènent à des services tiers, soumis à leurs propres règles.</p>
+      </LegalSection>
+      <LegalSection index="04" id="droits" title="Vos droits">
+        <p>
+          Vous pouvez demander l'accès à vos données, leur rectification, leur effacement, leur portabilité, ou vous opposer à leur
+          traitement, en écrivant à {emailHref ? <a href={emailHref}>{settings.email}</a> : settings.email}.
+        </p>
+        <p>
+          Si la réponse ne vous satisfait pas, vous pouvez adresser une réclamation à la CNIL (
+          <a href="https://www.cnil.fr/fr/plaintes" rel="noopener">
+            cnil.fr
+          </a>
+          ).
+        </p>
+      </LegalSection>
+    </div>
+  </div>
+</BaseLayout>

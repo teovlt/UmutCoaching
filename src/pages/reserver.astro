@@ -1,0 +1,223 @@
+---
+// /reserver — no online calendar for now (D16): steps and direct contacts on
+// the left, the contact form (POST /api/messages) on the right. When Umut sets
+// a booking link in /admin, it shows up as an extra link (no embed, D7).
+import PageHeader from "@/components/sections/PageHeader.astro";
+import Button from "@/components/ui/Button.astro";
+import Field from "@/components/ui/Field.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import { isPlaceholder } from "@/data/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getSettings } from "@/lib/api";
+
+const settings = await getSettings();
+const digits = isPlaceholder(settings.phone) ? "" : settings.phone.replace(/[^\d+]/g, "");
+// "06 31…" → "33631…" for wa.me, which wants the international number without "+"
+const whatsapp = digits && `https://wa.me/${digits.replace(/^\+/, "").replace(/^0/, "33")}`;
+const contacts = [
+  whatsapp && { label: "WhatsApp", value: settings.phone, href: whatsapp, external: true },
+  digits && { label: "Téléphone", value: settings.phone, href: `tel:${digits}`, external: false },
+  !isPlaceholder(settings.email) && { label: "E-mail", value: settings.email, href: `mailto:${settings.email}`, external: false },
+].filter((c): c is { label: string; value: string; href: string; external: boolean } => Boolean(c));
+
+const steps = [
+  { index: "01", title: "Prendre contact", text: "Par le formulaire, WhatsApp, téléphone ou e-mail. Réponse sous 24 h." },
+  {
+    index: "02",
+    title: "Première séance : le bilan",
+    text: "Mensurations détaillées, vos objectifs et votre historique. Le bilan est inclus dans les offres.",
+  },
+  { index: "03", title: "Démarrage", text: "Un programme écrit pour vous, puis ajusté chaque semaine." },
+];
+
+// Goals Umut works on (docs/04-contenu.md § Programmes, publics)
+const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de force", "Posture", "Coaching en ligne", "Autre"].map(
+  (label) => ({ value: label, label }),
+);
+---
+
+<BaseLayout
+  title="Réserver une séance"
+  description="Réservez votre première séance de coaching musculation avec umut. : formulaire, WhatsApp, téléphone ou e-mail, réponse sous 24 h."
+>
+  <PageHeader index="05" label="réserver" title="Réserver une séance." lead="Par WhatsApp, téléphone ou e-mail · réponse sous 24 h." />
+
+  <section class="section">
+    <div class="container-site grid items-start gap-12 lg:grid-cols-12 lg:gap-8">
+      <div class="flex flex-col gap-12 lg:col-span-5">
+        <div class="flex flex-col gap-6">
+          <SectionLabel index="01" label="étapes" as="h2" />
+          <ol class="flex flex-col border-t border-graphite">
+            {steps.map((step) => (
+              <li class="flex gap-5 border-b border-line py-5">
+                <span class="font-mono text-label font-bold">{step.index}</span>
+                <div class="flex flex-col gap-1">
+                  <h3 class="font-bold">{step.title}</h3>
+                  <p class="text-small text-mesure">{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div class="flex flex-col gap-6">
+          <SectionLabel index="02" label="contact direct" as="h2" />
+          <ul class="flex flex-col border-t border-graphite">
+            {contacts.map((c) => (
+              <li class="border-b border-line">
+                <a
+                  href={c.href}
+                  class="flex min-h-14 flex-wrap items-center justify-between gap-x-4 py-3 text-graphite no-underline hover:underline"
+                  {...(c.external ? { target: "_blank", rel: "noopener" } : {})}
+                >
+                  <span class="label-mono text-mesure">{c.label}</span>
+                  <span class="font-mono text-small font-bold">{c.value}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="font-mono text-label text-mesure">{settings.hours}</p>
+          {settings.bookingUrl && (
+            <div>
+              <Button variant="ghost" href={settings.bookingUrl} attrs={{ target: "_blank", rel: "noopener" }}>
+                agenda en ligne
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div id="contact" class="card scroll-mt-24 p-6 sm:p-8 lg:col-span-6 lg:col-start-7">
+        <form data-contact action="/api/messages" method="post" novalidate class="flex flex-col gap-6" aria-labelledby="form-title">
+          <div class="flex flex-col gap-2">
+            <SectionLabel index="03" label="formulaire" />
+            <h2 id="form-title" class="text-h3">
+              Écrivez-moi.
+            </h2>
+            <p class="font-mono text-micro text-mesure">* champ obligatoire</p>
+          </div>
+          <Field label="Nom" name="name" required autocomplete="name" />
+          <Field label="E-mail" name="email" type="email" required autocomplete="email" help="→ réponse sous 24 h" />
+          <Field label="Téléphone" name="phone" type="tel" autocomplete="tel" help="Facultatif, pour un rappel ou WhatsApp." />
+          <Field label="Objectif" name="goal" as="select" placeholder="Choisir (facultatif)" options={goals} />
+          <Field label="Message" name="message" as="textarea" required rows={5} />
+          <!-- Honeypot: hidden from people and assistive tech, filled by bots -->
+          <div class="hidden" aria-hidden="true">
+            <label for="field-website">Site web</label>
+            <input id="field-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <p class="text-small text-mesure">
+            Vos informations servent uniquement à vous répondre. Voir la <a href="/confidentialite">politique de confidentialité</a>.
+          </p>
+          <div class="flex flex-col gap-4">
+            <div>
+              <Button type="submit" icon="arrow">
+                Envoyer ma demande
+              </Button>
+            </div>
+            <p data-form-status role="status" class="font-mono text-small empty:hidden"></p>
+          </div>
+          <noscript>
+            <p class="font-mono text-small text-mesure">
+              Le formulaire a besoin de JavaScript. Écrivez directement par WhatsApp, téléphone ou e-mail.
+            </p>
+          </noscript>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Contact form: field checks with the microcopy of docs/04-contenu.md, then
+  // a JSON POST to /api/messages (same origin: nginx, or Vite's proxy in dev).
+  const REQUIRED = "Ce champ est nécessaire pour vous répondre.";
+  const EMAIL = "Format attendu : nom@exemple.fr";
+  const FAILED = "L'envoi n'a pas abouti. Réessayez ou écrivez directement à umut.coachsportif@gmail.com.";
+  const SENT = "Reçu. Je vous réponds sous 24 h.";
+
+  type Control = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+
+  const setError = (control: Control, message: string) => {
+    const id = `${control.id}-error`;
+    let error = document.getElementById(id);
+    const help =
+      control
+        .getAttribute("aria-describedby")
+        ?.split(" ")
+        .filter((d) => d !== id) ?? [];
+    if (!message) {
+      error?.remove();
+      control.removeAttribute("aria-invalid");
+      control.classList.replace("border-danger", "border-graphite");
+      if (help.length) control.setAttribute("aria-describedby", help.join(" "));
+      else control.removeAttribute("aria-describedby");
+      return;
+    }
+    if (!error) {
+      error = document.createElement("p");
+      error.id = id;
+      error.className = "font-mono text-micro text-danger";
+      (control.closest(".relative") ?? control).after(error);
+    }
+    error.textContent = message;
+    control.setAttribute("aria-invalid", "true");
+    control.classList.replace("border-graphite", "border-danger");
+    control.setAttribute("aria-describedby", [id, ...help].join(" "));
+  };
+
+  const check = (control: Control): boolean => {
+    const value = control.value.trim();
+    let message = "";
+    if (control.required && !value) message = REQUIRED;
+    else if (control.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) message = EMAIL;
+    setError(control, message);
+    return !message;
+  };
+
+  for (const form of document.querySelectorAll<HTMLFormElement>("form[data-contact]")) {
+    const status = form.querySelector<HTMLElement>("[data-form-status]") as HTMLElement;
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]') as HTMLButtonElement;
+    const controls = [...form.querySelectorAll<Control>("input:not([name=website]), textarea, select")];
+
+    // Re-check a field once it has been flagged, as the user corrects it
+    for (const control of controls) {
+      control.addEventListener("blur", () => control.hasAttribute("aria-invalid") && check(control));
+      control.addEventListener("input", () => control.hasAttribute("aria-invalid") && check(control));
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const invalid = controls.filter((control) => !check(control));
+      if (invalid.length) {
+        invalid[0]?.focus();
+        return;
+      }
+
+      submit.disabled = true;
+      status.className = "font-mono text-small text-mesure";
+      status.textContent = "Envoi…";
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        if (!res.ok) {
+          const body = (await res.json().catch(() => ({}))) as { message?: string };
+          // 429: the API's own message ("Trop de messages…") is the clearest
+          throw new Error(res.status === 429 && body.message ? body.message : FAILED);
+        }
+        form.reset();
+        status.className = "font-mono text-small font-bold text-success";
+        status.textContent = SENT;
+      } catch (err) {
+        status.className = "font-mono text-small text-danger";
+        // A TypeError is a network failure: no message worth showing
+        status.textContent = err instanceof Error && !(err instanceof TypeError) ? err.message : FAILED;
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  }
+</script>

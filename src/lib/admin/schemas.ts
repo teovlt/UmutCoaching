@@ -152,9 +152,41 @@ export const infoFields: FieldDef[] = [
   { kind: "text", name: "about.title", label: "À propos : titre" },
   { kind: "textarea", name: "about.text", label: "À propos : parcours", rows: 6 },
   { kind: "lines", name: "about.tags", label: "À propos : spécialités", help: "Une par ligne, sans #.", rows: 3 },
+  {
+    kind: "lines",
+    name: "pricingTerms",
+    label: "Conditions (tarifs)",
+    help: "Une par ligne, affichées sous les tarifs (accueil, /tarifs, pages programmes). La TVA se règle dans Mentions légales.",
+    rows: 5,
+  },
+];
+
+// Legal notice (/mentions-legales). Empty = [À CONFIRMER] on the site.
+export const legalFields: FieldDef[] = [
+  { kind: "text", name: "legal.name", label: "Nom légal", help: "Prénom et nom, ou raison sociale." },
+  { kind: "text", name: "legal.status", label: "Statut", help: "Ex. Entrepreneur individuel (micro-entreprise)" },
+  { kind: "text", name: "legal.siret", label: "SIRET" },
+  { kind: "textarea", name: "legal.address", label: "Adresse légale", rows: 2 },
+  { kind: "text", name: "legal.vat", label: "Mention TVA", help: "Ex. TVA non applicable, art. 293 B du CGI" },
+  {
+    kind: "text",
+    name: "legal.qualification",
+    label: "Diplôme et carte professionnelle",
+    help: "Diplôme d'éducateur sportif et numéro de carte professionnelle.",
+  },
+  { kind: "text", name: "legal.insurance", label: "Assurance RC professionnelle", help: "Assureur et numéro de contrat." },
+  { kind: "textarea", name: "legal.host", label: "Hébergeur du site", help: "Nom, adresse et téléphone de l'hébergeur.", rows: 3 },
 ];
 
 export const photoFields: FieldDef[] = [
   { kind: "image", name: "photos.hero", label: "Photo d'accueil", help: "Portrait, en salle, bonne lumière." },
   { kind: "image", name: "photos.about", label: "Photo « À propos »" },
 ];
+
+export type SettingsSection = "infos" | "photos" | "legal";
+
+export const settingsFields: Record<SettingsSection, FieldDef[]> = {
+  infos: infoFields,
+  photos: photoFields,
+  legal: legalFields,
+};

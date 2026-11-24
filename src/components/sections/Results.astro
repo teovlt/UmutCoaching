@@ -30,7 +30,7 @@ const { temoignages, index } = Astro.props;
               {t.photo.url && (
                 <img
                   src={t.photo.url}
-                  alt={t.photo.alt}
+                  alt={t.photo.alt || `Photo de ${t.name}`}
                   width="600"
                   height="400"
                   loading="lazy"

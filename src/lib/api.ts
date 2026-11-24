@@ -4,8 +4,8 @@
 // If the API is slow or down, every function falls back (empty lists, the
 // [À CONFIRMER] defaults of src/data/site.ts) and logs the error: the site
 // keeps rendering instead of failing.
-import { type SiteSettings, site } from "@/data/site";
-import type { ApiSettings, Faq, Metric, Programme, Temoignage } from "./types";
+import { PLACEHOLDER, type SiteSettings, site } from "@/data/site";
+import type { ApiSettings, Faq, Legal, Metric, Programme, Temoignage } from "./types";
 
 // Internal address of the API: http://api:4000 in Docker, see .env.example
 const API_URL = (process.env.API_URL ?? import.meta.env.API_URL ?? "http://localhost:4000").replace(/\/$/, "");
@@ -57,14 +57,16 @@ export const getFaqs = async (page?: string) => {
 
 export const getTemoignages = () => withFallback<Temoignage[]>("/temoignages", []);
 
-export type Settings = SiteSettings & Pick<ApiSettings, "metrics" | "about" | "photos">;
+export type Settings = SiteSettings & Pick<ApiSettings, "metrics" | "about" | "photos" | "pricingTerms" | "legal">;
 
 const emptyImage = { url: "", alt: "" };
+const emptyLegal: Legal = { name: "", status: "", siret: "", address: "", vat: "", qualification: "", insurance: "", host: "" };
 
 /** Site details: the API's values, with site.ts placeholders for empty ones */
 export const getSettings = async (): Promise<Settings> => {
   const api = await withFallback<Partial<ApiSettings>>("/settings", {});
   const pick = (value: string | undefined, fallback: string) => (value && value.trim() ? value : fallback);
+  const terms = (api.pricingTerms ?? []).filter((t) => t.trim() !== "");
   return {
     ...site,
     city: pick(api.city, site.city),
@@ -80,5 +82,10 @@ export const getSettings = async (): Promise<Settings> => {
     metrics: (api.metrics ?? []).filter((m: Metric) => m.value.trim() !== ""),
     about: api.about ?? { title: "", text: "", tags: [] },
     photos: { hero: api.photos?.hero ?? emptyImage, about: api.photos?.about ?? emptyImage },
+    pricingTerms: terms.length ? terms : site.pricingTerms,
+    // Every legal field Umut has not filled in shows as [À CONFIRMER]
+    legal: Object.fromEntries(
+      (Object.keys(emptyLegal) as (keyof Legal)[]).map((key) => [key, pick(api.legal?.[key], PLACEHOLDER)]),
+    ) as Legal,
   };
 };

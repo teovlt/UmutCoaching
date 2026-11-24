@@ -31,7 +31,7 @@ const programmes = [
     audience: "Débutants et sportifs amateurs.",
     format: "hybride",
     duration: "bilan hebdo",
-    includes: ["Programme dans un Google Sheets", "Échanges sur WhatsApp, réponse sous 24 h", "Bilan chaque dimanche"],
+    includes: ["Programme dans un Google Sheets", "Échanges sur WhatsApp, réponse sous 24 h", "Bilan chaque dimanche"],
     order: 1,
   },
   {
@@ -67,7 +67,7 @@ const faqs = [
   },
   {
     question: "Comment se passe le coaching en ligne ?",
-    answer: "Votre programme est dans un Google Sheets, on échange sur WhatsApp, bilan chaque dimanche, réponse sous 24 h.",
+    answer: "Votre programme est dans un Google Sheets, on échange sur WhatsApp, bilan chaque dimanche, réponse sous 24 h.",
   },
   {
     question: "Faut-il un abonnement à une salle ?",
@@ -75,7 +75,7 @@ const faqs = [
   },
   {
     question: "Puis-je annuler une séance ?",
-    answer: "Oui, gratuitement jusqu'à 24 h avant. Au-delà, la séance est due.",
+    answer: "Oui, gratuitement jusqu'à 24 h avant. Au-delà, la séance est due.",
   },
   {
     question: "Comment se passe la première séance ?",
@@ -101,6 +101,14 @@ const socials = [
 ];
 
 const aboutTags = ["force", "prise-de-masse", "sèche"];
+
+// Confirmed on 23/11/2026; VAT depends on his legal status (Q16), shown on the
+// site as [À CONFIRMER] until set in /admin › Mentions légales
+const pricingTerms = [
+  "Bilan de départ inclus dans les offres",
+  "Annulation gratuite jusqu'à 24 h avant, sinon la séance est due",
+  "Paiement en espèces ou par virement",
+];
 
 const run = async () => {
   await connectDB();
@@ -143,6 +151,10 @@ const run = async () => {
   if (!settings.about?.tags.length) {
     settings.set("about.tags", aboutTags);
     filled.push("about.tags");
+  }
+  if (!settings.pricingTerms?.length) {
+    settings.set("pricingTerms", pricingTerms);
+    filled.push("pricingTerms");
   }
   await settings.save();
   console.log(filled.length ? `Settings: filled ${filled.join(", ")}` : "Settings: already filled in");

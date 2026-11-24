@@ -1,0 +1,64 @@
+---
+// /mentions-legales — LCEN art. 6 III. Every value comes from /admin ›
+// Mentions légales; what Umut has not filled in stays [À CONFIRMER] (Q13, Q16).
+import LegalSection from "@/components/sections/LegalSection.astro";
+import PageHeader from "@/components/sections/PageHeader.astro";
+import { isPlaceholder } from "@/data/site";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getSettings } from "@/lib/api";
+
+const settings = await getSettings();
+const { legal } = settings;
+const emailHref = isPlaceholder(settings.email) ? undefined : `mailto:${settings.email}`;
+const phoneHref = isPlaceholder(settings.phone) ? undefined : `tel:${settings.phone.replace(/[^+\d]/g, "")}`;
+---
+
+<BaseLayout
+  title="Mentions légales"
+  description="Mentions légales du site umut. : éditeur, hébergeur, activité et propriété intellectuelle."
+>
+  <PageHeader label="mentions légales" title="Mentions légales." />
+
+  <div class="section">
+    <div class="container-site">
+      <LegalSection
+        index="01"
+        id="editeur"
+        title="Éditeur du site"
+        items={[
+          { label: "Nom", value: legal.name },
+          { label: "Statut", value: legal.status },
+          { label: "SIRET", value: legal.siret, mono: true },
+          { label: "Adresse", value: legal.address },
+          { label: "E-mail", value: settings.email, href: emailHref, mono: true },
+          { label: "Téléphone", value: settings.phone, href: phoneHref, mono: true },
+          { label: "Directeur de la publication", value: legal.name },
+        ]}
+      />
+      <LegalSection
+        index="02"
+        id="activite"
+        title="Activité"
+        items={[
+          { label: "Activité", value: "Coaching sportif : musculation et bodybuilding" },
+          { label: "Diplôme et carte professionnelle", value: legal.qualification },
+          { label: "Assurance RC professionnelle", value: legal.insurance },
+          { label: "TVA", value: legal.vat },
+        ]}
+      />
+      <LegalSection index="03" id="hebergeur" title="Hébergement" items={[{ label: "Hébergeur", value: legal.host }]} />
+      <LegalSection index="04" id="propriete" title="Propriété intellectuelle">
+        <p>
+          Les textes, photos, logos et le nom umut. présents sur ce site sont protégés. Toute reproduction sans autorisation écrite est
+          interdite.
+        </p>
+      </LegalSection>
+      <LegalSection index="05" id="donnees" title="Données personnelles">
+        <p>
+          Les informations envoyées par le formulaire de contact sont traitées comme décrit dans la
+          <a href="/confidentialite">politique de confidentialité</a>.
+        </p>
+      </LegalSection>
+    </div>
+  </div>
+</BaseLayout>

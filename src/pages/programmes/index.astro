@@ -1,0 +1,43 @@
+---
+// /programmes — every visible programme from the API, then the FAQ entries
+// tagged "programmes" in /admin.
+import CtaBand from "@/components/sections/CtaBand.astro";
+import Faq from "@/components/sections/Faq.astro";
+import PageHeader from "@/components/sections/PageHeader.astro";
+import ProgramCard from "@/components/ui/ProgramCard.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getFaqs, getProgrammes } from "@/lib/api";
+
+const [programmes, faqs] = await Promise.all([getProgrammes(), getFaqs("programmes")]);
+---
+
+<BaseLayout
+  title="Programmes"
+  description="Les offres de coaching umut. : coaching individuel en salle et coaching en ligne, chacune avec un bilan de départ et un programme ajusté chaque semaine."
+>
+  <PageHeader
+    index="02"
+    label="programmes"
+    title="Choisissez votre format."
+    lead="Chaque offre commence par un bilan de départ, puis un programme écrit pour vous et revu chaque semaine."
+  />
+
+  <section class="section" aria-label="Offres">
+    <div class="container-site">
+      {programmes.length > 0 ? (
+        <ul class:list={["grid gap-4 md:grid-cols-2", programmes.length >= 3 && "lg:grid-cols-3"]}>
+          {programmes.map((programme, i) => (
+            <li>
+              <ProgramCard programme={programme} index={String(i + 1).padStart(2, "0")} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="font-mono text-small text-mesure">Offres [À CONFIRMER]</p>
+      )}
+    </div>
+  </section>
+
+  <Faq faqs={faqs} index="01" />
+  <CtaBand index={faqs.length > 0 ? "02" : "01"} />
+</BaseLayout>

@@ -1,0 +1,104 @@
+---
+// /methode — docs/02-architecture.md. Only facts Umut confirmed
+// (docs/04-contenu.md, 05-decisions.md Q10 and "Autres réponses").
+import CtaBand from "@/components/sections/CtaBand.astro";
+import PageHeader from "@/components/sections/PageHeader.astro";
+import ProgressChart from "@/components/ui/ProgressChart.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import SquareList from "@/components/ui/SquareList.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const steps = [
+  {
+    index: "01",
+    title: "Mesurer",
+    lead: "Tout part d'un point de départ chiffré.",
+    items: [
+      "Première séance : mensurations détaillées",
+      "Vos objectifs et votre historique",
+      "Photo de départ, si vous le souhaitez",
+      "Ce bilan de départ est inclus dans les offres",
+    ],
+  },
+  {
+    index: "02",
+    title: "Ajuster",
+    lead: "Le programme suit vos chiffres, pas l'inverse.",
+    items: [
+      "Un programme écrit pour vous",
+      "Revu chaque semaine selon vos charges, votre récupération et votre ressenti",
+      "En ligne : programme dans un Google Sheets, bilan chaque dimanche",
+      "En général 1 à 2 séances par semaine avec moi",
+    ],
+  },
+  {
+    index: "03",
+    title: "Progresser",
+    lead: "Chaque séance est notée, puis comparée.",
+    items: ["Chaque séance est notée", "On compare régulièrement les chiffres", "On fixe la suite à partir de ce qui a bougé"],
+  },
+];
+
+// Illustrative only: captioned "exemple de suivi"
+const example = [60, 62.5, 62.5, 65, 67.5, 67.5, 70, 72.5].map((value, i) => ({
+  label: `S${String(i + 1).padStart(2, "0")}`,
+  value,
+}));
+---
+
+<BaseLayout
+  title="Méthode"
+  description="La méthode umut. : un bilan chiffré à la première séance, un programme ajusté chaque semaine, des séances notées et comparées pour progresser."
+>
+  <PageHeader
+    index="01"
+    label="méthode"
+    title="Mesurer. Ajuster. Progresser."
+    lead="Un protocole en trois étapes, répété chaque semaine. Rien n'est laissé à l'impression : on note, on compare, on décide."
+  />
+
+  {steps.map((step, i) => (
+    <section class:list={["section", i % 2 === 1 && "border-y border-line bg-white"]} aria-labelledby={`etape-${step.index}`}>
+      <div class="container-site grid gap-8 lg:grid-cols-12 lg:gap-8">
+        <div class="flex flex-col gap-4 lg:col-span-5">
+          <span class="font-mono text-data-xl font-bold" aria-hidden="true">
+            {step.index}
+          </span>
+          <h2 id={`etape-${step.index}`} class="text-h2">
+            <span class="sr-only">Étape {step.index}&#8239;: </span>
+            {step.title}
+          </h2>
+          <p class="text-lead text-mesure">{step.lead}</p>
+        </div>
+        <div class="border-t border-graphite pt-6 lg:col-span-6 lg:col-start-7">
+          <SquareList items={step.items} />
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section border-t border-line" aria-labelledby="suivi-title">
+    <div class="container-site grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
+      <div class="flex flex-col gap-4 lg:col-span-5">
+        <SectionLabel index="04" label="suivi" />
+        <h2 id="suivi-title" class="text-h2">
+          Une courbe, pas une impression.
+        </h2>
+        <p class="text-mesure">
+          Les chiffres notés à chaque séance se comparent d'une semaine à l'autre&nbsp;: on voit ce qui progresse et ce qu'il faut ajuster.
+        </p>
+        <p class="font-mono text-label text-mesure">→ échanges sur WhatsApp · réponse sous 24&nbsp;h</p>
+      </div>
+      <div class="lg:col-span-6 lg:col-start-7">
+        <ProgressChart
+          points={example}
+          unit="kg"
+          caption="exemple de suivi · squat"
+          title="Exemple de suivi : squat, de 60 kg en semaine 1 à 72,5 kg en semaine 8"
+        />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand index="05" />
+</BaseLayout>

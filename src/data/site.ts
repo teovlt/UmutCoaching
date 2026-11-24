@@ -25,6 +25,11 @@ export type SiteSettings = {
   hours: string;
   bookingUrl: string;
   socials: { label: string; url: string }[];
+  /** Coaching formats and languages (/a-propos) */
+  formats: string;
+  languages: string;
+  /** Shown under the prices; edited in /admin › Infos du site */
+  pricingTerms: string[];
 };
 
 export const site: SiteSettings = {
@@ -47,5 +52,14 @@ export const site: SiteSettings = {
   socials: [
     { label: "Instagram", url: "https://www.instagram.com/umut.coachsportif" },
     { label: "TikTok", url: "https://www.tiktok.com/@umut.coachsportif" },
+  ],
+  // Confirmed on 23/11/2026 (docs/05-decisions.md Q3, Q8)
+  formats: "en salle · en ligne",
+  languages: "français · turc · anglais",
+  // Confirmed on 23/11/2026 (docs/04-contenu.md § Tarifs)
+  pricingTerms: [
+    "Bilan de départ inclus dans les offres",
+    "Annulation gratuite jusqu'à 24 h avant, sinon la séance est due",
+    "Paiement en espèces ou par virement",
   ],
 };

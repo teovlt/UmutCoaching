@@ -31,6 +31,19 @@ const settingsSchema = new Schema(
       hero: imageField,
       about: imageField,
     },
+    // Conditions listed under the prices (home page and /tarifs)
+    pricingTerms: { type: [String], default: [] },
+    // Legal notice (/mentions-legales)
+    legal: {
+      name: { type: String, default: "", trim: true },
+      status: { type: String, default: "", trim: true },
+      siret: { type: String, default: "", trim: true },
+      address: { type: String, default: "", trim: true },
+      vat: { type: String, default: "", trim: true },
+      qualification: { type: String, default: "", trim: true },
+      insurance: { type: String, default: "", trim: true },
+      host: { type: String, default: "", trim: true },
+    },
   },
   { timestamps: true, toJSON },
 );

@@ -1,0 +1,37 @@
+---
+// One block of a legal page (/mentions-legales, /confidentialite): mono
+// number, H2 and either a definition list or free text (slot).
+interface Props {
+  index: string;
+  title: string;
+  id: string;
+  /** `mono`: identifiers and contact details (SIRET, phone, e-mail) */
+  items?: { label: string; value: string; href?: string | undefined; mono?: boolean | undefined }[] | undefined;
+}
+
+const { index, title, id, items } = Astro.props;
+---
+
+<section class="grid gap-4 border-t border-graphite py-8 lg:grid-cols-12 lg:gap-8" aria-labelledby={id}>
+  <h2 id={id} class="flex gap-4 text-h3 lg:col-span-4">
+    <span class="font-mono text-label font-normal text-mesure" aria-hidden="true">
+      {index}
+    </span>
+    {title}
+  </h2>
+  <div class="flex flex-col gap-4 text-mesure lg:col-span-8">
+    {items && (
+      <dl class="flex flex-col">
+        {items.map((item) => (
+          <div class="grid gap-1 border-b border-line py-3 first:pt-0 sm:grid-cols-12 sm:gap-6">
+            <dt class="label-mono sm:col-span-4">{item.label}</dt>
+            <dd class:list={["text-small whitespace-pre-line text-graphite sm:col-span-8", item.mono && "font-mono"]}>
+              {item.href ? <a href={item.href}>{item.value}</a> : item.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    )}
+    <slot />
+  </div>
+</section>

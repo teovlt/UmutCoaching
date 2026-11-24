@@ -116,7 +116,7 @@ aide mono 11 `text-mesure` (`→ réponse sous 24 h`) · erreur : bordure + text
 Focus : anneau cobalt 2 px offset 2.
 
 ### SectionLabel `ui/SectionLabel.astro`
-Props `index: string` (« 02 »), `label: string` → `02 / programmes ———`. Utilise `.section-label`.
+Props `index?: string` (« 02 », omis sur les pages légales), `label: string` → `02 / programmes ———`. Utilise `.section-label`.
 
 ### Metric `ui/Metric.astro`
 Le composant signature « labo ». Props `value`, `unit?`, `label`, `trend?: 'up'|'flat'`, `highlight?`.
@@ -134,6 +134,15 @@ méta mono (`12 semaines · en ligne`) · prix « dès 89 CHF » en `font-mono f
 
 ### PricingCard
 Comme ProgramCard, prix en `text-data-xl`. `featured` : bordure graphite + tag `Recommandé` (carré cobalt) — **une seule** par grille.
+
+### RecommendedTag `ui/RecommendedTag.astro`
+Tag `Recommandé` (bordure graphite, mono 11 MAJ, carré 7 px `cobalt-500`) : PricingCard et tableau de /tarifs. Une seule offre recommandée par page.
+
+### SquareList `ui/SquareList.astro`
+Liste à puces carrées 7 px : `tone="cobalt"` pour « Ce qui est inclus » d'une offre, `graphite` ailleurs.
+
+### PageHeader `sections/PageHeader.astro`
+En-tête des pages internes, fond blanc + filet bas : SectionLabel (numéro de la navigation, absent sur les pages légales), H1 `text-h1`, chapeau `text-lead text-mesure`, slot (méta, CTA).
 
 ### Testimonial (sur `.on-dark`)
 Citation Grotesk 400 22 px blanc, nom mono 12 MAJ `muted`, métrique éventuelle `cobalt-400` mono (`−8 kg · 16 sem.`).

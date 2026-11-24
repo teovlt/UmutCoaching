@@ -3,32 +3,27 @@
 Une phase = une session (ou un `/clear`) = un commit. Copier-coller le prompt de chaque phase.
 Après chaque phase : `pnpm build`, vérifier dans le navigateur, puis `/design-review`.
 
-## État au 24/11/2026 — reprendre ici
+## État au 24/11/2026 (soir) — reprendre ici
 
 | Phase | État |
 |---|---|
-| 0 → 3 | ✅ Faites |
-| 3b Admin | ✅ Faite et testée de bout en bout (connexion, offres, ordre, masquer, témoignages avec consentement, upload photo, infos, messages) |
-| 4 Accueil | ✅ Faite (sections dans `src/components/sections/`, `ProgramCard`, `PricingCard`, OG + JSON-LD). **Reste les corrections de la revue design ci-dessous** |
-| 5 → 7 | ⏳ À faire |
+| 0 → 4 | ✅ Faites (corrections de la revue design de l'accueil comprises) |
+| 5 Pages internes | ✅ Faite : `/methode`, `/programmes`, `/programmes/[slug]`, `/tarifs`, `/a-propos`, `/reserver`, `/404`, `/mentions-legales`, `/confidentialite`. Revue design passée et corrigée |
+| 6 → 7 | ⏳ À faire |
 
-Réponses du client (Google doc du 23/11/2026) reportées dans `05-decisions.md` (D13–D19) et `04-contenu.md`.
-Questions encore ouvertes : Q12–Q20 dans `05-decisions.md` (prix, diplôme / carte pro, mentions légales, ville et salle, domaine…).
+Réponses du client : `05-decisions.md` (D13–D21) et `04-contenu.md`. Questions ouvertes : Q12–Q22.
 
-### À faire en premier (revue design de l'accueil, non corrigée)
-- [ ] `src/components/sections/Hero.astro` : H1 en `text-display` → le design system prévoit `text-h1` (le titre passe sur 3 lignes à 1280 px au lieu de 2). Corriger, ou documenter l'exception dans `03-design-system.md`.
-- [ ] `src/components/sections/Results.astro` : `alt` vide possible sur la photo d'un témoignage → repli `` `Photo de ${t.name}` ``.
-- [ ] Espaces insécables manquantes avant `:` / `kg` : `Hero.astro` (`title` du graphique), `ui/ProgramCard.astro` (`aria-label`), `pages/index.astro` (meta description).
-- [ ] (Phase 5) Les conditions de `PricingPreview.astro` (annulation, paiement, TVA) sont en dur : les rendre éditables dans « Infos du site » en faisant `/tarifs`.
-
-### Ensuite
-- Phase 5 (pages internes) : les liens de l'accueil pointent déjà vers `/methode`, `/programmes`, `/programmes/[slug]`, `/tarifs`, `/a-propos`, `/reserver` (encore en 404). `/reserver` = **formulaire de contact + téléphone / WhatsApp / e-mail, sans agenda** (D16), le formulaire poste sur `/api/messages`.
-- Les sections prennent un prop `index` : la page calcule la numérotation (pas de trou quand une section est masquée), voir `src/pages/index.astro`.
+### Ce qu'il faut savoir pour la Phase 6
+- Gabarit des pages internes : `sections/PageHeader.astro` (seul `<h1>`), sections numérotées à partir de `01`, `CtaBand` à la fin. Pages légales : `sections/LegalSection.astro`, sans numéro.
+- `/admin` › Mentions légales (`legal.*`) et `pricingTerms` (Infos du site) : voir D20. `pricingConditions()` (`src/lib/format.ts`) ajoute la ligne TVA.
+- `/programmes/[slug]` d'une offre masquée ou inconnue → `Astro.rewrite("/404")` (statut 404).
+- JSON-LD déjà présent : accueil (`ProfessionalService`, `FAQPage`), fiche programme (`Service`). Reste : composant `Seo`, Twitter, og-image, `FAQPage` sur /tarifs et fiches.
+- Les titres de page n'incluent pas encore la ville (`{Page} — umut. coach musculation [Ville]`, Q14).
 
 ### Environnement de dev (à savoir)
-- **Node ≥ 22.23 obligatoire** (Astro 7). Le Node système est en 22.14 : `fnm use 22` (Node 22.23.5 installé avec fnm) avant `pnpm dev` / `pnpm check`.
+- **Node ≥ 22.23 obligatoire** (Astro 7). Sur le poste Windows : `fnm use 22`. Sur le poste Linux : Node 24 de nvm (`~/.nvm/versions/node/v24.1.0/bin`), déjà utilisé par `.claude/launch.json`.
 - **Ne pas déclencher de fenêtre du pare-feu Windows** : tout serveur de test doit écouter sur `127.0.0.1` uniquement (`astro dev --host 127.0.0.1` ; l'API écoute sur toutes les interfaces par défaut, la lancer avec un `--import` qui force `127.0.0.1` ou ajouter une variable `HOST` à `server/src/index.ts`). Arrêter les serveurs après chaque test.
-- Pas de MongoDB local ni Docker démarré : pour tester, base jetable `mongodb-memory-server` (hors du projet) sur `127.0.0.1:27999`, puis `seed:content` et `seed:user`.
+- Pas de MongoDB local ni Docker démarré : pour tester, base jetable sur `127.0.0.1:27999` (`mongodb-memory-server`, ou directement le binaire en cache `~/.cache/mongodb-binaries/mongod-x64-ubuntu-7.0.24 --dbpath <dossier temporaire> --bind_ip 127.0.0.1 --port 27999`), puis `seed:content` et `seed:user`.
 
 ---
 

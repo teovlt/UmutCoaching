@@ -1,0 +1,21 @@
+---
+// docs/04-contenu.md § Microcopy (404). Also served by /programmes/[slug]
+// for a hidden or unknown programme.
+import Button from "@/components/ui/Button.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+Astro.response.status = 404;
+---
+
+<BaseLayout title="Page introuvable" description="Cette page n'existe pas ou a été déplacée." noindex>
+  <section class="container-site flex min-h-[60vh] flex-col justify-center gap-6 py-16">
+    <SectionLabel label="erreur 404" />
+    <h1 class="max-w-[18ch] text-h1">Cette page ne figure pas dans le protocole.</h1>
+    <div>
+      <Button variant="ghost" href="/">
+        retour à l'accueil
+      </Button>
+    </div>
+  </section>
+</BaseLayout>

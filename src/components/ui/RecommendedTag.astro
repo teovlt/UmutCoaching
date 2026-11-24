@@ -1,0 +1,19 @@
+---
+// docs/03-design-system.md §6 PricingCard: "Recommandé" tag with a cobalt
+// square, for the single featured offer (PricingCard, /tarifs table).
+interface Props {
+  class?: string | undefined;
+}
+
+const { class: className } = Astro.props;
+---
+
+<span
+  class:list={[
+    "inline-flex shrink-0 items-center gap-1.5 border border-graphite px-2.5 py-1 font-mono text-micro font-normal uppercase",
+    className,
+  ]}
+>
+  <span class="size-1.75 bg-cobalt-500" aria-hidden="true"></span>
+  Recommandé
+</span>

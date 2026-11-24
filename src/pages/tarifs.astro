@@ -1,0 +1,140 @@
+---
+// /tarifs — docs/02-architecture.md: offer / format / duration / price table,
+// one featured offer at most, conditions, FAQ entries tagged "tarifs".
+import CtaBand from "@/components/sections/CtaBand.astro";
+import Faq from "@/components/sections/Faq.astro";
+import PageHeader from "@/components/sections/PageHeader.astro";
+import PricingCard from "@/components/ui/PricingCard.astro";
+import RecommendedTag from "@/components/ui/RecommendedTag.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getFaqs, getProgrammes, getSettings } from "@/lib/api";
+import { formatLabels, priceText, pricingConditions } from "@/lib/format";
+
+const [programmes, faqs, settings] = await Promise.all([getProgrammes(), getFaqs("tarifs"), getSettings()]);
+// "Une seule offre en avant": the first featured one wins
+const featuredId = programmes.find((p) => p.featured)?.id;
+const offers = programmes.map((p) => ({ ...p, featured: p.id === featuredId }));
+---
+
+<BaseLayout
+  title="Tarifs"
+  description="Tarifs du coaching umut. : coaching individuel en salle et coaching en ligne, bilan de départ inclus, annulation gratuite jusqu'à 24 h avant."
+>
+  <PageHeader
+    index="03"
+    label="tarifs"
+    title="Des tarifs clairs, sans engagement caché."
+    lead="Le prix de chaque offre, ce qu'elle comprend et les conditions, au même endroit."
+  />
+
+  {offers.length > 0 ? (
+    <>
+      <section class="section" aria-labelledby="grille-title">
+        <div class="container-site flex flex-col gap-10">
+          <div class="flex flex-col gap-4">
+            <SectionLabel index="01" label="grille" />
+            <h2 id="grille-title" class="text-h2">
+              En un coup d'œil.
+            </h2>
+          </div>
+          <!-- Explicit roles: below md the rows are CSS grids, which drops the
+               native table semantics in some screen readers -->
+          <table role="table" class="w-full border-t border-graphite text-left">
+            <caption class="sr-only">Tarifs par offre</caption>
+            <thead role="rowgroup" class="hidden md:table-header-group">
+              <tr role="row" class="border-b border-line">
+                <th role="columnheader" scope="col" class="py-3 pr-4 label-mono font-normal text-mesure">
+                  Offre
+                </th>
+                <th role="columnheader" scope="col" class="py-3 pr-4 label-mono font-normal text-mesure">
+                  Format
+                </th>
+                <th role="columnheader" scope="col" class="py-3 pr-4 label-mono font-normal text-mesure">
+                  Durée
+                </th>
+                <th role="columnheader" scope="col" class="py-3 label-mono font-normal text-mesure md:text-right">
+                  Prix
+                </th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              {offers.map((p) => (
+                <tr
+                  role="row"
+                  class:list={[
+                    "grid grid-cols-2 gap-x-4 gap-y-1 border-b py-4 md:table-row md:py-0",
+                    p.featured ? "border-graphite" : "border-line",
+                  ]}
+                >
+                  <th role="rowheader" scope="row" class="col-span-2 font-bold md:py-5 md:pr-4">
+                    <a href={`/programmes/${p.slug}`} class="text-graphite">
+                      {p.title}
+                    </a>
+                    {p.featured && <RecommendedTag class="ml-3 align-middle" />}
+                  </th>
+                  <td role="cell" class="font-mono text-label text-mesure uppercase md:py-5 md:pr-4">
+                    <span class="md:sr-only">Format&nbsp;: </span>
+                    {formatLabels[p.format]}
+                  </td>
+                  <td role="cell" class="font-mono text-label text-mesure uppercase md:py-5 md:pr-4">
+                    {p.duration && (
+                      <>
+                        <span class="md:sr-only">Durée&nbsp;: </span>
+                        {p.duration}
+                      </>
+                    )}
+                  </td>
+                  <td role="cell" class="col-span-2 pt-2 font-mono font-bold md:py-5 md:pt-5 md:text-right">
+                    {priceText(p)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section border-y border-line bg-white" aria-labelledby="detail-title">
+        <div class="container-site flex flex-col gap-10">
+          <div class="flex flex-col gap-4">
+            <SectionLabel index="02" label="détail" />
+            <h2 id="detail-title" class="text-h2">
+              Ce que comprend chaque offre.
+            </h2>
+          </div>
+          <ul class:list={["grid gap-4 md:grid-cols-2", offers.length >= 3 && "lg:grid-cols-3"]}>
+            {offers.map((p) => (
+              <li>
+                <PricingCard programme={p} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
+  ) : (
+    <section class="section">
+      <p class="container-site font-mono text-small text-mesure">Tarifs [À CONFIRMER]</p>
+    </section>
+  )}
+
+  <section class="section" aria-labelledby="conditions-title">
+    <div class="container-site grid gap-8 lg:grid-cols-12">
+      <div class="flex flex-col gap-4 lg:col-span-5">
+        <SectionLabel index={offers.length > 0 ? "03" : "01"} label="conditions" />
+        <h2 id="conditions-title" class="text-h2">
+          Conditions.
+        </h2>
+      </div>
+      <ul class="flex flex-col border-t border-graphite lg:col-span-6 lg:col-start-7">
+        {pricingConditions(settings).map((condition) => (
+          <li class="border-b border-line py-4 font-mono text-small">{condition}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Faq faqs={faqs} index={offers.length > 0 ? "04" : "02"} />
+  <CtaBand index={String((offers.length > 0 ? 4 : 2) + (faqs.length > 0 ? 1 : 0)).padStart(2, "0")} />
+</BaseLayout>

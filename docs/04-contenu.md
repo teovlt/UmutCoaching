@@ -69,6 +69,42 @@ CTA : **Réserver une séance** · `[ poser une question ]` → `/reserver#conta
 Instagram `@umut.coachsportif` · TikTok `@umut.coachsportif`
 Horaires en mono : `lun–ven 09:00–18:00 · sam 09:00–15:00` · Mentions légales · Confidentialité · `© 2026 umut.`
 
+## Pages internes (Phase 5, 24/11/2026)
+
+> Textes de structure (titres, accroches) rédigés à partir des faits confirmés ; **à faire relire par Umut**.
+> Marqués ✎ : formulation nouvelle, absente des réponses du client.
+
+### /methode — `01 / méthode`
+- H1 : Mesurer. Ajuster. Progresser.
+- Chapeau ✎ : Un protocole en trois étapes, répété chaque semaine. Rien n'est laissé à l'impression : on note, on compare, on décide.
+- 01 Mesurer — accroche ✎ « Tout part d'un point de départ chiffré. » · Première séance : mensurations détaillées · vos objectifs et votre historique · photo de départ si vous le souhaitez · bilan de départ inclus dans les offres
+- 02 Ajuster — accroche ✎ « Le programme suit vos chiffres, pas l'inverse. » · programme écrit pour vous, revu chaque semaine (charges, récupération, ressenti) · en ligne : Google Sheets, bilan chaque dimanche · 1 à 2 séances par semaine
+- 03 Progresser — accroche ✎ « Chaque séance est notée, puis comparée. » · chaque séance est notée · on compare régulièrement les chiffres · on fixe la suite
+- 04 Suivi — H2 ✎ « Une courbe, pas une impression. » + `ProgressChart` illustratif « exemple de suivi · squat » (S01 60 kg → S08 72,5 kg)
+
+### /programmes — `02 / programmes`
+H1 : Choisissez votre format. Chapeau ✎ : Chaque offre commence par un bilan de départ, puis un programme écrit pour vous et revu chaque semaine.
+
+### /programmes/[slug]
+Tout vient de l'offre dans `/admin` (résumé, pour qui, format, durée, inclus, déroulé, prix). Titres : Ce qui est inclus. · Déroulé. · Tarif.
+
+### /tarifs — `03 / tarifs`
+H1 : Des tarifs clairs, sans engagement caché. Chapeau ✎ : Le prix de chaque offre, ce qu'elle comprend et les conditions, au même endroit.
+Intertitres ✎ : En un coup d'œil. · Ce que comprend chaque offre. · Conditions.
+Conditions : éditables dans `/admin` › Infos du site ; TVA dans `/admin` › Mentions légales (`[À CONFIRMER]` tant que vide, Q16).
+
+### /a-propos — `04 / à propos`
+H1 : titre « À propos » de l'admin (défaut : Umut, coach musculation.). Parcours `[À CONFIRMER — Q20]`.
+Fiche « En bref. » ✎ : Lieu `[Q14]` · Formats en salle · en ligne · Langues français · turc · anglais (Q8) · Diplôme et carte pro `[À CONFIRMER — Q13]`.
+
+### /reserver — `05 / réserver`
+H1 : Réserver une séance. Chapeau : Par WhatsApp, téléphone ou e-mail · réponse sous 24 h.
+Étapes ✎ : 01 Prendre contact · 02 Première séance : le bilan · 03 Démarrage.
+Formulaire : H2 ✎ « Écrivez-moi. » · objectifs proposés (publics confirmés) : Perte de poids, Prise de poids, Prise de muscle, Gain de force, Posture, Coaching en ligne, Autre.
+
+### /mentions-legales, /confidentialite
+Valeurs dans `/admin` › Mentions légales, toutes `[À CONFIRMER]` (Q13, Q16). Durée de conservation des messages : `[À CONFIRMER]` (Q21).
+
 ## Microcopy
 | Contexte | Texte |
 |---|---|

@@ -21,6 +21,8 @@
 | D16 | **Pas d'agenda en ligne** pour l'instant : `/reserver` = formulaire de contact + téléphone / WhatsApp / e-mail. `bookingUrl` reste vide (éditable dans `/admin` quand il aura un outil) | Q2 : il prend ses rendez-vous par message ; paiement surtout en espèces, pas de paiement en ligne |
 | D17 | Offres affichées : **Coaching individuel** (salle) et **Coaching en ligne**. Créées **masquées** : Nutrition (avec Manon, Q4), Pré / post-natal (Q18). Préparation compétition retirée du seed (pas proposée) | Réponses Q11 / Q12 ; les offres masquées n'apparaissent qu'une fois leurs conditions confirmées |
 | D18 | Bandeau chiffres : seul `24 h` (délai de réponse, confirmé) est affiché. Pas de « ans d'expérience » : Umut est coach débutant (4 ans de pratique personnelle du bodybuilding, ce qui n'est pas une expérience de coach) | Ne pas induire en erreur |
+| D20 | Conditions tarifaires (`pricingTerms`) et mentions légales (`legal.*` : nom, statut, SIRET, adresse, TVA, diplôme / carte pro, assurance, hébergeur) stockées dans `settings`, éditables dans `/admin` › Infos du site et › Mentions légales | Rien de légal ni de tarifaire en dur dans le code ; un champ vide reste `[À CONFIRMER]` |
+| D21 | Formulaire `/reserver` envoyé en `fetch` JSON vers `/api/messages` (pas de repli sans JavaScript : les contacts directs sont affichés à côté) | Un relais côté serveur Astro ferait venir tous les messages de la même IP et casserait la limite de 5 envois / heure / IP |
 | D19 | Accueil : le bandeau chiffres n'apparaît qu'à partir de **2 chiffres** confirmés (un seul ne fait pas un bandeau ; « réponse sous 24 h » est repris dans le hero). Les photos envoyées depuis `/admin` sont affichées en `<img>` (dimensions fixes 4:5 / 3:2, `object-cover`) et non via `astro:assets` | Les photos viennent de l'API à l'exécution, déjà compressées en WebP ≤ 2000 px par sharp à l'upload ; `astro:assets` ne traite que les images connues au build |
 
 ## Questions au client — réponses reçues (Google doc « umut. — What I need for your site », 23/11/2026)
@@ -51,6 +53,8 @@
 | Q18 | Pré / post-natal : formation spécifique ? format, prix | Affichage de l'offre (sujet santé sensible) | Masqué |
 | Q19 | Offre « recommandée » (« pack coaching », à préciser), places disponibles (badge), durée du 1er bilan | /tarifs, badges | Aucun badge |
 | Q20 | Parcours en 3–5 lignes, pourquoi il coache | À propos | `[À CONFIRMER]` |
+| Q21 | Durée de conservation des messages du formulaire (CNIL : 3 ans max après le dernier contact) et hébergeur exact du VPS | /confidentialite, /mentions-legales | `[À CONFIRMER]` |
+| Q22 | Relire les textes de structure des pages internes (marqués ✎ dans `04-contenu.md`) | Toutes les pages internes | En ligne tels quels |
 ## Choix techniques à trancher (non bloquants pour démarrer)
 | # | Sujet | Options | Reco |
 |---|---|---|---|

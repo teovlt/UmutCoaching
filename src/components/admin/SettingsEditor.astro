@@ -3,16 +3,16 @@
 // Photos). Only the fields of this screen are sent, the others are kept.
 import AdminForm from "@/components/admin/AdminForm.astro";
 import Button from "@/components/ui/Button.astro";
-import { infoFields, photoFields } from "@/lib/admin/schemas";
+import { type SettingsSection, settingsFields } from "@/lib/admin/schemas";
 
 interface Props {
-  section: "infos" | "photos";
+  section: SettingsSection;
   title: string;
   intro: string;
 }
 
 const { section, title, intro } = Astro.props;
-const fields = section === "infos" ? infoFields : photoFields;
+const fields = settingsFields[section];
 ---
 
 <section data-settings={section} class="flex max-w-2xl flex-col gap-8">
@@ -33,14 +33,14 @@ const fields = section === "infos" ? infoFields : photoFields;
 </section>
 
 <script>
-  import { infoFields, photoFields } from "@/lib/admin/schemas";
+  import { type SettingsSection, settingsFields } from "@/lib/admin/schemas";
   import { api, errorText, requireLogin } from "@/scripts/admin/api";
   import { fillForm, readForm, setupImages } from "@/scripts/admin/form";
 
   requireLogin();
 
   for (const root of document.querySelectorAll<HTMLElement>("[data-settings]")) {
-    const fields = root.dataset.settings === "infos" ? infoFields : photoFields;
+    const fields = settingsFields[root.dataset.settings as SettingsSection];
     const form = root.querySelector<HTMLFormElement>("[data-form]") as HTMLFormElement;
     const status = root.querySelector<HTMLElement>("[data-status]") as HTMLElement;
     const error = root.querySelector<HTMLElement>("[data-form-error]") as HTMLElement;

@@ -2,6 +2,7 @@
 // docs/03-design-system.md §6 PricingCard: like ProgramCard with the price as
 // the headline figure. `featured` (one per grid): graphite border and a
 // "Recommandé" tag with a cobalt square.
+import RecommendedTag from "@/components/ui/RecommendedTag.astro";
 import { priceParts, programmeMeta } from "@/lib/format";
 import type { Programme } from "@/lib/types";
 
@@ -20,12 +21,7 @@ const price = priceParts(p);
 >
   <div class="flex items-start justify-between gap-4">
     <h3 class="text-h3">{p.title}</h3>
-    {p.featured && (
-      <span class="inline-flex shrink-0 items-center gap-1.5 border border-graphite px-2.5 py-1 font-mono text-micro uppercase">
-        <span class="size-1.75 bg-cobalt-500" aria-hidden="true" />
-        Recommandé
-      </span>
-    )}
+    {p.featured && <RecommendedTag />}
   </div>
 
   <p class="flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-graphite pt-4" data-metric>

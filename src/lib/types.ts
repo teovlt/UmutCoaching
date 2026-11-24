@@ -61,4 +61,17 @@ export type ApiSettings = {
   metrics: Metric[];
   about: { title: string; text: string; tags: string[] };
   photos: { hero: Image; about: Image };
+  pricingTerms: string[];
+  legal: Legal;
+};
+
+export type Legal = {
+  name: string;
+  status: string;
+  siret: string;
+  address: string;
+  vat: string;
+  qualification: string;
+  insurance: string;
+  host: string;
 };

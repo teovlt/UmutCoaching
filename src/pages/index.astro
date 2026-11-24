@@ -32,7 +32,7 @@ const shown = [
 const number = (id: string) => String(shown.indexOf(id) + 1).padStart(2, "0");
 
 const description =
-  "Coaching musculation en salle et en ligne : un bilan de départ, un programme ajusté chaque semaine, une progression suivie au kilo près.";
+  "Coaching musculation en salle et en ligne : un bilan de départ, un programme ajusté chaque semaine, une progression suivie au kilo près.";
 
 // schema.org: only confirmed values (no placeholder ends up in Google)
 const known = (value: string) => (isPlaceholder(value) ? undefined : value);
@@ -94,7 +94,7 @@ const jsonLd = [
   <Method index={number("methode")} />
   <Programs programmes={programmes} index={number("programmes")} />
   <Results temoignages={temoignages} index={number("resultats")} />
-  <PricingPreview programmes={programmes} index={number("tarifs")} />
+  <PricingPreview programmes={programmes} settings={settings} index={number("tarifs")} />
   <AboutShort settings={settings} index={number("a-propos")} />
   <Faq faqs={faqs} index={number("faq")} />
   <CtaBand index={number("cta")} />
