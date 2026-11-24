@@ -4,6 +4,7 @@
 import CtaBand from "@/components/sections/CtaBand.astro";
 import PageHeader from "@/components/sections/PageHeader.astro";
 import Button from "@/components/ui/Button.astro";
+import PhotoPlaceholder from "@/components/ui/PhotoPlaceholder.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import Tag from "@/components/ui/Tag.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -31,7 +32,7 @@ const facts = [
 
   <section class="section" aria-labelledby="parcours-title">
     <div class="container-site grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
-      {photos.about.url && (
+      {photos.about.url ? (
         <img
           src={photos.about.url}
           alt={photos.about.alt || "Umut à la salle"}
@@ -41,8 +42,10 @@ const facts = [
           decoding="async"
           class="aspect-[4/5] w-full border border-line object-cover sm:max-w-sm lg:col-span-5 lg:max-w-none"
         />
+      ) : (
+        <PhotoPlaceholder label="portrait d'Umut" class="sm:max-w-sm lg:col-span-5 lg:max-w-none" />
       )}
-      <div class:list={["flex flex-col gap-6", photos.about.url ? "lg:col-span-6 lg:col-start-7" : "lg:col-span-8"]}>
+      <div class="flex flex-col gap-6 lg:col-span-6 lg:col-start-7">
         <SectionLabel index="01" label="parcours" />
         <h2 id="parcours-title" class="sr-only">
           Parcours

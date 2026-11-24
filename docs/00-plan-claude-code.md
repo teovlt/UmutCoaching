@@ -9,6 +9,7 @@ Après chaque phase : `pnpm build`, vérifier dans le navigateur, puis `/design-
 |---|---|
 | 0 → 4 | ✅ Faites (corrections de la revue design de l'accueil comprises) |
 | 5 Pages internes | ✅ Faite : `/methode`, `/programmes`, `/programmes/[slug]`, `/tarifs`, `/a-propos`, `/reserver`, `/404`, `/mentions-legales`, `/confidentialite`. Revue design passée et corrigée |
+| Photos | ✅ Photos d'illustration Unsplash (D22) ; cadres vides là où vont les photos d'Umut (hero, à propos) |
 | 6 → 7 | ⏳ À faire |
 
 Réponses du client : `05-decisions.md` (D13–D21) et `04-contenu.md`. Questions ouvertes : Q12–Q22.

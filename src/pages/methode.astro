@@ -3,15 +3,18 @@
 // (docs/04-contenu.md, 05-decisions.md Q10 and "Autres réponses").
 import CtaBand from "@/components/sections/CtaBand.astro";
 import PageHeader from "@/components/sections/PageHeader.astro";
+import { Image } from "astro:assets";
 import ProgressChart from "@/components/ui/ProgressChart.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import SquareList from "@/components/ui/SquareList.astro";
+import { stock } from "@/data/stock";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
 const steps = [
   {
     index: "01",
     title: "Mesurer",
+    photo: stock.mesurer,
     lead: "Tout part d'un point de départ chiffré.",
     items: [
       "Première séance : mensurations détaillées",
@@ -23,6 +26,7 @@ const steps = [
   {
     index: "02",
     title: "Ajuster",
+    photo: stock.ajuster,
     lead: "Le programme suit vos chiffres, pas l'inverse.",
     items: [
       "Un programme écrit pour vous",
@@ -34,6 +38,7 @@ const steps = [
   {
     index: "03",
     title: "Progresser",
+    photo: stock.progresser,
     lead: "Chaque séance est notée, puis comparée.",
     items: ["Chaque séance est notée", "On compare régulièrement les chiffres", "On fixe la suite à partir de ce qui a bougé"],
   },
@@ -70,8 +75,16 @@ const example = [60, 62.5, 62.5, 65, 67.5, 67.5, 70, 72.5].map((value, i) => ({
           </h2>
           <p class="text-lead text-mesure">{step.lead}</p>
         </div>
-        <div class="border-t border-graphite pt-6 lg:col-span-6 lg:col-start-7">
-          <SquareList items={step.items} />
+        <div class="flex flex-col gap-6 lg:col-span-6 lg:col-start-7">
+          <Image
+            src={step.photo.src}
+            alt={step.photo.alt}
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            loading={i === 0 ? "eager" : "lazy"}
+            class="aspect-[3/2] w-full border border-line object-cover grayscale contrast-110"
+          />
+          <SquareList items={step.items} class="border-t border-graphite pt-6" />
         </div>
       </div>
     </section>

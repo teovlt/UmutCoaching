@@ -1,0 +1,42 @@
+---
+// Visible empty frame where one of Umut's own photos goes (hero, à propos)
+// until he uploads it in /admin › Photos. Never filled with a stock photo:
+// a stranger must not pass for him.
+interface Props {
+  ratio?: "4/5" | "3/2" | undefined;
+  /** What should go there: "photo d'Umut en salle" */
+  label: string;
+  class?: string | undefined;
+}
+
+const { ratio = "4/5", label, class: className } = Astro.props;
+---
+
+<div
+  role="img"
+  aria-label={`Emplacement réservé : ${label} (à fournir)`}
+  class:list={[
+    "flex w-full flex-col items-center justify-center gap-3 border border-line bg-subtle p-6 text-center",
+    ratio === "4/5" ? "aspect-[4/5]" : "aspect-[3/2]",
+    className,
+  ]}
+>
+  <svg
+    class="size-8 text-mesure"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="square"
+    aria-hidden="true"
+  >
+    <path d="M3 7h4l2-3h6l2 3h4v13H3z" />
+    <circle cx="12" cy="13" r="4" />
+  </svg>
+  <p class="font-mono text-label text-mesure uppercase" aria-hidden="true">
+    {label}
+  </p>
+  <p class="font-mono text-micro text-mesure" aria-hidden="true">
+    [À CONFIRMER] · /admin › Photos
+  </p>
+</div>

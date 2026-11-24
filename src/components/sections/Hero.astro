@@ -1,9 +1,9 @@
 ---
 // docs/02-architecture.md § Accueil 00 Hero, texts from docs/04-contenu.md.
-// Right column: Umut's photo once uploaded in /admin, otherwise the
-// ProgressChart with illustrative data, captioned as such.
+// Right column: Umut's photo once uploaded in /admin › Photos, otherwise a
+// visible placeholder frame (the illustrative ProgressChart is on /methode).
 import Button from "@/components/ui/Button.astro";
-import ProgressChart from "@/components/ui/ProgressChart.astro";
+import PhotoPlaceholder from "@/components/ui/PhotoPlaceholder.astro";
 import type { Settings } from "@/lib/api";
 
 interface Props {
@@ -12,12 +12,6 @@ interface Props {
 
 const { settings } = Astro.props;
 const photo = settings.photos.hero;
-
-// Illustrative only: the caption says "exemple de suivi"
-const example = [80, 82.5, 82.5, 85, 87.5, 87.5, 90, 92.5, 92.5, 95, 97.5, 100].map((value, i) => ({
-  label: `S${String(i + 1).padStart(2, "0")}`,
-  value,
-}));
 ---
 
 <section class="container-site grid items-center gap-12 py-12 lg:grid-cols-12 lg:gap-8 lg:py-20" aria-labelledby="hero-title">
@@ -56,12 +50,7 @@ const example = [80, 82.5, 82.5, 85, 87.5, 87.5, 90, 92.5, 92.5, 95, 97.5, 100].
         class="aspect-[4/5] w-full border border-line object-cover"
       />
     ) : (
-      <ProgressChart
-        points={example}
-        unit="kg"
-        caption="exemple de suivi · développé couché"
-        title="Exemple de suivi : développé couché, de 80 kg en semaine 1 à 100 kg en semaine 12"
-      />
+      <PhotoPlaceholder label="photo d'Umut en salle" />
     )}
   </div>
 </section>

@@ -23,6 +23,7 @@
 | D18 | Bandeau chiffres : seul `24 h` (délai de réponse, confirmé) est affiché. Pas de « ans d'expérience » : Umut est coach débutant (4 ans de pratique personnelle du bodybuilding, ce qui n'est pas une expérience de coach) | Ne pas induire en erreur |
 | D20 | Conditions tarifaires (`pricingTerms`) et mentions légales (`legal.*` : nom, statut, SIRET, adresse, TVA, diplôme / carte pro, assurance, hébergeur) stockées dans `settings`, éditables dans `/admin` › Infos du site et › Mentions légales | Rien de légal ni de tarifaire en dur dans le code ; un champ vide reste `[À CONFIRMER]` |
 | D21 | Formulaire `/reserver` envoyé en `fetch` JSON vers `/api/messages` (pas de repli sans JavaScript : les contacts directs sont affichés à côté) | Un relais côté serveur Astro ferait venir tous les messages de la même IP et casserait la limite de 5 envois / heure / IP |
+| D22 | **Photos d'illustration Unsplash** (licence Unsplash, auto-hébergées dans `src/assets/images/stock/`, liste et crédits dans `src/data/stock.ts`, crédits sur /mentions-legales) : 3 étapes de /methode et photo par défaut des offres selon leur format. Uniquement objets, lieux et corps anonymes, en N&B (`grayscale contrast-110`). **Jamais à la place d'une photo d'Umut** : hero et « À propos » affichent un cadre vide `PhotoPlaceholder` tant qu'il n'a pas envoyé ses photos (Q6). Le hero n'affiche donc plus le `ProgressChart` (resté sur /methode) | Pages moins austères sans faire passer un inconnu pour Umut ou pour un client ; aucune requête vers Unsplash côté visiteur (D6/D7) |
 | D19 | Accueil : le bandeau chiffres n'apparaît qu'à partir de **2 chiffres** confirmés (un seul ne fait pas un bandeau ; « réponse sous 24 h » est repris dans le hero). Les photos envoyées depuis `/admin` sont affichées en `<img>` (dimensions fixes 4:5 / 3:2, `object-cover`) et non via `astro:assets` | Les photos viennent de l'API à l'exécution, déjà compressées en WebP ≤ 2000 px par sharp à l'upload ; `astro:assets` ne traite que les images connues au build |
 
 ## Questions au client — réponses reçues (Google doc « umut. — What I need for your site », 23/11/2026)
@@ -74,3 +75,4 @@
 | prettier, prettier-plugin-astro | formatage |
 | **API** : express, mongoose, jsonwebtoken, bcryptjs, express-rate-limit | socle de l'API (D9), repris de portfolioFreelance |
 | **API** (Phase 3) : multer, sharp | upload et compression des photos |
+| **Site** : sharp | requis par `astro:assets` pour optimiser les photos à la demande en rendu serveur (`/_image`) ; même version que l'API |

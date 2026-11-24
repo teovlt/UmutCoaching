@@ -3,6 +3,7 @@
 // edited in /admin (Infos du site, Photos). No qualification is shown until
 // Umut confirms one (Q13).
 import Button from "@/components/ui/Button.astro";
+import PhotoPlaceholder from "@/components/ui/PhotoPlaceholder.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import Tag from "@/components/ui/Tag.astro";
 import type { Settings } from "@/lib/api";
@@ -21,7 +22,7 @@ const text = about.text || "[À CONFIRMER] Parcours d'Umut en 3 à 5 lignes.";
 
 <section class="section border-y border-line bg-white" aria-labelledby="a-propos-title">
   <div class="container-site grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
-    {photos.about.url && (
+    {photos.about.url ? (
       <img
         src={photos.about.url}
         alt={photos.about.alt || "Umut à la salle"}
@@ -31,8 +32,10 @@ const text = about.text || "[À CONFIRMER] Parcours d'Umut en 3 à 5 lignes.";
         decoding="async"
         class="aspect-[4/5] w-full border border-line object-cover sm:max-w-sm lg:col-span-4 lg:max-w-none"
       />
+    ) : (
+      <PhotoPlaceholder label="portrait d'Umut" class="sm:max-w-sm lg:col-span-4 lg:max-w-none" />
     )}
-    <div class:list={["flex flex-col gap-6", photos.about.url ? "lg:col-span-7 lg:col-start-6" : "lg:col-span-8"]}>
+    <div class="flex flex-col gap-6 lg:col-span-7 lg:col-start-6">
       <SectionLabel index={index} label="à propos" />
       <h2 id="a-propos-title" class="text-h2">
         {title}

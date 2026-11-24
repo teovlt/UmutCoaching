@@ -160,6 +160,10 @@ Voir `02-architecture.md` § Header. Footer `.on-dark`, 4 colonnes desktop, file
 - Icônes : trait 2 px, `stroke="currentColor"`, extrémités carrées, 20/24 px (style de la planche). Source suggérée : **Lucide** (`@lucide/astro` ou SVG copiés) en `stroke-width=2`, `stroke-linecap="square"`.
 - Photos : lumière franche, fond salle sobre, **pas de filtre coloré**. Option traitement « labo » : N&B léger + contraste, la couleur n'existe alors que dans l'UI cobalt.
 - Formats : portrait 4:5 (hero, à propos), paysage 3:2 (programmes). Toujours `alt` descriptif.
+- Photos d'illustration (Unsplash, `src/data/stock.ts`) : toujours en traitement labo `grayscale contrast-110`, via `<Image>` d'`astro:assets`.
+  Les photos d'Umut (envoyées dans `/admin`) restent telles quelles.
+- Photo d'Umut manquante : `ui/PhotoPlaceholder.astro` (cadre `bg-subtle` + filet `line`, icône appareil photo, label mono « photo d'Umut… · [À CONFIRMER] »). Jamais de photo d'illustration à sa place.
+- `ui/ProgrammePhoto.astro` : photo 3:2 d'une offre (celle de l'admin, sinon celle d'illustration de son format), en tête de `ProgramCard` et sur la fiche programme.
 
 ## 8. Mouvement
 - Durées : 120 ms (hover couleur), 200 ms (transform), 1,2 s (tracé de courbe).

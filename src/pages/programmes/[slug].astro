@@ -7,6 +7,7 @@ import Faq from "@/components/sections/Faq.astro";
 import PageHeader from "@/components/sections/PageHeader.astro";
 import Button from "@/components/ui/Button.astro";
 import PricingCard from "@/components/ui/PricingCard.astro";
+import ProgrammePhoto from "@/components/ui/ProgrammePhoto.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import SquareList from "@/components/ui/SquareList.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -79,6 +80,7 @@ const jsonLd = {
           <h2 id="inclus-title" class="text-h2">
             Ce qui est inclus.
           </h2>
+          <ProgrammePhoto programme={p} loading="eager" sizes="(min-width: 1024px) 40vw, 100vw" class="mt-4 border border-line" />
         </div>
         <div class="border-t border-graphite pt-6 lg:col-span-6 lg:col-start-7">
           <SquareList items={p.includes} tone="cobalt" />

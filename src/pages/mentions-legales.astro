@@ -4,6 +4,7 @@
 import LegalSection from "@/components/sections/LegalSection.astro";
 import PageHeader from "@/components/sections/PageHeader.astro";
 import { isPlaceholder } from "@/data/site";
+import { stock } from "@/data/stock";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSettings } from "@/lib/api";
 
@@ -53,7 +54,19 @@ const phoneHref = isPlaceholder(settings.phone) ? undefined : `tel:${settings.ph
           interdite.
         </p>
       </LegalSection>
-      <LegalSection index="05" id="donnees" title="Données personnelles">
+      <LegalSection index="05" id="credits" title="Crédits photos">
+        <p>Photos d'illustration issues d'Unsplash (licence Unsplash)&nbsp;:</p>
+        <ul class="flex flex-col gap-1 text-small">
+          {Object.values(stock).map((photo) => (
+            <li>
+              <a href={photo.url} rel="noopener">
+                {photo.author}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </LegalSection>
+      <LegalSection index="06" id="donnees" title="Données personnelles">
         <p>
           Les informations envoyées par le formulaire de contact sont traitées comme décrit dans la
           <a href="/confidentialite">politique de confidentialité</a>.
