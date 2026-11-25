@@ -8,59 +8,143 @@ import { isPlaceholder } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSettings } from "@/lib/api";
 
-const settings = await getSettings();
+const { lang } = Astro.locals;
+const settings = await getSettings(lang);
+const copy = {
+  fr: {
+    title: "Confidentialité",
+    description:
+      "Politique de confidentialité du site umut. : données du formulaire de contact, durée de conservation, cookies et vos droits (RGPD).",
+    label: "confidentialité",
+    heading: "Confidentialité.",
+    lead: "Ce site collecte le minimum : ce que vous écrivez dans le formulaire de contact, pour vous répondre. Aucun cookie de mesure ni de publicité.",
+    controller: "Responsable du traitement",
+    name: "Nom",
+    contact: "Contact",
+    formTitle: "Formulaire de contact",
+    data: "Données",
+    dataValue: "Nom, e-mail, téléphone (facultatif), objectif (facultatif), message",
+    purpose: "Finalité",
+    purposeValue: "Répondre à votre demande et organiser une éventuelle première séance",
+    basis: "Base légale",
+    basisValue: "Mesures précontractuelles prises à votre demande (art. 6.1.b du RGPD)",
+    recipient: "Destinataire",
+    recipientValue: (name: string) => `${name}, seul. Les données ne sont ni vendues ni transmises à des tiers.`,
+    storage: "Stockage",
+    retention: "Durée de conservation",
+    retentionValue: "[À CONFIRMER] (la CNIL recommande 3 ans au plus après le dernier contact)",
+    cookiesTitle: "Cookies et mesure d'audience",
+    cookies:
+      "Ce site ne dépose aucun cookie de mesure d'audience ni de publicité. Les polices sont servies par le site lui-même : aucune donnée n'est envoyée à Google Fonts.",
+    thirdParty: "Les liens vers Instagram, TikTok ou WhatsApp mènent à des services tiers, soumis à leurs propres règles.",
+    rightsTitle: "Vos droits",
+    rights:
+      "Vous pouvez demander l'accès à vos données, leur rectification, leur effacement, leur portabilité, ou vous opposer à leur traitement, en écrivant à",
+    complaint: "Si la réponse ne vous satisfait pas, vous pouvez adresser une réclamation à la CNIL",
+  },
+  en: {
+    title: "Privacy",
+    description: "Privacy policy of the umut. website: contact form data, retention period, cookies and your rights (GDPR).",
+    label: "privacy",
+    heading: "Privacy.",
+    lead: "This website collects the bare minimum: what you write in the contact form, to reply to you. No analytics or advertising cookies.",
+    controller: "Data controller",
+    name: "Name",
+    contact: "Contact",
+    formTitle: "Contact form",
+    data: "Data",
+    dataValue: "Name, e-mail, phone (optional), goal (optional), message",
+    purpose: "Purpose",
+    purposeValue: "Replying to your request and arranging a possible first session",
+    basis: "Legal basis",
+    basisValue: "Pre-contractual steps taken at your request (GDPR art. 6.1.b)",
+    recipient: "Recipient",
+    recipientValue: (name: string) => `${name} only. Data is neither sold nor passed on to third parties.`,
+    storage: "Storage",
+    retention: "Retention period",
+    retentionValue: "[À CONFIRMER] (the CNIL recommends 3 years at most after the last contact)",
+    cookiesTitle: "Cookies and analytics",
+    cookies:
+      "This website sets no analytics or advertising cookies. Fonts are served by the website itself: no data is sent to Google Fonts.",
+    thirdParty: "Links to Instagram, TikTok or WhatsApp lead to third-party services, subject to their own rules.",
+    rightsTitle: "Your rights",
+    rights: "You can ask to access, correct, erase or port your data, or object to its processing, by writing to",
+    complaint: "If you are not satisfied with the answer, you can file a complaint with the CNIL, the French data protection authority",
+  },
+  tr: {
+    title: "Gizlilik",
+    description: "umut. web sitesinin gizlilik politikası: iletişim formu verileri, saklama süresi, çerezler ve haklarınız (GDPR).",
+    label: "gizlilik",
+    heading: "Gizlilik.",
+    lead: "Bu site yalnızca en az veriyi toplar: size yanıt vermek için iletişim formuna yazdıklarınızı. Ölçüm veya reklam çerezi yoktur.",
+    controller: "Veri sorumlusu",
+    name: "Ad",
+    contact: "İletişim",
+    formTitle: "İletişim formu",
+    data: "Veriler",
+    dataValue: "Ad, e-posta, telefon (isteğe bağlı), hedef (isteğe bağlı), mesaj",
+    purpose: "Amaç",
+    purposeValue: "Talebinize yanıt vermek ve olası bir ilk seansı planlamak",
+    basis: "Hukuki dayanak",
+    basisValue: "Talebiniz üzerine alınan sözleşme öncesi önlemler (GDPR md. 6.1.b)",
+    recipient: "Alıcı",
+    recipientValue: (name: string) => `Yalnızca ${name}. Veriler satılmaz ve üçüncü kişilere aktarılmaz.`,
+    storage: "Depolama",
+    retention: "Saklama süresi",
+    retentionValue: "[À CONFIRMER] (CNIL, son iletişimden sonra en fazla 3 yıl önerir)",
+    cookiesTitle: "Çerezler ve ziyaretçi ölçümü",
+    cookies:
+      "Bu site ziyaretçi ölçümü veya reklam çerezi kullanmaz. Yazı tipleri sitenin kendisi tarafından sunulur: Google Fonts'a hiçbir veri gönderilmez.",
+    thirdParty: "Instagram, TikTok veya WhatsApp bağlantıları, kendi kurallarına tabi üçüncü taraf hizmetlere yönlendirir.",
+    rightsTitle: "Haklarınız",
+    rights:
+      "Verilerinize erişim, düzeltme, silme, taşınabilirlik talep edebilir veya işlenmelerine itiraz edebilirsiniz; bunun için şu adrese yazın:",
+    complaint: "Yanıttan memnun kalmazsanız, Fransız veri koruma kurumu CNIL'e şikâyette bulunabilirsiniz",
+  },
+}[lang];
+
 const { legal } = settings;
 const emailHref = isPlaceholder(settings.email) ? undefined : `mailto:${settings.email}`;
 ---
 
-<BaseLayout
-  title="Confidentialité"
-  description="Politique de confidentialité du site umut. : données du formulaire de contact, durée de conservation, cookies et vos droits (RGPD)."
->
-  <PageHeader
-    label="confidentialité"
-    title="Confidentialité."
-    lead="Ce site collecte le minimum : ce que vous écrivez dans le formulaire de contact, pour vous répondre. Aucun cookie de mesure ni de publicité."
-  />
+<BaseLayout title={copy.title} description={copy.description}>
+  <PageHeader label={copy.label} title={copy.heading} lead={copy.lead} />
 
   <div class="section">
     <div class="container-site">
       <LegalSection
         index="01"
         id="responsable"
-        title="Responsable du traitement"
+        title={copy.controller}
         items={[
-          { label: "Nom", value: legal.name },
-          { label: "Contact", value: settings.email, href: emailHref, mono: true },
+          { label: copy.name, value: legal.name },
+          { label: copy.contact, value: settings.email, href: emailHref, mono: true },
         ]}
       />
       <LegalSection
         index="02"
         id="formulaire"
-        title="Formulaire de contact"
+        title={copy.formTitle}
         items={[
-          { label: "Données", value: "Nom, e-mail, téléphone (facultatif), objectif (facultatif), message" },
-          { label: "Finalité", value: "Répondre à votre demande et organiser une éventuelle première séance" },
-          { label: "Base légale", value: "Mesures précontractuelles prises à votre demande (art. 6.1.b du RGPD)" },
-          { label: "Destinataire", value: `${settings.name}, seul. Les données ne sont ni vendues ni transmises à des tiers.` },
-          { label: "Stockage", value: legal.host },
-          { label: "Durée de conservation", value: "[À CONFIRMER] (la CNIL recommande 3 ans au plus après le dernier contact)" },
+          { label: copy.data, value: copy.dataValue },
+          { label: copy.purpose, value: copy.purposeValue },
+          { label: copy.basis, value: copy.basisValue },
+          { label: copy.recipient, value: copy.recipientValue(settings.name) },
+          { label: copy.storage, value: legal.host },
+          { label: copy.retention, value: copy.retentionValue },
         ]}
       />
-      <LegalSection index="03" id="cookies" title="Cookies et mesure d'audience">
-        <p>
-          Ce site ne dépose aucun cookie de mesure d'audience ni de publicité. Les polices sont servies par le site lui-même : aucune donnée
-          n'est envoyée à Google Fonts.
-        </p>
-        <p>Les liens vers Instagram, TikTok ou WhatsApp mènent à des services tiers, soumis à leurs propres règles.</p>
+      <LegalSection index="03" id="cookies" title={copy.cookiesTitle}>
+        <p>{copy.cookies}</p>
+        <p>{copy.thirdParty}</p>
       </LegalSection>
-      <LegalSection index="04" id="droits" title="Vos droits">
+      <LegalSection index="04" id="droits" title={copy.rightsTitle}>
         <p>
-          Vous pouvez demander l'accès à vos données, leur rectification, leur effacement, leur portabilité, ou vous opposer à leur
-          traitement, en écrivant à {emailHref ? <a href={emailHref}>{settings.email}</a> : settings.email}.
+          {copy.rights}
+          {emailHref ? <a href={emailHref}>{settings.email}</a> : settings.email}.
         </p>
         <p>
-          Si la réponse ne vous satisfait pas, vous pouvez adresser une réclamation à la CNIL (
+          {copy.complaint} (
           <a href="https://www.cnil.fr/fr/plaintes" rel="noopener">
             cnil.fr
           </a>

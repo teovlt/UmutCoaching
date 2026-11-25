@@ -15,8 +15,15 @@ import { isPlaceholder } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getFaqs, getProgrammes, getSettings, getTemoignages } from "@/lib/api";
 import { priceText } from "@/lib/format";
+import { languages, localePath } from "@/i18n/config";
 
-const [settings, programmes, temoignages, faqs] = await Promise.all([getSettings(), getProgrammes(), getTemoignages(), getFaqs("accueil")]);
+const { lang } = Astro.locals;
+const [settings, programmes, temoignages, faqs] = await Promise.all([
+  getSettings(lang),
+  getProgrammes(lang),
+  getTemoignages(),
+  getFaqs("accueil", lang),
+]);
 
 // Sections are numbered 01, 02… in reading order. A section left out (no
 // testimonial, no FAQ…) must not leave a gap in the numbering.
@@ -31,12 +38,16 @@ const shown = [
 ].filter((id): id is string => Boolean(id));
 const number = (id: string) => String(shown.indexOf(id) + 1).padStart(2, "0");
 
-const description =
-  "Coaching musculation en salle et en ligne : un bilan de départ, un programme ajusté chaque semaine, une progression suivie au kilo près.";
+const description = {
+  fr: "Coaching musculation en salle et en ligne : un bilan de départ, un programme ajusté chaque semaine, une progression suivie au kilo près.",
+  en: "Strength coaching at the gym and online: a starting assessment, a programme adjusted every week, progress tracked to the kilo.",
+  tr: "Salonda ve online fitness koçluğu: başlangıç değerlendirmesi, her hafta güncellenen bir program, kilosu kilosuna takip edilen ilerleme.",
+}[lang];
 
 // schema.org: only confirmed values (no placeholder ends up in Google)
 const known = (value: string) => (isPlaceholder(value) ? undefined : value);
 const siteUrl = new URL("/", Astro.site).href;
+const pageUrl = new URL(localePath(lang, "/"), Astro.site).href;
 const jsonLd = [
   {
     "@context": "https://schema.org",
@@ -45,7 +56,8 @@ const jsonLd = [
     name: "Umut Coaching",
     alternateName: settings.brand,
     description,
-    url: siteUrl,
+    url: pageUrl,
+    inLanguage: languages[lang].htmlLang,
     // "06 31 …" → "+33631…" (international format expected by schema.org)
     telephone: known(settings.phone)
       ?.replace(/[^\d+]/g, "")
@@ -68,7 +80,7 @@ const jsonLd = [
             "@type": "Offer",
             itemOffered: { "@type": "Service", name: p.title, description: p.summary || undefined },
             ...(typeof p.priceFrom === "number" && !p.priceLabel
-              ? { price: p.priceFrom, priceCurrency: p.currency, description: priceText(p) }
+              ? { price: p.priceFrom, priceCurrency: p.currency, description: priceText(p, lang) }
               : {}),
           })),
         }

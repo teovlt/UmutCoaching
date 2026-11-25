@@ -9,52 +9,107 @@ import RecommendedTag from "@/components/ui/RecommendedTag.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getFaqs, getProgrammes, getSettings } from "@/lib/api";
-import { formatLabels, priceText, pricingConditions } from "@/lib/format";
+import { priceText, pricingConditions } from "@/lib/format";
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
 
-const [programmes, faqs, settings] = await Promise.all([getProgrammes(), getFaqs("tarifs"), getSettings()]);
+const { lang } = Astro.locals;
+const t = ui[lang];
+const [programmes, faqs, settings] = await Promise.all([getProgrammes(lang), getFaqs("tarifs", lang), getSettings(lang)]);
+const copy = {
+  fr: {
+    title: "Tarifs",
+    description:
+      "Tarifs du coaching umut. : coaching individuel en salle et coaching en ligne, bilan de départ inclus, annulation gratuite jusqu'à 24 h avant.",
+    lead: "Le prix de chaque offre, ce qu'elle comprend et les conditions, au même endroit.",
+    gridLabel: "grille",
+    grid: "En un coup d'œil.",
+    caption: "Tarifs par offre",
+    offer: "Offre",
+    format: "Format",
+    duration: "Durée",
+    price: "Prix",
+    colon: " : ",
+    detailLabel: "détail",
+    detail: "Ce que comprend chaque offre.",
+    empty: "Tarifs [À CONFIRMER]",
+    conditionsLabel: "conditions",
+    conditions: "Conditions.",
+  },
+  en: {
+    title: "Pricing",
+    description:
+      "umut. coaching prices: one-to-one coaching at the gym and online coaching, starting assessment included, free cancellation up to 24 h before.",
+    lead: "The price of each offer, what it includes and the terms, in one place.",
+    gridLabel: "overview",
+    grid: "At a glance.",
+    caption: "Prices by offer",
+    offer: "Offer",
+    format: "Format",
+    duration: "Duration",
+    price: "Price",
+    colon: ": ",
+    detailLabel: "details",
+    detail: "What each offer includes.",
+    empty: "Prices [À CONFIRMER]",
+    conditionsLabel: "terms",
+    conditions: "Terms.",
+  },
+  tr: {
+    title: "Fiyatlar",
+    description:
+      "umut. koçluk fiyatları: salonda birebir koçluk ve online koçluk, başlangıç değerlendirmesi dahil, 24 saat öncesine kadar ücretsiz iptal.",
+    lead: "Her teklifin fiyatı, içeriği ve koşulları tek bir yerde.",
+    gridLabel: "özet",
+    grid: "Bir bakışta.",
+    caption: "Tekliflere göre fiyatlar",
+    offer: "Teklif",
+    format: "Format",
+    duration: "Süre",
+    price: "Fiyat",
+    colon: ": ",
+    detailLabel: "detay",
+    detail: "Her teklif neleri içeriyor.",
+    empty: "Fiyatlar [À CONFIRMER]",
+    conditionsLabel: "koşullar",
+    conditions: "Koşullar.",
+  },
+}[lang];
 // "Une seule offre en avant": the first featured one wins
 const featuredId = programmes.find((p) => p.featured)?.id;
 const offers = programmes.map((p) => ({ ...p, featured: p.id === featuredId }));
 ---
 
-<BaseLayout
-  title="Tarifs"
-  description="Tarifs du coaching umut. : coaching individuel en salle et coaching en ligne, bilan de départ inclus, annulation gratuite jusqu'à 24 h avant."
->
-  <PageHeader
-    index="03"
-    label="tarifs"
-    title="Des tarifs clairs, sans engagement caché."
-    lead="Le prix de chaque offre, ce qu'elle comprend et les conditions, au même endroit."
-  />
+<BaseLayout title={copy.title} description={copy.description}>
+  <PageHeader index="03" label={t.sectionLabels.tarifs} title={t.pricing.title} lead={copy.lead} />
 
   {offers.length > 0 ? (
     <>
       <section class="section" aria-labelledby="grille-title">
         <div class="container-site flex flex-col gap-10">
           <div class="flex flex-col gap-4">
-            <SectionLabel index="01" label="grille" />
+            <SectionLabel index="01" label={copy.gridLabel} />
             <h2 id="grille-title" class="text-h2">
-              En un coup d'œil.
+              {copy.grid}
             </h2>
           </div>
           <!-- Explicit roles: below md the rows are CSS grids, which drops the
                native table semantics in some screen readers -->
           <table role="table" class="w-full border-t border-graphite text-left">
-            <caption class="sr-only">Tarifs par offre</caption>
+            <caption class="sr-only">{copy.caption}</caption>
             <thead role="rowgroup" class="hidden md:table-header-group">
               <tr role="row" class="border-b border-line">
                 <th role="columnheader" scope="col" class="py-3 pr-4 label-mono font-normal text-mesure">
-                  Offre
+                  {copy.offer}
                 </th>
                 <th role="columnheader" scope="col" class="py-3 pr-4 label-mono font-normal text-mesure">
-                  Format
+                  {copy.format}
                 </th>
                 <th role="columnheader" scope="col" class="py-3 pr-4 label-mono font-normal text-mesure">
-                  Durée
+                  {copy.duration}
                 </th>
                 <th role="columnheader" scope="col" class="py-3 label-mono font-normal text-mesure md:text-right">
-                  Prix
+                  {copy.price}
                 </th>
               </tr>
             </thead>
@@ -68,25 +123,31 @@ const offers = programmes.map((p) => ({ ...p, featured: p.id === featuredId }));
                   ]}
                 >
                   <th role="rowheader" scope="row" class="col-span-2 font-bold md:py-5 md:pr-4">
-                    <a href={`/programmes/${p.slug}`} class="text-graphite">
+                    <a href={localePath(lang, `/programmes/${p.slug}`)} class="text-graphite">
                       {p.title}
                     </a>
                     {p.featured && <RecommendedTag class="ml-3 align-middle" />}
                   </th>
                   <td role="cell" class="font-mono text-label text-mesure uppercase md:py-5 md:pr-4">
-                    <span class="md:sr-only">Format&nbsp;: </span>
-                    {formatLabels[p.format]}
+                    <span class="md:sr-only">
+                      {copy.format}
+                      {copy.colon}
+                    </span>
+                    {t.formats[p.format]}
                   </td>
                   <td role="cell" class="font-mono text-label text-mesure uppercase md:py-5 md:pr-4">
                     {p.duration && (
                       <>
-                        <span class="md:sr-only">Durée&nbsp;: </span>
+                        <span class="md:sr-only">
+                          {copy.duration}
+                          {copy.colon}
+                        </span>
                         {p.duration}
                       </>
                     )}
                   </td>
                   <td role="cell" class="col-span-2 pt-2 font-mono font-bold md:py-5 md:pt-5 md:text-right">
-                    {priceText(p)}
+                    {priceText(p, lang)}
                   </td>
                 </tr>
               ))}
@@ -98,9 +159,9 @@ const offers = programmes.map((p) => ({ ...p, featured: p.id === featuredId }));
       <section class="section border-y border-line bg-white" aria-labelledby="detail-title">
         <div class="container-site flex flex-col gap-10">
           <div class="flex flex-col gap-4">
-            <SectionLabel index="02" label="détail" />
+            <SectionLabel index="02" label={copy.detailLabel} />
             <h2 id="detail-title" class="text-h2">
-              Ce que comprend chaque offre.
+              {copy.detail}
             </h2>
           </div>
           <ul data-stagger class:list={["grid gap-4 md:grid-cols-2", offers.length >= 3 && "lg:grid-cols-3"]}>
@@ -115,20 +176,20 @@ const offers = programmes.map((p) => ({ ...p, featured: p.id === featuredId }));
     </>
   ) : (
     <section class="section">
-      <p class="container-site font-mono text-small text-mesure">Tarifs [À CONFIRMER]</p>
+      <p class="container-site font-mono text-small text-mesure">{copy.empty}</p>
     </section>
   )}
 
   <section class="section" aria-labelledby="conditions-title">
     <div class="container-site grid gap-8 lg:grid-cols-12">
       <div class="flex flex-col gap-4 lg:col-span-5">
-        <SectionLabel index={offers.length > 0 ? "03" : "01"} label="conditions" />
+        <SectionLabel index={offers.length > 0 ? "03" : "01"} label={copy.conditionsLabel} />
         <h2 id="conditions-title" class="text-h2">
-          Conditions.
+          {copy.conditions}
         </h2>
       </div>
       <ul class="flex flex-col border-t border-graphite lg:col-span-6 lg:col-start-7">
-        {pricingConditions(settings).map((condition) => (
+        {pricingConditions(settings, lang).map((condition) => (
           <li class="border-b border-line py-4 font-mono text-small">{condition}</li>
         ))}
       </ul>

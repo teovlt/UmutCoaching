@@ -30,6 +30,10 @@ Sur l'accueil, chaque section reprend ces blocs en version courte avec un lien `
 /404
 ```
 
+**Langues (D25)** : chaque page existe en français (racine), anglais (`/en/…`) et turc (`/tr/…`), mêmes slugs
+(`/en/programmes/coaching-individuel`). Un middleware (`src/middleware.ts`) retire le préfixe et donne la langue
+aux pages (`Astro.locals.lang`, `Astro.locals.path`) : un seul fichier par page. `/admin` reste en français.
+
 Programmes de départ (à valider, cf. `05-decisions.md`) :
 - `coaching-individuel` — séances 1:1 en salle
 - `suivi-en-ligne` — programme + suivi hebdo à distance
@@ -37,7 +41,7 @@ Programmes de départ (à valider, cf. `05-decisions.md`) :
 - `nutrition` — plan alimentaire et ajustements (si Umut est habilité)
 
 **v2 possibles** (prévoir la structure, ne pas coder) : `/resultats` (transformations), `/blog`,
-versions `/de/` ou `/tr/` (i18n Astro), espace client.
+version `/de/`, espace client.
 
 ## Header & navigation
 
@@ -46,7 +50,10 @@ versions `/de/` ou `/tr/` (i18n Astro), espace client.
   CTA « Réserver une séance » **graphite** avec pastille ronde `cobalt-400` (pour laisser le cobalt plein au CTA du hero).
 - Mobile (< 1024) : barre 64 px, wordmark + bouton menu carré 44 px bordé.
   Menu ouvert = **plein écran graphite**, liens 26 px Bold avec numéro mono à droite (actif en `cobalt-400`),
-  CTA cobalt plein en bas. Échap ferme, focus piégé, `body` non scrollable.
+  sélecteur de langue (3 drapeaux) puis CTA cobalt plein en bas. Échap ferme, focus piégé, `body` non scrollable.
+  Le volet descend, les liens basculent en 3D l'un après l'autre, tout remonte à la fermeture (design system §8).
+- Sélecteur de langue (`layout/LangSwitcher.astro`) : à gauche du CTA (et du bouton menu sur mobile), petit drapeau +
+  code `FR` / `EN` / `TR`, liste déroulante ; il mène à la même page dans l'autre langue.
 - Header **sticky**, sans ombre ; au scroll, garder le filet bas.
 
 ## Accueil — sections dans l'ordre
@@ -129,7 +136,8 @@ lus et remplis par `src/scripts/admin/form.ts`). Le jeton JWT est gardé dans `l
 - `<title>` : `{Page} — umut. coach musculation [Ville]` ; description 140–160 car. par page.
 - JSON-LD : `Person` (Umut) + `LocalBusiness`/`HealthAndBeautyBusiness` (si adresse) ou `ProfessionalService`, `Service` par programme, `FAQPage` sur les pages FAQ.
 - `og-image` 1200×630 générée depuis la marque (fond labo, wordmark, H1).
-- `sitemap-index.xml`, `robots.txt`, canonical, `hreflang` prêt si i18n.
+- `sitemap-index.xml`, `robots.txt`, canonical par langue, `hreflang` fr / en / tr + `x-default` (français),
+  `<html lang>` et `og:locale` selon la langue.
 
 ## Tiers & conformité
 - **Aucun cookie sans consentement.** Analytics sans cookie (Plausible ou Umami) → pas de bannière nécessaire.

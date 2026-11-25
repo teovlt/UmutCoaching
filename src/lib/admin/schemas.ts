@@ -20,6 +20,15 @@ export type FieldDef =
 
 export type CollectionKey = "programmes" | "faqs" | "temoignages";
 
+// English and Turkish versions (site /en and /tr, docs/05-decisions.md D25).
+// Each language repeats the given fields under i18n.<lang>; an empty one
+// shows the French text on that version of the site.
+const translated = (make: (lang: "en" | "tr", prefix: string) => FieldDef[]): FieldDef[] => [
+  ...make("en", "Anglais"),
+  ...make("tr", "Turc"),
+];
+const emptyHelp = "Vide = texte français affiché.";
+
 const visible: FieldDef = {
   kind: "checkbox",
   name: "visible",
@@ -85,6 +94,16 @@ export const programmeFields: FieldDef[] = [
   { kind: "checkbox", name: "featured", label: "Recommandé", help: "Une seule offre recommandée à la fois." },
   { kind: "image", name: "image", label: "Photo" },
   visible,
+  ...translated((lang, prefix) => [
+    { kind: "text", name: `i18n.${lang}.title`, label: `${prefix} · Titre`, help: emptyHelp },
+    { kind: "textarea", name: `i18n.${lang}.summary`, label: `${prefix} · Résumé`, rows: 3 },
+    { kind: "textarea", name: `i18n.${lang}.audience`, label: `${prefix} · Pour qui ?`, rows: 3 },
+    { kind: "text", name: `i18n.${lang}.duration`, label: `${prefix} · Durée` },
+    { kind: "text", name: `i18n.${lang}.priceUnit`, label: `${prefix} · Unité du prix` },
+    { kind: "text", name: `i18n.${lang}.priceLabel`, label: `${prefix} · Texte à la place du prix` },
+    { kind: "lines", name: `i18n.${lang}.includes`, label: `${prefix} · Ce qui est inclus`, help: "Un élément par ligne." },
+    { kind: "rows", name: `i18n.${lang}.steps`, label: `${prefix} · Déroulé`, keys: ["label", "text"], help: "Étape | texte" },
+  ]),
 ];
 
 export const faqFields: FieldDef[] = [
@@ -98,6 +117,10 @@ export const faqFields: FieldDef[] = [
     rows: 3,
   },
   visible,
+  ...translated((lang, prefix) => [
+    { kind: "text", name: `i18n.${lang}.question`, label: `${prefix} · Question`, help: emptyHelp },
+    { kind: "textarea", name: `i18n.${lang}.answer`, label: `${prefix} · Réponse`, rows: 4 },
+  ]),
 ];
 
 export const temoignageFields: FieldDef[] = [
@@ -159,6 +182,21 @@ export const infoFields: FieldDef[] = [
     help: "Une par ligne, affichées sous les tarifs (accueil, /tarifs, pages programmes). La TVA se règle dans Mentions légales.",
     rows: 5,
   },
+  ...translated((lang, prefix) => [
+    { kind: "text", name: `i18n.${lang}.hours`, label: `${prefix} · Horaires`, help: "Ex. Mon–Fri 09:00–18:00" },
+    { kind: "text", name: `i18n.${lang}.aboutTitle`, label: `${prefix} · À propos : titre`, help: emptyHelp },
+    { kind: "textarea", name: `i18n.${lang}.aboutText`, label: `${prefix} · À propos : parcours`, rows: 6 },
+    { kind: "lines", name: `i18n.${lang}.aboutTags`, label: `${prefix} · À propos : spécialités`, rows: 3 },
+    { kind: "lines", name: `i18n.${lang}.pricingTerms`, label: `${prefix} · Conditions (tarifs)`, rows: 5 },
+    {
+      kind: "rows",
+      name: `i18n.${lang}.metrics`,
+      label: `${prefix} · Chiffres clés`,
+      keys: ["value", "unit", "label"],
+      help: "Mêmes chiffres qu'en français, libellé traduit : 24 | h | reply time",
+      rows: 4,
+    },
+  ]),
 ];
 
 // Legal notice (/mentions-legales). Empty = [À CONFIRMER] on the site.

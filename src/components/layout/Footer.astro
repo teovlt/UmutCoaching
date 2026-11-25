@@ -5,10 +5,14 @@
 // as text, not as a dead link.
 import { getSettings } from "@/lib/api";
 import { isPlaceholder } from "@/data/site";
-import { bookingCta, legalNav, mainNav } from "@/data/navigation";
+import { bookingHref, legalNav, mainNav } from "@/data/navigation";
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
 
 // Edited from /admin; falls back to the site.ts placeholders
-const site = await getSettings();
+const { lang } = Astro.locals;
+const t = ui[lang];
+const site = await getSettings(lang);
 const year = new Date().getFullYear();
 const phoneHref = isPlaceholder(site.phone) ? undefined : `tel:${site.phone.replace(/[^+\d]/g, "")}`;
 const emailHref = isPlaceholder(site.email) ? undefined : `mailto:${site.email}`;
@@ -17,7 +21,7 @@ const emailHref = isPlaceholder(site.email) ? undefined : `mailto:${site.email}`
 <footer class="on-dark border-t border-line-dark">
   <div class="container-site grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
     <div class="flex flex-col gap-3">
-      <a href="/" class="text-h2 font-bold text-white no-underline" aria-label="umut. — accueil">
+      <a href={localePath(lang, "/")} class="text-h2 font-bold text-white no-underline" aria-label={t.homeLabel}>
         <span aria-hidden="true">
           umut<span class="brand-dot">.</span>
         </span>
@@ -26,7 +30,7 @@ const emailHref = isPlaceholder(site.email) ? undefined : `mailto:${site.email}`
     </div>
 
     <div class="flex flex-col gap-3">
-      <h2 class="label-mono text-muted">Contact</h2>
+      <h2 class="label-mono text-muted">{t.footer.contact}</h2>
       <address class="flex flex-col gap-1 text-small not-italic">
         <span>{site.gym}</span>
         <span>{site.address}</span>
@@ -36,30 +40,30 @@ const emailHref = isPlaceholder(site.email) ? undefined : `mailto:${site.email}`
       <p class="font-mono text-label text-muted">{site.hours}</p>
     </div>
 
-    <nav aria-label="Pied de page" class="flex flex-col gap-3">
-      <h2 class="label-mono text-muted">Pages</h2>
+    <nav aria-label={t.footer.label} class="flex flex-col gap-3">
+      <h2 class="label-mono text-muted">{t.footer.pages}</h2>
       <ul class="flex flex-col gap-1 text-small">
         {mainNav.map((item) => (
           <li>
-            <a href={item.href} class="inline-flex min-h-11 items-center gap-2 no-underline hover:underline lg:min-h-0">
+            <a href={localePath(lang, item.href)} class="inline-flex min-h-11 items-center gap-2 no-underline hover:underline lg:min-h-0">
               <span class="font-mono text-label text-muted">{item.index}</span>
-              {item.label}
+              {t.nav[item.key]}
             </a>
           </li>
         ))}
         <li>
           <a
-            href={bookingCta.href}
+            href={localePath(lang, bookingHref)}
             class="inline-flex min-h-11 items-center font-bold text-cobalt-400 no-underline hover:underline lg:min-h-0"
           >
-            {bookingCta.label} →
+            {t.booking} →
           </a>
         </li>
       </ul>
     </nav>
 
     <div class="flex flex-col gap-3">
-      <h2 class="label-mono text-muted">Réseaux</h2>
+      <h2 class="label-mono text-muted">{t.footer.socials}</h2>
       <ul class="flex flex-col gap-1 text-small">
         {site.socials.map((social) => (
           <li>
@@ -84,8 +88,8 @@ const emailHref = isPlaceholder(site.email) ? undefined : `mailto:${site.email}`
       <ul class="flex flex-wrap gap-x-6 gap-y-1 text-small">
         {legalNav.map((item) => (
           <li>
-            <a href={item.href} class="inline-flex min-h-11 items-center sm:min-h-0">
-              {item.label}
+            <a href={localePath(lang, item.href)} class="inline-flex min-h-11 items-center sm:min-h-0">
+              {t.footer[item.key]}
             </a>
           </li>
         ))}

@@ -2,24 +2,8 @@
 // docs/02-architecture.md § Accueil 02, texts from docs/04-contenu.md (Méthode).
 import Button from "@/components/ui/Button.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
-
-const steps = [
-  {
-    index: "01",
-    title: "Mesurer",
-    text: "Première séance : mensurations détaillées, vos objectifs et votre historique, photo de départ si vous le souhaitez.",
-  },
-  {
-    index: "02",
-    title: "Ajuster",
-    text: "Un programme écrit pour vous, revu chaque semaine selon vos charges, votre récupération et votre ressenti.",
-  },
-  {
-    index: "03",
-    title: "Progresser",
-    text: "Chaque séance est notée. On compare régulièrement les chiffres et on fixe la suite.",
-  },
-];
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
 
 interface Props {
   /** Section number, given by the page: "02" */
@@ -27,14 +11,17 @@ interface Props {
 }
 
 const { index } = Astro.props;
+const { lang } = Astro.locals;
+const t = ui[lang];
+const steps = t.method.steps.map((step, i) => ({ ...step, index: String(i + 1).padStart(2, "0") }));
 ---
 
 <section class="section" aria-labelledby="methode-title">
   <div class="container-site flex flex-col gap-12">
     <div class="flex flex-col gap-4">
-      <SectionLabel index={index} label="méthode" />
+      <SectionLabel index={index} label={t.sectionLabels.methode} />
       <h2 id="methode-title" class="max-w-[20ch] text-h2">
-        Un protocole, pas une improvisation.
+        {t.method.title}
       </h2>
     </div>
     <ol data-stagger class="grid gap-10 md:grid-cols-3 md:gap-8">
@@ -47,8 +34,8 @@ const { index } = Astro.props;
       ))}
     </ol>
     <div>
-      <Button variant="ghost" href="/methode">
-        découvrir la méthode
+      <Button variant="ghost" href={localePath(lang, "/methode")}>
+        {t.method.more}
       </Button>
     </div>
   </div>

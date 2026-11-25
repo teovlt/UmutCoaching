@@ -2,22 +2,25 @@
 // Below 1024 px: square 44 px button opening a full-screen graphite menu.
 // Built on a native <dialog> opened with showModal(): the rest of the page is
 // inert (focus stays inside) and Escape closes it. The script keeps
-// aria-expanded in sync and locks page scroll while it is open.
+// aria-expanded in sync, locks page scroll while it is open, and plays the
+// closing animation before closing (docs/03-design-system.md §8):
+// the panel drops in like a shutter, the links tip in one after the other in
+// 3D, and everything goes back up on close. Still with reduced motion.
 import Button from "@/components/ui/Button.astro";
-import { bookingCta, isActive, mainNav } from "@/data/navigation";
+import { bookingHref, isActive, mainNav } from "@/data/navigation";
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
+import LangSwitcher from "./LangSwitcher.astro";
 
-interface Props {
-  path: string;
-}
-
-const { path } = Astro.props;
+const { lang, path } = Astro.locals;
+const t = ui[lang];
 ---
 
 <div class="lg:hidden" data-mobile-menu>
   <button
     type="button"
     class="flex size-11 items-center justify-center border border-line bg-white text-graphite"
-    aria-label="Ouvrir le menu"
+    aria-label={t.menu.open}
     aria-expanded="false"
     aria-controls="menu-mobile"
     data-menu-open
@@ -29,19 +32,19 @@ const { path } = Astro.props;
 
   <dialog
     id="menu-mobile"
-    aria-label="Menu"
-    class="on-dark m-0 h-dvh max-h-none w-full max-w-none p-0 backdrop:bg-graphite open:flex open:flex-col"
+    aria-label={t.menu.label}
+    class="mobile-menu on-dark m-0 h-dvh max-h-none w-full max-w-none p-0 backdrop:bg-transparent open:flex open:flex-col"
   >
-    <div class="container-site flex h-16 shrink-0 items-center justify-between border-b border-line-dark">
-      <a href="/" class="text-h3 font-bold text-white no-underline" aria-label="umut. — accueil">
+    <div class="menu-bar container-site flex h-16 shrink-0 items-center justify-between border-b border-line-dark">
+      <a href={localePath(lang, "/")} class="text-h3 font-bold text-white no-underline" aria-label={t.homeLabel}>
         <span aria-hidden="true">
           umut<span class="brand-dot">.</span>
         </span>
       </a>
       <button
         type="button"
-        class="flex size-11 items-center justify-center border border-edge-dark text-white"
-        aria-label="Fermer le menu"
+        class="menu-close flex size-11 items-center justify-center border border-edge-dark text-white"
+        aria-label={t.menu.close}
         data-menu-close
       >
         <svg
@@ -58,30 +61,33 @@ const { path } = Astro.props;
       </button>
     </div>
 
-    <nav aria-label="Navigation principale" class="container-site flex flex-1 flex-col pt-2 pb-6">
-      <ul class="flex flex-col">
-        {mainNav.map((item) => {
+    <nav aria-label={t.mainNavLabel} class="container-site flex flex-1 flex-col pt-2 pb-6">
+      <ul class="menu-links flex flex-col">
+        {mainNav.map((item, i) => {
           const active = isActive(path, item.href);
           return (
-            <li class="border-b border-line-dark">
+            <li class="menu-link border-b border-line-dark" style={`--i: ${i}`}>
               <a
-                href={item.href}
+                href={localePath(lang, item.href)}
                 aria-current={active ? "page" : undefined}
                 class:list={[
                   "flex min-h-14 items-baseline justify-between py-3 text-h3 font-bold no-underline",
                   active ? "text-cobalt-400" : "text-white",
                 ]}
               >
-                {item.label}
+                {t.nav[item.key]}
                 <span class:list={["font-mono text-label font-normal", active ? "text-cobalt-400" : "text-muted"]}>{item.index}</span>
               </a>
             </li>
           );
         })}
       </ul>
-      <Button href={bookingCta.href} class="mt-auto w-full">
-        {bookingCta.label}
-      </Button>
+      <div class="menu-foot mt-auto flex flex-col gap-4 pt-8">
+        <LangSwitcher variant="row" />
+        <Button href={localePath(lang, bookingHref)} class="w-full">
+          {t.booking}
+        </Button>
+      </div>
     </nav>
   </dialog>
 </div>
@@ -93,17 +99,46 @@ const { path } = Astro.props;
   const closeButton = root?.querySelector<HTMLButtonElement>("[data-menu-close]");
 
   if (dialog && openButton && closeButton) {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let closing = false;
+
     const setOpen = (open: boolean) => {
       openButton.setAttribute("aria-expanded", String(open));
       document.documentElement.style.overflow = open ? "hidden" : "";
+    };
+
+    // Plays the closing animation (CSS, [data-closing]) then closes for real
+    const close = () => {
+      if (!dialog.open || closing) return;
+      if (reduce.matches) return dialog.close();
+      closing = true;
+      dialog.dataset.closing = "";
+      const panel = dialog;
+      const done = () => {
+        panel.removeEventListener("animationend", onEnd);
+        delete dialog.dataset.closing;
+        closing = false;
+        dialog.close();
+      };
+      const onEnd = (event: AnimationEvent) => {
+        if (event.target === panel) done();
+      };
+      panel.addEventListener("animationend", onEnd);
+      // In case the animation never runs (hidden tab…)
+      window.setTimeout(() => closing && done(), 600);
     };
 
     openButton.addEventListener("click", () => {
       dialog.showModal();
       setOpen(true);
     });
-    closeButton.addEventListener("click", () => dialog.close());
-    // Escape and link clicks both end here; focus returns to the open button
+    closeButton.addEventListener("click", close);
+    // Escape: animate instead of closing at once
+    dialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      close();
+    });
+    // Link clicks end here too; focus returns to the open button
     dialog.addEventListener("close", () => {
       setOpen(false);
       openButton.focus();

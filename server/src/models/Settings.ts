@@ -1,5 +1,5 @@
 import { type InferSchemaType, Schema, model } from "mongoose";
-import { imageField, toJSON } from "./shared.js";
+import { imageField, text, toJSON, translations } from "./shared.js";
 
 // The site's global details, a single document edited from /admin.
 // Empty strings mean "not confirmed": the site then shows its
@@ -44,6 +44,18 @@ const settingsSchema = new Schema(
       insurance: { type: String, default: "", trim: true },
       host: { type: String, default: "", trim: true },
     },
+    // Worded fields of "Infos du site" in English and Turkish
+    ...translations(() => ({
+      hours: text(),
+      aboutTitle: text(),
+      aboutText: text(),
+      aboutTags: { type: [String], default: [] },
+      pricingTerms: { type: [String], default: [] },
+      metrics: {
+        type: [{ value: { type: String, trim: true }, unit: { type: String, trim: true }, label: { type: String, trim: true } }],
+        default: [],
+      },
+    })),
   },
   { timestamps: true, toJSON },
 );

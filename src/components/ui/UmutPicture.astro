@@ -28,6 +28,7 @@ const {
   priority = false,
   class: className,
 } = Astro.props;
+const { lang } = Astro.locals;
 const portrait = ratio === "4/5";
 const classes = [portrait ? "aspect-[4/5]" : "aspect-[3/2]", "w-full object-cover", className];
 const eager = priority ? "eager" : loading;
@@ -36,7 +37,7 @@ const eager = priority ? "eager" : loading;
 {uploaded?.url ? (
   <img
     src={uploaded.url}
-    alt={uploaded.alt || fallback.alt}
+    alt={uploaded.alt || fallback.alt[lang]}
     width={portrait ? 800 : 900}
     height={portrait ? 1000 : 600}
     loading={eager}
@@ -47,7 +48,7 @@ const eager = priority ? "eager" : loading;
 ) : (
   <Image
     src={fallback.src}
-    alt={fallback.alt}
+    alt={fallback.alt[lang]}
     widths={[480, 800, 1200]}
     sizes={sizes}
     loading={eager}

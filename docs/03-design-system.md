@@ -156,6 +156,13 @@ Section `.on-dark` : section-label, H2 blanc, CTA primary cobalt + ghost blanc.
 ### Header / MobileMenu / Footer
 Voir `02-architecture.md` § Header. Footer `.on-dark`, 4 colonnes desktop, filets `line-dark`.
 
+### LangSwitcher `layout/LangSwitcher.astro`
+Drapeau 18×12 (SVG de `src/assets/flags/`, filet `line`, angles droits) + code mono `FR` / `EN` / `TR`.
+`variant="dropdown"` (en-tête) : `<details>` natif, liste blanche à filet graphite, langue courante en `cobalt-500`,
+nom de la langue dans sa propre langue (« Türkçe ») ; Échap et clic à l'extérieur ferment.
+`variant="row"` (menu mobile) : trois boutons 44 px côte à côte, courant bordé `cobalt-400`.
+Les drapeaux sont les seules couleurs hors palette, tenues petites ; elles vivent dans les fichiers SVG, pas en tokens.
+
 ## 7. Iconographie & images
 - Icônes : trait 2 px, `stroke="currentColor"`, extrémités carrées, 20/24 px (style de la planche). Source suggérée : **Lucide** (`@lucide/astro` ou SVG copiés) en `stroke-width=2`, `stroke-linecap="square"`.
 - Photos : lumière franche, fond salle sobre, **pas de filtre coloré**. Option traitement « labo » : N&B léger + contraste, la couleur n'existe alors que dans l'UI cobalt.
@@ -185,6 +192,10 @@ Code : `src/styles/global.css` (fin du fichier), `src/lib/motion.ts`, tokens « 
   profondeur (`--specimen-offset`, `--specimen-depth`), légende mono « fig. 01 — … ». Hero, à propos, galerie, étapes de /methode.
 - **Cube filaire** `ui/WireCube.astro` : six faces en filets `muted` qui tournent lentement dans le `CtaBand`
   (≥ 1024 px), le point cobalt-400 de « umut. » suspendu au centre. Décoratif (`aria-hidden`).
+- **Menu mobile** : le volet graphite descend depuis le haut (`--duration-menu`), son filet bas se trace en
+  `cobalt-400`, la croix tourne en place, les liens basculent en 3D (`rotateY`) l'un après l'autre, puis le
+  sélecteur de langue et le CTA montent ; à la fermeture (bouton ou Échap) tout remonte (`--duration-menu-out`).
+  Le sélecteur de langue de l'en-tête bascule depuis le haut à l'ouverture.
 - **Changement de page** : View Transitions natives entre documents (`@view-transition`), sans JavaScript ;
   l'en-tête reste en place, le contenu glisse.
 - FAQ : la réponse se déplie en douceur (`::details-content`, navigateurs récents ; ailleurs, ouverture instantanée).

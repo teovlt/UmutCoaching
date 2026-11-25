@@ -1,7 +1,15 @@
 // Shapes returned by the API (server/src/models). Keep in sync with the
 // Mongoose schemas.
 
+import type { Lang } from "@/i18n/config";
+
 export type Image = { url: string; alt: string };
+
+/** English and Turkish versions of a document's texts, edited in /admin;
+ *  an empty field falls back to the French one */
+export type Translations<T> = Partial<Record<Exclude<Lang, "fr">, Partial<T>>>;
+
+type ProgrammeTexts = Pick<Programme, "title" | "summary" | "audience" | "duration" | "priceUnit" | "priceLabel" | "includes" | "steps">;
 
 export type ProgrammeFormat = "salle" | "en-ligne" | "hybride";
 export type ProgrammeStatus = "new" | "available" | "few" | "full" | "";
@@ -25,6 +33,7 @@ export type Programme = {
   image: Image;
   visible: boolean;
   order: number;
+  i18n?: Translations<ProgrammeTexts>;
 };
 
 export type Faq = {
@@ -33,6 +42,7 @@ export type Faq = {
   answer: string;
   pages: string[];
   order: number;
+  i18n?: Translations<Pick<Faq, "question" | "answer">>;
 };
 
 export type Temoignage = {
@@ -63,6 +73,14 @@ export type ApiSettings = {
   photos: { hero: Image; about: Image };
   pricingTerms: string[];
   legal: Legal;
+  i18n?: Translations<{
+    hours: string;
+    aboutTitle: string;
+    aboutText: string;
+    aboutTags: string[];
+    pricingTerms: string[];
+    metrics: Metric[];
+  }>;
 };
 
 export type Legal = {

@@ -5,6 +5,7 @@
 // in the hero.
 import Metric from "@/components/ui/Metric.astro";
 import type { Metric as MetricData } from "@/lib/types";
+import { ui } from "@/i18n/ui";
 
 interface Props {
   metrics: MetricData[];
@@ -14,7 +15,7 @@ const { metrics } = Astro.props;
 ---
 
 {metrics.length >= 2 && (
-  <section class="border-y border-line bg-white" aria-label="Chiffres clés">
+  <section class="border-y border-line bg-white" aria-label={ui[Astro.locals.lang].metricsLabel}>
     <div class="container-site grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
       {metrics.map((m) => (
         <Metric value={m.value} unit={m.unit} label={m.label} />

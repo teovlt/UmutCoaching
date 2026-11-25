@@ -7,6 +7,7 @@ Identité **06 « Performance lab » · Bleu cobalt**. Les règles de travail so
 
 - **Site** (`/`) : Astro 7 en rendu serveur (`@astrojs/node`), TypeScript strict, Tailwind CSS 4 (tokens dans `src/styles/tokens.css`), polices auto-hébergées
 - **API** (`/server`) : Express 5, MongoDB (Mongoose), JWT pour l'admin
+- **Langues** : français (`/`), anglais (`/en`), turc (`/tr`) — textes dans `src/i18n/` et dans chaque page, contenu de l'API traduit depuis `/admin`
 - **Prod** : Docker Compose déployé avec Dokploy. Le conteneur `nginx` relaie `/api` vers `api` et le reste vers `web` (Astro).
 
 ## Lancer en local

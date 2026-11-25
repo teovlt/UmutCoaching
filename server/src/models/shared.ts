@@ -21,3 +21,13 @@ export const toJSON = {
     return ret;
   },
 };
+
+// English and Turkish versions of a document's texts (docs/05-decisions.md
+// D25), edited in /admin. An empty field shows the French text instead.
+// `fields` is called once per language so the two never share an object.
+export const translations = (fields: () => SchemaDefinition) => ({
+  i18n: { en: fields(), tr: fields() },
+});
+
+/** A translated text field */
+export const text = () => ({ type: String, default: "", trim: true });

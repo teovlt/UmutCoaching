@@ -1,5 +1,5 @@
 import { type InferSchemaType, Schema, model } from "mongoose";
-import { displayFields, imageField, toJSON } from "./shared.js";
+import { displayFields, imageField, text, toJSON, translations } from "./shared.js";
 
 // One offer: shown as a card, on /programmes/[slug] and in the /tarifs grid.
 // Prices live here so Umut edits them in one place.
@@ -26,6 +26,16 @@ const programmeSchema = new Schema(
     status: { type: String, enum: ["new", "available", "few", "full", ""], default: "" },
     image: imageField,
     ...displayFields,
+    ...translations(() => ({
+      title: text(),
+      summary: text(),
+      audience: text(),
+      duration: text(),
+      priceUnit: text(),
+      priceLabel: text(),
+      includes: { type: [String], default: [] },
+      steps: { type: [{ label: { type: String, trim: true }, text: { type: String, trim: true } }], default: [] },
+    })),
   },
   { timestamps: true, toJSON },
 );

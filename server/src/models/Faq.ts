@@ -1,5 +1,5 @@
 import { type InferSchemaType, Schema, model } from "mongoose";
-import { displayFields, toJSON } from "./shared.js";
+import { displayFields, text, toJSON, translations } from "./shared.js";
 
 const faqSchema = new Schema(
   {
@@ -8,6 +8,7 @@ const faqSchema = new Schema(
     // Where it is shown: "accueil", "tarifs", "programmes" or a programme slug
     pages: { type: [String], default: ["accueil"] },
     ...displayFields,
+    ...translations(() => ({ question: text(), answer: text() })),
   },
   { timestamps: true, toJSON },
 );

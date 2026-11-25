@@ -1,6 +1,8 @@
 ---
 // docs/03-design-system.md §6 PricingCard: "Recommandé" tag with a cobalt
 // square, for the single featured offer (PricingCard, /tarifs table).
+import { ui } from "@/i18n/ui";
+
 interface Props {
   class?: string | undefined;
 }
@@ -15,5 +17,5 @@ const { class: className } = Astro.props;
   ]}
 >
   <span class="size-1.75 bg-cobalt-500" aria-hidden="true"></span>
-  Recommandé
+  {ui[Astro.locals.lang].recommended}
 </span>

@@ -11,57 +11,153 @@ import SquareList from "@/components/ui/SquareList.astro";
 import { stock } from "@/data/stock";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
-const steps = [
-  {
-    index: "01",
-    title: "Mesurer",
-    photo: stock.mesurer,
-    lead: "Tout part d'un point de départ chiffré.",
-    items: [
-      "Première séance : mensurations détaillées",
-      "Vos objectifs et votre historique",
-      "Photo de départ, si vous le souhaitez",
-      "Ce bilan de départ est inclus dans les offres",
+const { lang } = Astro.locals;
+const copy = {
+  fr: {
+    title: "Méthode",
+    description:
+      "La méthode umut. : un bilan chiffré à la première séance, un programme ajusté chaque semaine, des séances notées et comparées pour progresser.",
+    label: "méthode",
+    heading: "Mesurer. Ajuster. Progresser.",
+    lead: "Un protocole en trois étapes, répété chaque semaine. Rien n'est laissé à l'impression : on note, on compare, on décide.",
+    step: (n: string) => `Étape ${n} : `,
+    steps: [
+      {
+        title: "Mesurer",
+        lead: "Tout part d'un point de départ chiffré.",
+        items: [
+          "Première séance : mensurations détaillées",
+          "Vos objectifs et votre historique",
+          "Photo de départ, si vous le souhaitez",
+          "Ce bilan de départ est inclus dans les offres",
+        ],
+      },
+      {
+        title: "Ajuster",
+        lead: "Le programme suit vos chiffres, pas l'inverse.",
+        items: [
+          "Un programme écrit pour vous",
+          "Revu chaque semaine selon vos charges, votre récupération et votre ressenti",
+          "En ligne : programme dans un Google Sheets, bilan chaque dimanche",
+          "En général 1 à 2 séances par semaine avec moi",
+        ],
+      },
+      {
+        title: "Progresser",
+        lead: "Chaque séance est notée, puis comparée.",
+        items: ["Chaque séance est notée", "On compare régulièrement les chiffres", "On fixe la suite à partir de ce qui a bougé"],
+      },
     ],
+    trackingLabel: "suivi",
+    trackingTitle: "Une courbe, pas une impression.",
+    trackingText:
+      "Les chiffres notés à chaque séance se comparent d'une semaine à l'autre : on voit ce qui progresse et ce qu'il faut ajuster.",
+    trackingMeta: "→ échanges sur WhatsApp · réponse sous 24\u00a0h",
+    chartCaption: "exemple de suivi · squat",
+    chartTitle: "Exemple de suivi : squat, de 60 kg en semaine 1 à 72,5 kg en semaine 8",
+    week: "S",
   },
-  {
-    index: "02",
-    title: "Ajuster",
-    photo: stock.ajuster,
-    lead: "Le programme suit vos chiffres, pas l'inverse.",
-    items: [
-      "Un programme écrit pour vous",
-      "Revu chaque semaine selon vos charges, votre récupération et votre ressenti",
-      "En ligne : programme dans un Google Sheets, bilan chaque dimanche",
-      "En général 1 à 2 séances par semaine avec moi",
+  en: {
+    title: "Method",
+    description:
+      "The umut. method: a measured assessment at the first session, a programme adjusted every week, sessions logged and compared to make progress.",
+    label: "method",
+    heading: "Measure. Adjust. Progress.",
+    lead: "A three-step protocol, repeated every week. Nothing is left to impressions: we log, we compare, we decide.",
+    step: (n: string) => `Step ${n}: `,
+    steps: [
+      {
+        title: "Measure",
+        lead: "Everything starts from a measured baseline.",
+        items: [
+          "First session: detailed measurements",
+          "Your goals and your history",
+          "A starting photo, if you wish",
+          "This starting assessment is included in every offer",
+        ],
+      },
+      {
+        title: "Adjust",
+        lead: "The programme follows your numbers, not the other way round.",
+        items: [
+          "A programme written for you",
+          "Reviewed every week based on your loads, your recovery and how you feel",
+          "Online: programme in a Google Sheet, check-in every Sunday",
+          "Usually 1 to 2 sessions a week with me",
+        ],
+      },
+      {
+        title: "Progress",
+        lead: "Every session is logged, then compared.",
+        items: ["Every session is logged", "We compare the numbers regularly", "We set what comes next based on what has moved"],
+      },
     ],
+    trackingLabel: "tracking",
+    trackingTitle: "A curve, not an impression.",
+    trackingText: "The numbers logged at each session are compared week to week: we see what is progressing and what needs adjusting.",
+    trackingMeta: "→ chat on WhatsApp · reply within 24\u00a0h",
+    chartCaption: "tracking example · squat",
+    chartTitle: "Tracking example: squat, from 60 kg in week 1 to 72.5 kg in week 8",
+    week: "W",
   },
-  {
-    index: "03",
-    title: "Progresser",
-    photo: stock.progresser,
-    lead: "Chaque séance est notée, puis comparée.",
-    items: ["Chaque séance est notée", "On compare régulièrement les chiffres", "On fixe la suite à partir de ce qui a bougé"],
+  tr: {
+    title: "Yöntem",
+    description:
+      "umut. yöntemi: ilk seansta ölçülen bir değerlendirme, her hafta güncellenen bir program, ilerlemek için kaydedilip karşılaştırılan seanslar.",
+    label: "yöntem",
+    heading: "Ölç. Ayarla. İlerle.",
+    lead: "Her hafta tekrarlanan üç adımlı bir protokol. Hiçbir şey izlenime bırakılmaz: kaydederiz, karşılaştırırız, karar veririz.",
+    step: (n: string) => `Adım ${n}: `,
+    steps: [
+      {
+        title: "Ölç",
+        lead: "Her şey ölçülmüş bir başlangıç noktasından başlar.",
+        items: [
+          "İlk seans: detaylı vücut ölçüleri",
+          "Hedefleriniz ve geçmişiniz",
+          "İsterseniz bir başlangıç fotoğrafı",
+          "Bu başlangıç değerlendirmesi tüm tekliflere dahildir",
+        ],
+      },
+      {
+        title: "Ayarla",
+        lead: "Program rakamlarınızı takip eder, tersi değil.",
+        items: [
+          "Size özel yazılmış bir program",
+          "Ağırlıklarınıza, toparlanmanıza ve hislerinize göre her hafta gözden geçirilir",
+          "Online: program bir Google Sheets dosyasında, her pazar haftalık değerlendirme",
+          "Genellikle benimle haftada 1-2 seans",
+        ],
+      },
+      {
+        title: "İlerle",
+        lead: "Her seans kaydedilir, sonra karşılaştırılır.",
+        items: ["Her seans kaydedilir", "Rakamları düzenli olarak karşılaştırırız", "Değişen şeylere göre sonraki adımı belirleriz"],
+      },
+    ],
+    trackingLabel: "takip",
+    trackingTitle: "İzlenim değil, bir eğri.",
+    trackingText:
+      "Her seansta kaydedilen rakamlar haftadan haftaya karşılaştırılır: neyin ilerlediğini ve neyin ayarlanması gerektiğini görürüz.",
+    trackingMeta: "→ WhatsApp üzerinden iletişim · 24\u00a0saat içinde yanıt",
+    chartCaption: "takip örneği · squat",
+    chartTitle: "Takip örneği: squat, 1. haftada 60 kg'dan 8. haftada 72,5 kg'a",
+    week: "H",
   },
-];
+}[lang];
+
+const photos = [stock.mesurer, stock.ajuster, stock.progresser];
+const steps = copy.steps.map((step, i) => ({ ...step, index: String(i + 1).padStart(2, "0"), photo: photos[i] ?? stock.mesurer }));
 
 // Illustrative only: captioned "exemple de suivi"
 const example = [60, 62.5, 62.5, 65, 67.5, 67.5, 70, 72.5].map((value, i) => ({
-  label: `S${String(i + 1).padStart(2, "0")}`,
+  label: `${copy.week}${String(i + 1).padStart(2, "0")}`,
   value,
 }));
 ---
 
-<BaseLayout
-  title="Méthode"
-  description="La méthode umut. : un bilan chiffré à la première séance, un programme ajusté chaque semaine, des séances notées et comparées pour progresser."
->
-  <PageHeader
-    index="01"
-    label="méthode"
-    title="Mesurer. Ajuster. Progresser."
-    lead="Un protocole en trois étapes, répété chaque semaine. Rien n'est laissé à l'impression : on note, on compare, on décide."
-  />
+<BaseLayout title={copy.title} description={copy.description}>
+  <PageHeader index="01" label={copy.label} title={copy.heading} lead={copy.lead} />
 
   {steps.map((step, i) => (
     <section class:list={["section", i % 2 === 1 && "border-y border-line bg-white"]} aria-labelledby={`etape-${step.index}`}>
@@ -71,7 +167,7 @@ const example = [60, 62.5, 62.5, 65, 67.5, 67.5, 70, 72.5].map((value, i) => ({
             {step.index}
           </span>
           <h2 id={`etape-${step.index}`} class="text-h2">
-            <span class="sr-only">Étape {step.index}&#8239;: </span>
+            <span class="sr-only">{copy.step(step.index)}</span>
             {step.title}
           </h2>
           <p class="text-lead text-mesure">{step.lead}</p>
@@ -80,7 +176,7 @@ const example = [60, 62.5, 62.5, 65, 67.5, 67.5, 70, 72.5].map((value, i) => ({
           <Specimen caption={`fig. ${step.index} — ${step.title.toLowerCase()}`}>
             <Image
               src={step.photo.src}
-              alt={step.photo.alt}
+              alt={step.photo.alt[lang]}
               widths={[480, 800, 1200]}
               sizes="(min-width: 1024px) 50vw, 100vw"
               loading={i === 0 ? "eager" : "lazy"}
@@ -96,22 +192,15 @@ const example = [60, 62.5, 62.5, 65, 67.5, 67.5, 70, 72.5].map((value, i) => ({
   <section class="section border-t border-line" aria-labelledby="suivi-title">
     <div class="container-site grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
       <div class="flex flex-col gap-4 lg:col-span-5">
-        <SectionLabel index="04" label="suivi" />
+        <SectionLabel index="04" label={copy.trackingLabel} />
         <h2 id="suivi-title" class="text-h2">
-          Une courbe, pas une impression.
+          {copy.trackingTitle}
         </h2>
-        <p class="text-mesure">
-          Les chiffres notés à chaque séance se comparent d'une semaine à l'autre&nbsp;: on voit ce qui progresse et ce qu'il faut ajuster.
-        </p>
-        <p class="font-mono text-label text-mesure">→ échanges sur WhatsApp · réponse sous 24&nbsp;h</p>
+        <p class="text-mesure">{copy.trackingText}</p>
+        <p class="font-mono text-label text-mesure">{copy.trackingMeta}</p>
       </div>
       <div class="lg:col-span-6 lg:col-start-7">
-        <ProgressChart
-          points={example}
-          unit="kg"
-          caption="exemple de suivi · squat"
-          title="Exemple de suivi : squat, de 60 kg en semaine 1 à 72,5 kg en semaine 8"
-        />
+        <ProgressChart points={example} unit="kg" caption={copy.chartCaption} title={copy.chartTitle} />
       </div>
     </div>
   </section>

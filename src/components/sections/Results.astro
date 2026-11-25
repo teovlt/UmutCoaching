@@ -4,6 +4,7 @@
 // section is left out.
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import type { Temoignage } from "@/lib/types";
+import { ui } from "@/i18n/ui";
 
 interface Props {
   /** Section number, given by the page: "02" */
@@ -12,25 +13,26 @@ interface Props {
 }
 
 const { temoignages, index } = Astro.props;
+const t = ui[Astro.locals.lang];
 ---
 
 {temoignages.length > 0 && (
   <section class="on-dark section" aria-labelledby="resultats-title">
     <div class="container-site flex flex-col gap-12">
       <div class="flex flex-col gap-4">
-        <SectionLabel index={index} label="résultats" />
+        <SectionLabel index={index} label={t.sectionLabels.resultats} />
         <h2 id="resultats-title" class="text-h2">
-          Les chiffres parlent.
+          {t.results.title}
         </h2>
       </div>
       <ul data-stagger class="grid gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {temoignages.map((t) => (
+        {temoignages.map((item) => (
           <li>
             <figure class="flex h-full flex-col gap-5 border-t border-line-dark pt-6">
-              {t.photo.url && (
+              {item.photo.url && (
                 <img
-                  src={t.photo.url}
-                  alt={t.photo.alt || `Photo de ${t.name}`}
+                  src={item.photo.url}
+                  alt={item.photo.alt || t.results.photoOf(item.name)}
                   width="600"
                   height="400"
                   loading="lazy"
@@ -38,11 +40,11 @@ const { temoignages, index } = Astro.props;
                   class="aspect-[3/2] w-full object-cover"
                 />
               )}
-              {t.metric && <p class="font-mono text-data font-bold text-cobalt-400">{t.metric}</p>}
-              <blockquote class="text-h3 font-normal tracking-normal">«&nbsp;{t.quote}&nbsp;»</blockquote>
+              {item.metric && <p class="font-mono text-data font-bold text-cobalt-400">{item.metric}</p>}
+              <blockquote class="text-h3 font-normal tracking-normal">«&nbsp;{item.quote}&nbsp;»</blockquote>
               <figcaption class="mt-auto label-mono text-muted">
-                {t.name}
-                {t.context && ` · ${t.context}`}
+                {item.name}
+                {item.context && ` · ${item.context}`}
               </figcaption>
             </figure>
           </li>

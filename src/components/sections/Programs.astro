@@ -4,6 +4,8 @@ import Button from "@/components/ui/Button.astro";
 import ProgramCard from "@/components/ui/ProgramCard.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import type { Programme } from "@/lib/types";
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
 
 interface Props {
   /** Section number, given by the page: "02" */
@@ -12,14 +14,16 @@ interface Props {
 }
 
 const { programmes, index } = Astro.props;
+const { lang } = Astro.locals;
+const t = ui[lang];
 ---
 
 <section class="section border-t border-line" aria-labelledby="programmes-title">
   <div class="container-site flex flex-col gap-12">
     <div class="flex flex-col gap-4">
-      <SectionLabel index={index} label="programmes" />
+      <SectionLabel index={index} label={t.sectionLabels.programmes} />
       <h2 id="programmes-title" class="text-h2">
-        Choisissez votre format.
+        {t.programs.title}
       </h2>
     </div>
     {programmes.length > 0 ? (
@@ -31,11 +35,11 @@ const { programmes, index } = Astro.props;
         ))}
       </ul>
     ) : (
-      <p class="font-mono text-small text-mesure">Offres [À CONFIRMER]</p>
+      <p class="font-mono text-small text-mesure">{t.programs.empty}</p>
     )}
     <div>
-      <Button variant="ghost" href="/programmes">
-        voir tous les programmes
+      <Button variant="ghost" href={localePath(lang, "/programmes")}>
+        {t.programs.all}
       </Button>
     </div>
   </div>

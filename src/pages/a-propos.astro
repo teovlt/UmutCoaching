@@ -12,30 +12,90 @@ import { umut, umutGallery } from "@/data/umut";
 import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSettings } from "@/lib/api";
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
 
-const settings = await getSettings();
+const { lang } = Astro.locals;
+const t = ui[lang];
+const settings = await getSettings(lang);
 const { about, photos, legal } = settings;
-const title = about.title || "Umut, coach musculation.";
-const text = about.text || "[À CONFIRMER] Parcours d'Umut en 3 à 5 lignes, et pourquoi il coache.";
+const copy = {
+  fr: {
+    title: "À propos",
+    description:
+      "Umut, coach musculation et bodybuilding : spécialités force, prise de masse et sèche, coaching en salle et en ligne, en français, turc ou anglais.",
+    defaultText: "[À CONFIRMER] Parcours d'Umut en 3 à 5 lignes, et pourquoi il coache.",
+    portrait: "fig. 01 — portrait",
+    pathLabel: "parcours",
+    path: "Parcours",
+    gymLabel: "en salle",
+    gym: "En salle",
+    inGym: "en salle",
+    factsLabel: "fiche",
+    facts: "En bref.",
+    place: "Lieu",
+    formats: "Formats",
+    languages: "Langues de coaching",
+    qualification: "Diplôme et carte pro",
+    methodText: "Un bilan chiffré à la première séance, un programme revu chaque semaine, des séances notées et comparées.",
+  },
+  en: {
+    title: "About",
+    description:
+      "Umut, strength and bodybuilding coach: strength, muscle gain and cutting, coaching at the gym and online, in French, Turkish or English.",
+    defaultText: "[À CONFIRMER] Umut's background in 3 to 5 lines, and why he coaches.",
+    portrait: "fig. 01 — portrait",
+    pathLabel: "background",
+    path: "Background",
+    gymLabel: "at the gym",
+    gym: "At the gym",
+    inGym: "at the gym",
+    factsLabel: "profile",
+    facts: "In brief.",
+    place: "Location",
+    formats: "Formats",
+    languages: "Coaching languages",
+    qualification: "Diploma and professional card",
+    methodText: "A measured assessment at the first session, a programme reviewed every week, sessions logged and compared.",
+  },
+  tr: {
+    title: "Hakkımda",
+    description:
+      "Umut, fitness ve vücut geliştirme koçu: kuvvet, kas kazanımı ve definasyon; salonda ve online, Fransızca, Türkçe veya İngilizce koçluk.",
+    defaultText: "[À CONFIRMER] Umut'un geçmişi 3-5 satırda ve neden koçluk yaptığı.",
+    portrait: "fig. 01 — portre",
+    pathLabel: "geçmiş",
+    path: "Geçmiş",
+    gymLabel: "salonda",
+    gym: "Salonda",
+    inGym: "salonda",
+    factsLabel: "künye",
+    facts: "Kısaca.",
+    place: "Yer",
+    formats: "Formatlar",
+    languages: "Koçluk dilleri",
+    qualification: "Diploma ve profesyonel kart",
+    methodText: "İlk seansta ölçülen bir değerlendirme, her hafta gözden geçirilen bir program, kaydedilip karşılaştırılan seanslar.",
+  },
+}[lang];
+const title = about.title || t.about.defaultTitle;
+const text = about.text || copy.defaultText;
 
 // Formats and languages: src/data/site.ts (confirmed Q3, Q8)
 const facts = [
-  { label: "Lieu", value: `${settings.city} · ${settings.gym}` },
-  { label: "Formats", value: settings.formats },
-  { label: "Langues de coaching", value: settings.languages },
-  { label: "Diplôme et carte pro", value: legal.qualification },
+  { label: copy.place, value: `${settings.city} · ${settings.gym}` },
+  { label: copy.formats, value: settings.formats },
+  { label: copy.languages, value: settings.languages },
+  { label: copy.qualification, value: legal.qualification },
 ];
 ---
 
-<BaseLayout
-  title="À propos"
-  description="Umut, coach musculation et bodybuilding : spécialités force, prise de masse et sèche, coaching en salle et en ligne, en français, turc ou anglais."
->
-  <PageHeader index="04" label="à propos" title={title} />
+<BaseLayout title={copy.title} description={copy.description}>
+  <PageHeader index="04" label={t.sectionLabels.aPropos} title={title} />
 
   <section class="section" aria-labelledby="parcours-title">
     <div class="container-site grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
-      <Specimen caption="fig. 01 — portrait" class="sm:max-w-sm lg:col-span-5 lg:max-w-none">
+      <Specimen caption={copy.portrait} class="sm:max-w-sm lg:col-span-5 lg:max-w-none">
         <UmutPicture
           uploaded={photos.about}
           fallback={umut.portrait}
@@ -45,13 +105,13 @@ const facts = [
         />
       </Specimen>
       <div class="flex flex-col gap-6 lg:col-span-6 lg:col-start-7">
-        <SectionLabel index="01" label="parcours" />
+        <SectionLabel index="01" label={copy.pathLabel} />
         <h2 id="parcours-title" class="sr-only">
-          Parcours
+          {copy.path}
         </h2>
         <p class="max-w-[62ch] text-lead whitespace-pre-line">{text}</p>
         {about.tags.length > 0 && (
-          <ul class="flex flex-wrap gap-2" aria-label="Spécialités">
+          <ul class="flex flex-wrap gap-2" aria-label={t.about.specialties}>
             {about.tags.map((tag) => (
               <li>
                 <Tag>#{tag}</Tag>
@@ -65,17 +125,17 @@ const facts = [
 
   <section class="section border-t border-line" aria-labelledby="salle-title">
     <div class="container-site flex flex-col gap-8">
-      <SectionLabel index="02" label="en salle" />
+      <SectionLabel index="02" label={copy.gymLabel} />
       <h2 id="salle-title" class="sr-only">
-        En salle
+        {copy.gym}
       </h2>
       <ul data-stagger class="grid gap-x-8 gap-y-10 sm:grid-cols-3">
         {umutGallery.map((photo, i) => (
           <li>
-            <Specimen caption={`fig. ${String(i + 2).padStart(2, "0")} — en salle`}>
+            <Specimen caption={`fig. ${String(i + 2).padStart(2, "0")} — ${copy.inGym}`}>
               <Image
                 src={photo.src}
-                alt={photo.alt}
+                alt={photo.alt[lang]}
                 widths={[400, 640, 900]}
                 sizes="(min-width: 640px) 33vw, 100vw"
                 loading="lazy"
@@ -91,9 +151,9 @@ const facts = [
   <section class="section border-y border-line bg-white" aria-labelledby="fiche-title">
     <div class="container-site grid gap-8 lg:grid-cols-12">
       <div class="flex flex-col gap-4 lg:col-span-5">
-        <SectionLabel index="03" label="fiche" />
+        <SectionLabel index="03" label={copy.factsLabel} />
         <h2 id="fiche-title" class="text-h2">
-          En bref.
+          {copy.facts}
         </h2>
       </div>
       <dl class="flex flex-col border-t border-graphite lg:col-span-6 lg:col-start-7">
@@ -109,16 +169,14 @@ const facts = [
 
   <section class="section" aria-labelledby="methode-lien-title">
     <div class="container-site flex flex-col gap-6">
-      <SectionLabel index="04" label="méthode" />
+      <SectionLabel index="04" label={t.sectionLabels.methode} />
       <h2 id="methode-lien-title" class="max-w-[22ch] text-h2">
-        Mesurer. Ajuster. Progresser.
+        {t.hero.words.join(" ")}
       </h2>
-      <p class="max-w-[58ch] text-mesure">
-        Un bilan chiffré à la première séance, un programme revu chaque semaine, des séances notées et comparées.
-      </p>
+      <p class="max-w-[58ch] text-mesure">{copy.methodText}</p>
       <div>
-        <Button variant="ghost" href="/methode">
-          découvrir la méthode
+        <Button variant="ghost" href={localePath(lang, "/methode")}>
+          {t.method.more}
         </Button>
       </div>
     </div>

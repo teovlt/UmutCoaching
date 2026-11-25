@@ -329,6 +329,57 @@
     transform: rotateX(90deg);
   }
 
+  /* -- Menu mobile : le volet graphite descend, le filet du haut se trace en
+     cobalt, les liens basculent en 3D l'un après l'autre ; tout remonte à la
+     fermeture ([data-closing], posé par le script de MobileMenu). ---------- */
+  .menu-bar {
+    position: relative;
+  }
+  .menu-bar::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 1px;
+    background: var(--color-cobalt-400);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .motion .mobile-menu[open] {
+    animation: menu-in var(--duration-menu) var(--ease-labo) both;
+  }
+  .motion .mobile-menu[open] .menu-bar::after {
+    animation: menu-rule calc(2 * var(--duration-menu)) var(--ease-labo) calc(var(--duration-menu) / 2) both;
+  }
+  .motion .mobile-menu[open] .menu-close {
+    animation: menu-close-in var(--duration-menu) var(--ease-labo) calc(var(--duration-menu) / 2) both;
+  }
+  .motion .mobile-menu[open] .menu-link {
+    transform-origin: 0 50%;
+    animation: menu-link-in var(--duration-reveal) var(--ease-labo) both;
+    animation-delay: calc(var(--duration-menu) / 2 + var(--i, 0) * var(--stagger));
+  }
+  .motion .mobile-menu[open] .menu-foot {
+    animation: menu-foot-in var(--duration-reveal) var(--ease-labo) calc(var(--duration-menu) + 2 * var(--stagger)) both;
+  }
+  .motion .mobile-menu[open][data-closing] {
+    animation: menu-out var(--duration-menu-out) var(--ease-labo) both;
+  }
+  .motion .mobile-menu[open][data-closing] :is(.menu-link, .menu-foot, .menu-close) {
+    animation: menu-fade-out var(--duration-base) var(--ease-labo) both;
+  }
+
+  /* -- Choix de la langue : la liste bascule depuis le haut ----------------- */
+  .lang-chevron {
+    transition: transform var(--duration-base) var(--ease-labo);
+  }
+  .lang-switcher[open] .lang-chevron {
+    transform: rotate(180deg);
+  }
+  .motion .lang-switcher[open] .lang-menu {
+    transform-origin: top;
+    animation: dropdown-in var(--duration-slow) var(--ease-labo) both;
+  }
+
   /* -- FAQ : la réponse se déplie en douceur (navigateurs récents) -------- */
   .faq-item::details-content {
     block-size: 0;
@@ -350,6 +401,50 @@
   from {
     opacity: 0;
     transform: perspective(var(--perspective)) translate3d(0, 0.35em, 0) rotateX(-80deg);
+  }
+}
+@keyframes menu-in {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+@keyframes menu-out {
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+@keyframes menu-rule {
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes menu-close-in {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg);
+  }
+}
+@keyframes menu-link-in {
+  from {
+    opacity: 0;
+    transform: perspective(var(--perspective)) translate3d(calc(var(--reveal-y) * -0.75), 0, 0) rotateY(40deg);
+  }
+}
+@keyframes menu-foot-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-y), 0);
+  }
+}
+@keyframes menu-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: perspective(var(--perspective)) rotateX(-30deg);
   }
 }
 @keyframes cube-turn {

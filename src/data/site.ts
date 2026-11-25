@@ -32,6 +32,8 @@ export type SiteSettings = {
   pricingTerms: string[];
 };
 
+import type { Lang } from "@/i18n/config";
+
 export const site: SiteSettings = {
   name: "Umut",
   brand: "umut.",
@@ -62,4 +64,33 @@ export const site: SiteSettings = {
     "Annulation gratuite jusqu'à 24 h avant, sinon la séance est due",
     "Paiement en espèces ou par virement",
   ],
+};
+
+/** The defaults above that are worded, in each language */
+export const siteTexts: Record<Lang, Pick<SiteSettings, "descriptor" | "tagline" | "hours" | "formats" | "languages" | "pricingTerms">> = {
+  fr: site,
+  en: {
+    descriptor: "coach / bodybuilding / data",
+    tagline: "Measure. Adjust. Progress.",
+    hours: "Mon–Fri 09:00–18:00 · Sat 09:00–15:00",
+    formats: "at the gym · online",
+    languages: "French · Turkish · English",
+    pricingTerms: [
+      "Starting assessment included in every offer",
+      "Free cancellation up to 24 h before, otherwise the session is due",
+      "Payment in cash or by bank transfer",
+    ],
+  },
+  tr: {
+    descriptor: "koç / vücut geliştirme / veri",
+    tagline: "Ölç. Ayarla. İlerle.",
+    hours: "Pzt–Cum 09:00–18:00 · Cmt 09:00–15:00",
+    formats: "salonda · online",
+    languages: "Fransızca · Türkçe · İngilizce",
+    pricingTerms: [
+      "Başlangıç değerlendirmesi tüm tekliflere dahil",
+      "24 saat öncesine kadar ücretsiz iptal, sonrasında seans ücreti alınır",
+      "Nakit veya banka havalesiyle ödeme",
+    ],
+  },
 };

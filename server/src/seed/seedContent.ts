@@ -180,25 +180,281 @@ const pricingTerms = [
   "Paiement en espèces ou par virement",
 ];
 
+// English and Turkish versions of the content above (docs/05-decisions.md
+// D25), stored under `i18n` and editable in /admin. Same facts, translated.
+const programmeTranslations: Record<string, { en: object; tr: object }> = {
+  "coaching-individuel": {
+    en: {
+      title: "One-to-one coaching",
+      summary: "One-to-one sessions at the gym: technique, loads and progress closely tracked.",
+      audience: "Weight loss or gain, muscle gain, strength gain, posture. Beginners and experienced lifters alike.",
+      duration: "45–75 min",
+      priceUnit: "session",
+      includes: [
+        "First session: full assessment, measurements and goals",
+        "A programme written for you, adjusted every week",
+        "Technique corrected on every exercise",
+        "Loads and measurements tracked session after session",
+        "Questions between sessions on WhatsApp, reply within 24 h",
+      ],
+      steps: [
+        { label: "Assessment", text: "Measurements, history, goals and a starting photo if you wish." },
+        { label: "Plan", text: "A programme suited to your level, your schedule and your goal." },
+        { label: "Sessions", text: "1 to 2 sessions a week together: technique, loads, intensity." },
+        { label: "Adjustments", text: "The programme changes every week based on your numbers and your recovery." },
+      ],
+    },
+    tr: {
+      title: "Birebir koçluk",
+      summary: "Salonda birebir seanslar: teknik, ağırlıklar ve ilerleme yakından takip edilir.",
+      audience: "Kilo verme veya alma, kas kazanımı, kuvvet artışı, duruş. Yeni başlayanlar da deneyimli sporcular da.",
+      duration: "45–75 dk",
+      priceUnit: "seans",
+      includes: [
+        "İlk seans: kapsamlı değerlendirme, ölçüler ve hedefler",
+        "Size özel yazılan, her hafta güncellenen bir program",
+        "Her egzersizde teknik düzeltme",
+        "Ağırlıklar ve ölçüler seanstan seansa takip edilir",
+        "Seanslar arasında WhatsApp'tan sorular, 24 saat içinde yanıt",
+      ],
+      steps: [
+        { label: "Değerlendirme", text: "Ölçüler, geçmiş, hedefler ve isterseniz bir başlangıç fotoğrafı." },
+        { label: "Plan", text: "Seviyenize, programınıza ve hedefinize uygun bir program." },
+        { label: "Seanslar", text: "Haftada 1-2 ortak seans: teknik, ağırlık, yoğunluk." },
+        { label: "Ayarlamalar", text: "Program, rakamlarınıza ve toparlanmanıza göre her hafta güncellenir." },
+      ],
+    },
+  },
+  "coaching-en-ligne": {
+    en: {
+      title: "Online coaching",
+      summary: "A personalised programme, a check-in every Sunday, adjustments from a distance.",
+      audience: "Beginners and amateur athletes who train on their own and want structure and follow-up.",
+      duration: "weekly check-in",
+      priceUnit: "month",
+      includes: [
+        "Starting assessment by video call or at the gym",
+        "A personalised programme in a Google Sheet",
+        "Check-in every Sunday: loads, measurements, how you feel",
+        "Programme adjusted every week",
+        "Chat on WhatsApp, reply within 24 h",
+      ],
+      steps: [
+        { label: "Assessment", text: "A call to take stock: level, equipment available, goals, constraints." },
+        { label: "Programme", text: "You receive your detailed programme, exercise by exercise, with target loads." },
+        { label: "Sunday", text: "You send your weekly check-in: sessions done, numbers, photos if you wish." },
+        { label: "Adjustments", text: "Next week's programme is updated from your check-in." },
+      ],
+    },
+    tr: {
+      title: "Online koçluk",
+      summary: "Kişiye özel program, her pazar haftalık değerlendirme, uzaktan ayarlamalar.",
+      audience: "Tek başına antrenman yapan, bir çerçeve ve takip isteyen yeni başlayanlar ve amatör sporcular.",
+      duration: "haftalık değerlendirme",
+      priceUnit: "ay",
+      includes: [
+        "Görüntülü görüşmeyle veya salonda başlangıç değerlendirmesi",
+        "Google Sheets'te kişiye özel program",
+        "Her pazar değerlendirme: ağırlıklar, ölçüler, hisler",
+        "Her hafta güncellenen program",
+        "WhatsApp üzerinden iletişim, 24 saat içinde yanıt",
+      ],
+      steps: [
+        { label: "Değerlendirme", text: "Durum tespiti için bir görüşme: seviye, mevcut ekipman, hedefler, kısıtlar." },
+        { label: "Program", text: "Hedef ağırlıklarla, egzersiz egzersiz detaylı programınızı alırsınız." },
+        { label: "Pazar", text: "Haftalık değerlendirmenizi gönderirsiniz: yapılan seanslar, rakamlar, isterseniz fotoğraflar." },
+        { label: "Ayarlamalar", text: "Sonraki haftanın programı değerlendirmenize göre güncellenir." },
+      ],
+    },
+  },
+  nutrition: {
+    en: {
+      title: "Nutrition",
+      summary: "Nutrition support with Manon, nutritionist, alongside your training.",
+      audience: "People who train without knowing how to adapt their diet to their goal.",
+      includes: ["Diet assessment", "Recommendations suited to your goal", "Remote follow-up"],
+    },
+    tr: {
+      title: "Beslenme",
+      summary: "Antrenmanınıza ek olarak diyetisyen Manon ile beslenme desteği.",
+      audience: "Antrenman yapan ama beslenmesini hedefine göre nasıl ayarlayacağını bilmeyenler.",
+      includes: ["Beslenme değerlendirmesi", "Hedefinize uygun öneriler", "Uzaktan takip"],
+    },
+  },
+  "pre-post-natal": {
+    en: {
+      title: "Pre / postnatal",
+      summary: "Adapted strength training during and after pregnancy, with your doctor's or midwife's approval.",
+      audience: "Expecting and new mothers who want to keep up or resume a supervised activity.",
+    },
+    tr: {
+      title: "Doğum öncesi / sonrası",
+      summary: "Doktorunuzun veya ebenizin onayıyla, hamilelik sırasında ve sonrasında uyarlanmış kuvvet antrenmanı.",
+      audience: "Gözetimli bir aktiviteyi sürdürmek veya yeniden başlamak isteyen anne adayları ve yeni anneler.",
+    },
+  },
+};
+
+// Keyed by the French question
+const faqTranslations: Record<string, { en: object; tr: object }> = {
+  "Je débute complètement, c'est pour moi ?": {
+    en: {
+      question: "I'm a complete beginner, is this for me?",
+      answer: "Yes. The first session is there precisely to start from your real level: we learn the basic movements before adding load.",
+    },
+    tr: {
+      question: "Tamamen yeni başlıyorum, bu bana uygun mu?",
+      answer: "Evet. İlk seans tam olarak gerçek seviyenizden başlamak içindir: ağırlık eklemeden önce temel hareketleri öğreniriz.",
+    },
+  },
+  "Combien de séances par semaine ?": {
+    en: {
+      question: "How many sessions a week?",
+      answer: "Usually 1 to 2 sessions with me, plus, if needed, sessions on your own planned in your programme.",
+    },
+    tr: {
+      question: "Haftada kaç seans?",
+      answer: "Genellikle benimle 1-2 seans; gerekirse programınızda planlanan bireysel seanslarla tamamlanır.",
+    },
+  },
+  "Comment se passe la première séance ?": {
+    en: {
+      question: "What happens in the first session?",
+      answer:
+        "Detailed measurements, a talk about your goals and your history, a starting photo if you wish, then a first hands-on session at the gym.",
+    },
+    tr: {
+      question: "İlk seans nasıl geçiyor?",
+      answer:
+        "Detaylı ölçüler, hedefleriniz ve geçmişiniz üzerine bir konuşma, isterseniz başlangıç fotoğrafı, ardından salonda ilk uygulama.",
+    },
+  },
+  "Comment se passe le coaching en ligne ?": {
+    en: {
+      question: "How does online coaching work?",
+      answer: "Your programme is in a Google Sheet, we chat on WhatsApp, you send your check-in every Sunday and I reply within 24 h.",
+    },
+    tr: {
+      question: "Online koçluk nasıl işliyor?",
+      answer:
+        "Programınız bir Google Sheets dosyasında, WhatsApp'tan yazışırız, her pazar değerlendirmenizi gönderirsiniz ve 24 saat içinde yanıt veririm.",
+    },
+  },
+  "Faut-il un abonnement à une salle ?": {
+    en: {
+      question: "Do I need a gym membership?",
+      answer:
+        "For one-to-one coaching, yes: sessions take place at the gym and access is at your expense. For online coaching, the programme adapts to the equipment you have.",
+    },
+    tr: {
+      question: "Salon üyeliği gerekiyor mu?",
+      answer:
+        "Birebir koçluk için evet: seanslar salonda yapılır ve salon erişimi size aittir. Online koçlukta program, elinizdeki ekipmana göre uyarlanır.",
+    },
+  },
+  "En combien de temps verrai-je des résultats ?": {
+    en: {
+      question: "How soon will I see results?",
+      answer:
+        "It depends on your starting point, your consistency and your recovery. That's why everything is measured: we see what moves every week and adjust.",
+    },
+    tr: {
+      question: "Sonuçları ne zaman görürüm?",
+      answer:
+        "Başlangıç noktanıza, düzenliliğinize ve toparlanmanıza bağlıdır. Bu yüzden her şey ölçülür: her hafta neyin değiştiğini görür ve ayarlarız.",
+    },
+  },
+  "Puis-je annuler une séance ?": {
+    en: { question: "Can I cancel a session?", answer: "Yes, free of charge up to 24 h before. After that, the session is due." },
+    tr: { question: "Bir seansı iptal edebilir miyim?", answer: "Evet, 24 saat öncesine kadar ücretsiz. Sonrasında seans ücreti alınır." },
+  },
+  "Comment payer ?": {
+    en: { question: "How do I pay?", answer: "In cash or by bank transfer." },
+    tr: { question: "Nasıl ödeme yapılır?", answer: "Nakit veya banka havalesiyle." },
+  },
+  "Dans quelle langue se passe le coaching ?": {
+    en: { question: "In which language is the coaching?", answer: "In French, Turkish or English, as you prefer." },
+    tr: { question: "Koçluk hangi dilde yapılıyor?", answer: "Fransızca, Türkçe veya İngilizce, tercihinize göre." },
+  },
+};
+
+const settingsTranslations = {
+  en: {
+    hours: "Mon–Fri 09:00–18:00 · Sat 09:00–15:00",
+    aboutTitle: "Umut, strength coach.",
+    aboutText: [
+      "I have been strength training for more than four years. What made me progress was not the motivation of the moment: it was logging my sessions, measuring and adjusting.",
+      "That is the method I offer you: a measured starting point, a programme written for you and reviewed every week, and progress tracked to the kilo.",
+      "I coach at the gym in Bellegarde-sur-Valserine and online, in French, Turkish or English. Beginner or experienced, we start from your real level.",
+    ].join("\n\n"),
+    aboutTags: ["strength", "muscle-gain", "cutting"],
+    pricingTerms: [
+      "Starting assessment included in every offer",
+      "No minimum commitment",
+      "Free cancellation up to 24 h before, otherwise the session is due",
+      "Payment in cash or by bank transfer",
+    ],
+    metrics: [{ value: "24", unit: "h", label: "reply time" }],
+  },
+  tr: {
+    hours: "Pzt–Cum 09:00–18:00 · Cmt 09:00–15:00",
+    aboutTitle: "Umut, fitness koçu.",
+    aboutText: [
+      "Dört yılı aşkın süredir ağırlık antrenmanı yapıyorum. Beni ilerleten anlık motivasyon değil; seanslarımı kaydetmek, ölçmek ve ayarlamaktı.",
+      "Size sunduğum yöntem de bu: ölçülmüş bir başlangıç noktası, size özel yazılan ve her hafta gözden geçirilen bir program, kilosu kilosuna takip edilen bir ilerleme.",
+      "Bellegarde-sur-Valserine'de salonda ve online olarak, Fransızca, Türkçe veya İngilizce koçluk yapıyorum. Yeni başlayan ya da deneyimli, gerçek seviyenizden başlıyoruz.",
+    ].join("\n\n"),
+    aboutTags: ["kuvvet", "kas-kazanımı", "definasyon"],
+    pricingTerms: [
+      "Başlangıç değerlendirmesi tüm tekliflere dahil",
+      "Süre taahhüdü yok",
+      "24 saat öncesine kadar ücretsiz iptal, sonrasında seans ücreti alınır",
+      "Nakit veya banka havalesiyle ödeme",
+    ],
+    metrics: [{ value: "24", unit: "sa", label: "yanıt süresi" }],
+  },
+};
+
+/** "…moi ?" with a plain or non-breaking space: same key */
+const sameText = (value: string) => value.replace(/[\u00a0\u202f]/g, " ");
+const faqTranslation = (question: string) => Object.entries(faqTranslations).find(([fr]) => sameText(fr) === sameText(question))?.[1];
+
 const run = async () => {
   await connectDB();
   if (overwrite) console.log("--overwrite: seeded content is reset");
 
   let created = 0;
+  let translated = 0;
   for (const programme of programmes) {
+    const i18n = programmeTranslations[programme.slug];
+    const doc = { ...programme, ...(i18n ? { i18n } : {}) };
     const result = overwrite
-      ? await Programme.updateOne({ slug: programme.slug }, { $set: programme }, { upsert: true })
-      : await Programme.updateOne({ slug: programme.slug }, { $setOnInsert: programme }, { upsert: true });
+      ? await Programme.updateOne({ slug: programme.slug }, { $set: doc }, { upsert: true })
+      : await Programme.updateOne({ slug: programme.slug }, { $setOnInsert: doc }, { upsert: true });
     created += result.upsertedCount;
+    // A programme seeded before the translations existed gets them, unless
+    // an English title was already typed in /admin
+    if (!overwrite && i18n && !result.upsertedCount) {
+      const filled = await Programme.updateOne({ slug: programme.slug, "i18n.en.title": { $in: ["", null] } }, { $set: { i18n } });
+      translated += filled.modifiedCount;
+    }
   }
+  if (translated) console.log(`Programmes: English and Turkish added to ${translated}`);
   console.log(`Programmes: ${created} created, ${programmes.length - created} ${overwrite ? "reset" : "already there"}`);
 
   created = 0;
+  translated = 0;
   for (const [order, faq] of faqs.entries()) {
-    const doc = { ...faq, order, pages: ["accueil"] };
+    const i18n = faqTranslation(faq.question);
+    const doc = { ...faq, order, pages: ["accueil"], ...(i18n ? { i18n } : {}) };
     const result = await Faq.updateOne({ question: faq.question }, overwrite ? { $set: doc } : { $setOnInsert: doc }, { upsert: true });
     created += result.upsertedCount;
+    if (!overwrite && i18n && !result.upsertedCount) {
+      const filled = await Faq.updateOne({ question: faq.question, "i18n.en.question": { $in: ["", null] } }, { $set: { i18n } });
+      translated += filled.modifiedCount;
+    }
   }
+  if (translated) console.log(`FAQ: English and Turkish added to ${translated}`);
   console.log(`FAQ: ${created} created, ${faqs.length - created} ${overwrite ? "reset" : "already there"}`);
 
   // Without --overwrite, only empty fields are filled: a value set in /admin
@@ -222,6 +478,7 @@ const run = async () => {
   fill("about.text", about.text, !settings.about?.text);
   fill("about.tags", about.tags, !settings.about?.tags.length);
   fill("pricingTerms", pricingTerms, !settings.pricingTerms?.length);
+  fill("i18n", settingsTranslations, !settings.get("i18n.en.aboutText"));
   await settings.save();
   console.log(filled.length ? `Settings: ${overwrite ? "set" : "filled"} ${filled.join(", ")}` : "Settings: already filled in");
 

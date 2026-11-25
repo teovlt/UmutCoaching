@@ -123,5 +123,7 @@
   --specimen-offset: 1.25rem; /* 20 px : cadre décalé derrière une photo   */
   --specimen-depth: -2rem; /* profondeur du cadre derrière une photo    */
   --cube-size: 10rem; /* 160 px : cube filaire du bandeau final    */
+  --duration-menu: 520ms; /* ouverture du menu mobile (volet)         */
+  --duration-menu-out: 280ms; /* fermeture du menu mobile                 */
   --tap-min: 44px;
 }

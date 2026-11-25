@@ -12,18 +12,69 @@ import SectionLabel from "@/components/ui/SectionLabel.astro";
 import SquareList from "@/components/ui/SquareList.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getFaqs, getProgramme, getSettings } from "@/lib/api";
-import { formatLabels, priceText, pricingConditions } from "@/lib/format";
+import { priceText, pricingConditions } from "@/lib/format";
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
 
 const slug = Astro.params.slug ?? "";
-const [programme, faqs, settings] = await Promise.all([getProgramme(slug), getFaqs(slug), getSettings()]);
-if (!programme) return Astro.rewrite("/404");
+const { lang } = Astro.locals;
+const t = ui[lang];
+const [programme, faqs, settings] = await Promise.all([getProgramme(slug, lang), getFaqs(slug, lang), getSettings(lang)]);
+if (!programme) return Astro.rewrite(localePath(lang, "/404"));
+const copy = {
+  fr: {
+    audience: "Pour qui",
+    format: "Format",
+    duration: "Durée",
+    price: "Tarif",
+    description: (title: string) => `${title} : coaching musculation umut., bilan de départ et programme ajusté chaque semaine.`,
+    all: "tous les programmes",
+    includedLabel: "inclus",
+    included: "Ce qui est inclus.",
+    stepsLabel: "déroulé",
+    steps: "Déroulé.",
+    priceLabel: "tarif",
+    priceTitle: "Tarif.",
+    compare: "comparer les tarifs",
+  },
+  en: {
+    audience: "Who it's for",
+    format: "Format",
+    duration: "Duration",
+    price: "Price",
+    description: (title: string) => `${title}: umut. strength coaching, starting assessment and a programme adjusted every week.`,
+    all: "all programmes",
+    includedLabel: "included",
+    included: "What's included.",
+    stepsLabel: "how it works",
+    steps: "How it works.",
+    priceLabel: "price",
+    priceTitle: "Price.",
+    compare: "compare prices",
+  },
+  tr: {
+    audience: "Kimler için",
+    format: "Format",
+    duration: "Süre",
+    price: "Fiyat",
+    description: (title: string) => `${title}: umut. fitness koçluğu, başlangıç değerlendirmesi ve her hafta güncellenen program.`,
+    all: "tüm programlar",
+    includedLabel: "dahil",
+    included: "Neler dahil.",
+    stepsLabel: "süreç",
+    steps: "Süreç.",
+    priceLabel: "fiyat",
+    priceTitle: "Fiyat.",
+    compare: "fiyatları karşılaştır",
+  },
+}[lang];
 
 const p = programme;
 const facts = [
-  { label: "Pour qui", value: p.audience },
-  { label: "Format", value: formatLabels[p.format] },
-  { label: "Durée", value: p.duration },
-  { label: "Tarif", value: priceText(p) },
+  { label: copy.audience, value: p.audience, text: true },
+  { label: copy.format, value: t.formats[p.format], text: false },
+  { label: copy.duration, value: p.duration, text: false },
+  { label: copy.price, value: priceText(p, lang), text: false },
 ].filter((f) => f.value);
 
 // Sections are numbered in reading order, skipping the empty ones
@@ -32,7 +83,7 @@ const shown = [p.includes.length > 0 && "inclus", p.steps.length > 0 && "deroule
 );
 const number = (id: string) => String(shown.indexOf(id) + 1).padStart(2, "0");
 
-const pageUrl = new URL(`/programmes/${p.slug}`, Astro.site).href;
+const pageUrl = new URL(localePath(lang, `/programmes/${p.slug}`), Astro.site).href;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
@@ -41,32 +92,28 @@ const jsonLd = {
   url: pageUrl,
   provider: { "@id": `${new URL("/", Astro.site).href}#coach` },
   ...(typeof p.priceFrom === "number" && !p.priceLabel
-    ? { offers: { "@type": "Offer", price: p.priceFrom, priceCurrency: p.currency, description: priceText(p) } }
+    ? { offers: { "@type": "Offer", price: p.priceFrom, priceCurrency: p.currency, description: priceText(p, lang) } }
     : {}),
 };
 ---
 
-<BaseLayout
-  title={p.title}
-  description={p.summary || `${p.title} : coaching musculation umut., bilan de départ et programme ajusté chaque semaine.`}
-  jsonLd={jsonLd}
->
-  <PageHeader index="02" label="programmes" title={p.title} lead={p.summary || undefined}>
+<BaseLayout title={p.title} description={p.summary || copy.description(p.title)} jsonLd={jsonLd}>
+  <PageHeader index="02" label={t.sectionLabels.programmes} title={p.title} lead={p.summary || undefined}>
     <div class="flex flex-col gap-8">
       <dl class="grid gap-x-8 gap-y-4 border-t border-graphite pt-5 sm:grid-cols-2 lg:grid-cols-4">
         {facts.map((fact) => (
           <div class="flex flex-col gap-1">
             <dt class="label-mono text-mesure">{fact.label}</dt>
-            <dd class:list={[fact.label === "Pour qui" ? "text-small" : "font-mono font-bold"]}>{fact.value}</dd>
+            <dd class:list={[fact.text ? "text-small" : "font-mono font-bold"]}>{fact.value}</dd>
           </div>
         ))}
       </dl>
       <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <Button href="/reserver" icon="arrow">
-          Réserver une séance
+        <Button href={localePath(lang, "/reserver")} icon="arrow">
+          {t.booking}
         </Button>
-        <Button variant="ghost" href="/programmes">
-          tous les programmes
+        <Button variant="ghost" href={localePath(lang, "/programmes")}>
+          {copy.all}
         </Button>
       </div>
     </div>
@@ -76,9 +123,9 @@ const jsonLd = {
     <section class="section" aria-labelledby="inclus-title">
       <div class="container-site grid gap-8 lg:grid-cols-12">
         <div class="flex flex-col gap-4 lg:col-span-5">
-          <SectionLabel index={number("inclus")} label="inclus" />
+          <SectionLabel index={number("inclus")} label={copy.includedLabel} />
           <h2 id="inclus-title" class="text-h2">
-            Ce qui est inclus.
+            {copy.included}
           </h2>
           <ProgrammePhoto programme={p} loading="eager" sizes="(min-width: 1024px) 40vw, 100vw" class="mt-4 border border-line" />
         </div>
@@ -93,9 +140,9 @@ const jsonLd = {
     <section class="section border-y border-line bg-white" aria-labelledby="deroule-title">
       <div class="container-site flex flex-col gap-10">
         <div class="flex flex-col gap-4">
-          <SectionLabel index={number("deroule")} label="déroulé" />
+          <SectionLabel index={number("deroule")} label={copy.stepsLabel} />
           <h2 id="deroule-title" class="text-h2">
-            Déroulé.
+            {copy.steps}
           </h2>
         </div>
         <ol data-stagger class="flex flex-col border-t border-graphite">
@@ -113,18 +160,18 @@ const jsonLd = {
   <section class="section" aria-labelledby="tarif-title">
     <div class="container-site grid gap-8 lg:grid-cols-12">
       <div class="flex flex-col gap-4 lg:col-span-5">
-        <SectionLabel index={number("tarif")} label="tarif" />
+        <SectionLabel index={number("tarif")} label={copy.priceLabel} />
         <h2 id="tarif-title" class="text-h2">
-          Tarif.
+          {copy.priceTitle}
         </h2>
         <ul class="flex flex-col gap-2 font-mono text-label text-mesure">
-          {pricingConditions(settings).map((condition) => (
+          {pricingConditions(settings, lang).map((condition) => (
             <li>{condition}</li>
           ))}
         </ul>
         <div>
-          <Button variant="ghost" href="/tarifs">
-            comparer les tarifs
+          <Button variant="ghost" href={localePath(lang, "/tarifs")}>
+            {copy.compare}
           </Button>
         </div>
       </div>

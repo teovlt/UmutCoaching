@@ -7,55 +7,137 @@ import { isPlaceholder } from "@/data/site";
 import { stock } from "@/data/stock";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSettings } from "@/lib/api";
+import { localePath } from "@/i18n/config";
 
-const settings = await getSettings();
+const { lang } = Astro.locals;
+const settings = await getSettings(lang);
+const copy = {
+  fr: {
+    title: "Mentions légales",
+    description: "Mentions légales du site umut. : éditeur, hébergeur, activité et propriété intellectuelle.",
+    label: "mentions légales",
+    heading: "Mentions légales.",
+    publisher: "Éditeur du site",
+    name: "Nom",
+    status: "Statut",
+    address: "Adresse",
+    email: "E-mail",
+    phone: "Téléphone",
+    director: "Directeur de la publication",
+    activityTitle: "Activité",
+    activity: "Activité",
+    activityValue: "Coaching sportif : musculation et bodybuilding",
+    qualification: "Diplôme et carte professionnelle",
+    insurance: "Assurance RC professionnelle",
+    vat: "TVA",
+    hosting: "Hébergement",
+    host: "Hébergeur",
+    ipTitle: "Propriété intellectuelle",
+    ip: "Les textes, photos, logos et le nom umut. présents sur ce site sont protégés. Toute reproduction sans autorisation écrite est interdite.",
+    creditsTitle: "Crédits photos",
+    credits: "Photos d'illustration issues d'Unsplash (licence Unsplash)\u00a0:",
+    dataTitle: "Données personnelles",
+    dataBefore: "Les informations envoyées par le formulaire de contact sont traitées comme décrit dans la ",
+    dataLink: "politique de confidentialité",
+  },
+  en: {
+    title: "Legal notice",
+    description: "Legal notice of the umut. website: publisher, host, activity and intellectual property.",
+    label: "legal notice",
+    heading: "Legal notice.",
+    publisher: "Website publisher",
+    name: "Name",
+    status: "Legal status",
+    address: "Address",
+    email: "E-mail",
+    phone: "Phone",
+    director: "Publication director",
+    activityTitle: "Activity",
+    activity: "Activity",
+    activityValue: "Sports coaching: strength training and bodybuilding",
+    qualification: "Diploma and professional card",
+    insurance: "Professional liability insurance",
+    vat: "VAT",
+    hosting: "Hosting",
+    host: "Host",
+    ipTitle: "Intellectual property",
+    ip: "The texts, photos, logos and the name umut. on this website are protected. Any reproduction without written permission is prohibited.",
+    creditsTitle: "Photo credits",
+    credits: "Illustration photos from Unsplash (Unsplash licence):",
+    dataTitle: "Personal data",
+    dataBefore: "Information sent through the contact form is processed as described in the ",
+    dataLink: "privacy policy",
+  },
+  tr: {
+    title: "Yasal bilgiler",
+    description: "umut. web sitesinin yasal bilgileri: yayıncı, barındırma, faaliyet ve fikri mülkiyet.",
+    label: "yasal bilgiler",
+    heading: "Yasal bilgiler.",
+    publisher: "Site yayıncısı",
+    name: "Ad",
+    status: "Hukuki statü",
+    address: "Adres",
+    email: "E-posta",
+    phone: "Telefon",
+    director: "Yayın sorumlusu",
+    activityTitle: "Faaliyet",
+    activity: "Faaliyet",
+    activityValue: "Spor koçluğu: fitness ve vücut geliştirme",
+    qualification: "Diploma ve profesyonel kart",
+    insurance: "Mesleki sorumluluk sigortası",
+    vat: "KDV",
+    hosting: "Barındırma",
+    host: "Barındırma sağlayıcısı",
+    ipTitle: "Fikri mülkiyet",
+    ip: "Bu sitedeki metinler, fotoğraflar, logolar ve umut. adı korunmaktadır. Yazılı izin olmadan çoğaltılması yasaktır.",
+    creditsTitle: "Fotoğraf kaynakları",
+    credits: "Unsplash'ten illüstrasyon fotoğrafları (Unsplash lisansı):",
+    dataTitle: "Kişisel veriler",
+    dataBefore: "İletişim formuyla gönderilen bilgiler şurada açıklandığı şekilde işlenir: ",
+    dataLink: "gizlilik politikası",
+  },
+}[lang];
 const { legal } = settings;
 const emailHref = isPlaceholder(settings.email) ? undefined : `mailto:${settings.email}`;
 const phoneHref = isPlaceholder(settings.phone) ? undefined : `tel:${settings.phone.replace(/[^+\d]/g, "")}`;
 ---
 
-<BaseLayout
-  title="Mentions légales"
-  description="Mentions légales du site umut. : éditeur, hébergeur, activité et propriété intellectuelle."
->
-  <PageHeader label="mentions légales" title="Mentions légales." />
+<BaseLayout title={copy.title} description={copy.description}>
+  <PageHeader label={copy.label} title={copy.heading} />
 
   <div class="section">
     <div class="container-site">
       <LegalSection
         index="01"
         id="editeur"
-        title="Éditeur du site"
+        title={copy.publisher}
         items={[
-          { label: "Nom", value: legal.name },
-          { label: "Statut", value: legal.status },
+          { label: copy.name, value: legal.name },
+          { label: copy.status, value: legal.status },
           { label: "SIRET", value: legal.siret, mono: true },
-          { label: "Adresse", value: legal.address },
-          { label: "E-mail", value: settings.email, href: emailHref, mono: true },
-          { label: "Téléphone", value: settings.phone, href: phoneHref, mono: true },
-          { label: "Directeur de la publication", value: legal.name },
+          { label: copy.address, value: legal.address },
+          { label: copy.email, value: settings.email, href: emailHref, mono: true },
+          { label: copy.phone, value: settings.phone, href: phoneHref, mono: true },
+          { label: copy.director, value: legal.name },
         ]}
       />
       <LegalSection
         index="02"
         id="activite"
-        title="Activité"
+        title={copy.activityTitle}
         items={[
-          { label: "Activité", value: "Coaching sportif : musculation et bodybuilding" },
-          { label: "Diplôme et carte professionnelle", value: legal.qualification },
-          { label: "Assurance RC professionnelle", value: legal.insurance },
-          { label: "TVA", value: legal.vat },
+          { label: copy.activity, value: copy.activityValue },
+          { label: copy.qualification, value: legal.qualification },
+          { label: copy.insurance, value: legal.insurance },
+          { label: copy.vat, value: legal.vat },
         ]}
       />
-      <LegalSection index="03" id="hebergeur" title="Hébergement" items={[{ label: "Hébergeur", value: legal.host }]} />
-      <LegalSection index="04" id="propriete" title="Propriété intellectuelle">
-        <p>
-          Les textes, photos, logos et le nom umut. présents sur ce site sont protégés. Toute reproduction sans autorisation écrite est
-          interdite.
-        </p>
+      <LegalSection index="03" id="hebergeur" title={copy.hosting} items={[{ label: copy.host, value: legal.host }]} />
+      <LegalSection index="04" id="propriete" title={copy.ipTitle}>
+        <p>{copy.ip}</p>
       </LegalSection>
-      <LegalSection index="05" id="credits" title="Crédits photos">
-        <p>Photos d'illustration issues d'Unsplash (licence Unsplash)&nbsp;:</p>
+      <LegalSection index="05" id="credits" title={copy.creditsTitle}>
+        <p>{copy.credits}</p>
         <ul class="flex flex-col gap-1 text-small">
           {Object.values(stock).map((photo) => (
             <li>
@@ -66,10 +148,10 @@ const phoneHref = isPlaceholder(settings.phone) ? undefined : `tel:${settings.ph
           ))}
         </ul>
       </LegalSection>
-      <LegalSection index="06" id="donnees" title="Données personnelles">
+      <LegalSection index="06" id="donnees" title={copy.dataTitle}>
         <p>
-          Les informations envoyées par le formulaire de contact sont traitées comme décrit dans la
-          <a href="/confidentialite">politique de confidentialité</a>.
+          {copy.dataBefore}
+          <a href={localePath(lang, "/confidentialite")}>{copy.dataLink}</a>.
         </p>
       </LegalSection>
     </div>

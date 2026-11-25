@@ -7,6 +7,8 @@ import SectionLabel from "@/components/ui/SectionLabel.astro";
 import type { Settings } from "@/lib/api";
 import { pricingConditions } from "@/lib/format";
 import type { Programme } from "@/lib/types";
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
 
 interface Props {
   /** Section number, given by the page: "02" */
@@ -16,16 +18,18 @@ interface Props {
 }
 
 const { programmes, settings, index } = Astro.props;
-const conditions = pricingConditions(settings);
+const { lang } = Astro.locals;
+const t = ui[lang];
+const conditions = pricingConditions(settings, lang);
 ---
 
 {programmes.length > 0 && (
   <section class="section border-t border-line" aria-labelledby="tarifs-title">
     <div class="container-site flex flex-col gap-12">
       <div class="flex flex-col gap-4">
-        <SectionLabel index={index} label="tarifs" />
+        <SectionLabel index={index} label={t.sectionLabels.tarifs} />
         <h2 id="tarifs-title" class="max-w-[22ch] text-h2">
-          Des tarifs clairs, sans engagement caché.
+          {t.pricing.title}
         </h2>
       </div>
       <ul data-stagger class:list={["grid gap-4 md:grid-cols-2", programmes.length >= 3 && "lg:grid-cols-3"]}>
@@ -41,8 +45,8 @@ const conditions = pricingConditions(settings);
         ))}
       </ul>
       <div>
-        <Button variant="ghost" href="/tarifs">
-          voir les tarifs
+        <Button variant="ghost" href={localePath(lang, "/tarifs")}>
+          {t.pricing.all}
         </Button>
       </div>
     </div>

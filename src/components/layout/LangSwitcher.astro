@@ -1,0 +1,105 @@
+---
+// Language switcher (docs/03-design-system.md §6): small flag + code. Links
+// to the same page in the other language (src/i18n/config.ts).
+// - "dropdown" (header): native <details>, a script closes it on outside
+//   click and Escape.
+// - "row" (mobile menu): the three languages side by side.
+import flagFr from "@/assets/flags/fr.svg";
+import flagGb from "@/assets/flags/gb.svg";
+import flagTr from "@/assets/flags/tr.svg";
+import { type Lang, languages, localePath, locales } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
+
+interface Props {
+  variant?: "dropdown" | "row" | undefined;
+  class?: string | undefined;
+}
+
+const { variant = "dropdown", class: className } = Astro.props;
+const { lang, path } = Astro.locals;
+const t = ui[lang];
+const flags: Record<Lang, { src: string }> = { fr: flagFr, en: flagGb, tr: flagTr };
+const items = locales.map((code) => ({ code, href: localePath(code, path), current: code === lang, ...languages[code] }));
+---
+
+{variant === "dropdown" ? (
+  <details class:list={["lang-switcher relative", className]} data-lang-switcher>
+    <summary
+      class="flex min-h-11 cursor-pointer list-none items-center gap-2 px-2 font-mono text-small [&::-webkit-details-marker]:hidden"
+      aria-label={`${t.language.choose} (${languages[lang].name})`}
+    >
+      <img src={flags[lang].src} alt="" width="18" height="12" class="h-3 w-4.5 border border-line object-cover" />
+      {languages[lang].short}
+      <svg
+        class="lang-chevron size-3.5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="square"
+        aria-hidden="true"
+      >
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </summary>
+    <ul
+      class="lang-menu absolute top-full right-0 z-50 mt-1 flex min-w-44 flex-col border border-graphite bg-white py-1"
+      aria-label={t.language.label}
+    >
+      {items.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            hreflang={item.htmlLang}
+            lang={item.htmlLang}
+            aria-current={item.current ? "true" : undefined}
+            class:list={[
+              "flex min-h-11 items-center gap-3 px-4 no-underline hover:bg-labo",
+              item.current ? "text-cobalt-500" : "text-graphite hover:text-graphite",
+            ]}
+          >
+            <img src={flags[item.code].src} alt="" width="18" height="12" class="h-3 w-4.5 border border-line object-cover" />
+            <span class="text-small">{item.name}</span>
+            <span class="ml-auto font-mono text-label text-mesure">{item.short}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </details>
+) : (
+  <ul class:list={["grid grid-cols-3 gap-2", className]} aria-label={t.language.label}>
+    {items.map((item) => (
+      <li>
+        <a
+          href={item.href}
+          hreflang={item.htmlLang}
+          lang={item.htmlLang}
+          aria-current={item.current ? "true" : undefined}
+          aria-label={item.name}
+          class:list={[
+            "flex min-h-11 items-center justify-center gap-2 border font-mono text-small no-underline",
+            item.current ? "border-cobalt-400 text-cobalt-400" : "border-edge-dark text-white hover:border-white hover:text-white",
+          ]}
+        >
+          <img src={flags[item.code].src} alt="" width="18" height="12" class="h-3 w-4.5 object-cover" />
+          {item.short}
+        </a>
+      </li>
+    ))}
+  </ul>
+)}
+
+<script>
+  // Close the header dropdown on outside click, on Escape, and when another opens
+  for (const details of document.querySelectorAll<HTMLDetailsElement>("[data-lang-switcher]")) {
+    document.addEventListener("click", (event) => {
+      if (details.open && !details.contains(event.target as Node)) details.open = false;
+    });
+    details.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && details.open) {
+        details.open = false;
+        details.querySelector("summary")?.focus();
+      }
+    });
+  }
+</script>

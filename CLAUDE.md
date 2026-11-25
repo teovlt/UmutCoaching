@@ -48,7 +48,9 @@ src/
     ui/             Button, Tag, StatusBadge, Field, SectionLabel, Metric…
     sections/       Hero, Method, Programs, Pricing, Results, About, Faq, CtaBand…
     layout/         Header, MobileMenu, Footer, Seo
-  data/site.ts      infos globales par défaut (placeholders)
+  data/site.ts      infos globales par défaut (placeholders), textes par langue
+  i18n/             config.ts (langues, localePath), ui.ts (textes partagés fr / en / tr)
+  middleware.ts     routage /en et /tr vers les mêmes pages
   layouts/          BaseLayout.astro
   pages/            routes (voir docs/02-architecture.md)
   styles/
@@ -92,7 +94,10 @@ Dockerfile, server/Dockerfile, compose.yaml, nginx.conf   déploiement Dokploy
 - Performance : Lighthouse ≥ 95 partout, 0 JS par défaut, pas de lib d'animation, pas de carrousel lourd.
 - Mobile-first. Tester à 360, 768, 1024, 1280, 1440 px.
 - Pas de dépendance ajoutée sans la justifier dans `docs/05-decisions.md`.
-- Langue : `lang="fr"`. Textes UI en français, typographie française (espace fine avant `: ; ! ?` via `&nbsp;`/`&#8239;`, guillemets « »).
+- Langues : **fr** (racine), **en** (`/en`), **tr** (`/tr`) — voir D25. Aucun texte visible en dur dans un composant :
+  textes partagés dans `src/i18n/ui.ts`, textes d'une page dans un objet `{ fr, en, tr }` en tête de page, langue lue
+  dans `Astro.locals.lang`, liens via `localePath(lang, "/…")`. Français : typographie française (espace fine avant
+  `: ; ! ?` via `\u202f`/`&#8239;`, guillemets « »). `/admin` reste en français.
 
 ## Définition de « terminé » pour une page
 - [ ] Respecte `docs/03-design-system.md` (lancer `/design-review`)

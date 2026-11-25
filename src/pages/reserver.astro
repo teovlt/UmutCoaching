@@ -9,44 +9,162 @@ import SectionLabel from "@/components/ui/SectionLabel.astro";
 import { isPlaceholder } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSettings } from "@/lib/api";
+import { localePath } from "@/i18n/config";
 
-const settings = await getSettings();
+const { lang } = Astro.locals;
+const settings = await getSettings(lang);
+const copy = {
+  fr: {
+    title: "Réserver une séance",
+    description:
+      "Réservez votre première séance de coaching musculation avec umut. : formulaire, WhatsApp, téléphone ou e-mail, réponse sous 24 h.",
+    label: "réserver",
+    heading: "Réserver une séance.",
+    lead: "Par WhatsApp, téléphone ou e-mail · réponse sous 24 h.",
+    phone: "Téléphone",
+    email: "E-mail",
+    steps: [
+      { title: "Prendre contact", text: "Par le formulaire, WhatsApp, téléphone ou e-mail. Réponse sous 24 h." },
+      {
+        title: "Première séance : le bilan",
+        text: "Mensurations détaillées, vos objectifs et votre historique. Le bilan est inclus dans les offres.",
+      },
+      { title: "Démarrage", text: "Un programme écrit pour vous, puis ajusté chaque semaine." },
+    ],
+    goals: ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de force", "Posture", "Coaching en ligne", "Autre"],
+    stepsLabel: "étapes",
+    directLabel: "contact direct",
+    agenda: "agenda en ligne",
+    formLabel: "formulaire",
+    formTitle: "Écrivez-moi.",
+    required: "* champ obligatoire",
+    name: "Nom",
+    emailHelp: "→ réponse sous 24 h",
+    phoneHelp: "Facultatif, pour un rappel ou WhatsApp.",
+    goal: "Objectif",
+    goalPlaceholder: "Choisir (facultatif)",
+    message: "Message",
+    website: "Site web",
+    privacyBefore: "Vos informations servent uniquement à vous répondre. Voir la ",
+    privacyLink: "politique de confidentialité",
+    send: "Envoyer ma demande",
+    noscript: "Le formulaire a besoin de JavaScript. Écrivez directement par WhatsApp, téléphone ou e-mail.",
+    msgRequired: "Ce champ est nécessaire pour vous répondre.",
+    msgEmail: "Format attendu : nom@exemple.fr",
+    msgFailed: "L'envoi n'a pas abouti. Réessayez ou écrivez directement à umut.coachsportif@gmail.com.",
+    msgSent: "Reçu. Je vous réponds sous 24 h.",
+    msgSending: "Envoi…",
+    msgTooMany: "Trop de messages envoyés. Réessayez plus tard ou écrivez directement par e-mail.",
+  },
+  en: {
+    title: "Book a session",
+    description: "Book your first strength coaching session with umut.: form, WhatsApp, phone or e-mail, reply within 24 h.",
+    label: "book",
+    heading: "Book a session.",
+    lead: "By WhatsApp, phone or e-mail · reply within 24 h.",
+    phone: "Phone",
+    email: "E-mail",
+    steps: [
+      { title: "Get in touch", text: "Through the form, WhatsApp, phone or e-mail. Reply within 24 h." },
+      {
+        title: "First session: the assessment",
+        text: "Detailed measurements, your goals and your history. The assessment is included in every offer.",
+      },
+      { title: "Getting started", text: "A programme written for you, then adjusted every week." },
+    ],
+    goals: ["Weight loss", "Weight gain", "Muscle gain", "Strength gain", "Posture", "Online coaching", "Other"],
+    stepsLabel: "steps",
+    directLabel: "direct contact",
+    agenda: "online calendar",
+    formLabel: "form",
+    formTitle: "Write to me.",
+    required: "* required field",
+    name: "Name",
+    emailHelp: "→ reply within 24 h",
+    phoneHelp: "Optional, for a call back or WhatsApp.",
+    goal: "Goal",
+    goalPlaceholder: "Choose (optional)",
+    message: "Message",
+    website: "Website",
+    privacyBefore: "Your details are only used to reply to you. See the ",
+    privacyLink: "privacy policy",
+    send: "Send my request",
+    noscript: "The form needs JavaScript. Write directly by WhatsApp, phone or e-mail.",
+    msgRequired: "This field is needed to reply to you.",
+    msgEmail: "Expected format: name@example.com",
+    msgFailed: "Sending failed. Try again or write directly to umut.coachsportif@gmail.com.",
+    msgSent: "Received. I will reply within 24 h.",
+    msgSending: "Sending…",
+    msgTooMany: "Too many messages sent. Try again later or write directly by e-mail.",
+  },
+  tr: {
+    title: "Seans ayırt",
+    description: "umut. ile ilk fitness koçluğu seansınızı ayırtın: form, WhatsApp, telefon veya e-posta, 24 saat içinde yanıt.",
+    label: "rezervasyon",
+    heading: "Seans ayırt.",
+    lead: "WhatsApp, telefon veya e-posta ile · 24 saat içinde yanıt.",
+    phone: "Telefon",
+    email: "E-posta",
+    steps: [
+      { title: "İletişime geçin", text: "Form, WhatsApp, telefon veya e-posta ile. 24 saat içinde yanıt." },
+      {
+        title: "İlk seans: değerlendirme",
+        text: "Detaylı vücut ölçüleri, hedefleriniz ve geçmişiniz. Değerlendirme tüm tekliflere dahildir.",
+      },
+      { title: "Başlangıç", text: "Size özel yazılmış bir program, ardından her hafta güncellenir." },
+    ],
+    goals: ["Kilo verme", "Kilo alma", "Kas kazanımı", "Kuvvet artışı", "Duruş", "Online koçluk", "Diğer"],
+    stepsLabel: "adımlar",
+    directLabel: "doğrudan iletişim",
+    agenda: "online takvim",
+    formLabel: "form",
+    formTitle: "Bana yazın.",
+    required: "* zorunlu alan",
+    name: "Ad",
+    emailHelp: "→ 24 saat içinde yanıt",
+    phoneHelp: "İsteğe bağlı, geri arama veya WhatsApp için.",
+    goal: "Hedef",
+    goalPlaceholder: "Seçin (isteğe bağlı)",
+    message: "Mesaj",
+    website: "Web sitesi",
+    privacyBefore: "Bilgileriniz yalnızca size yanıt vermek için kullanılır. Bkz. ",
+    privacyLink: "gizlilik politikası",
+    send: "Talebimi gönder",
+    noscript: "Form için JavaScript gerekiyor. Doğrudan WhatsApp, telefon veya e-posta ile yazın.",
+    msgRequired: "Size yanıt verebilmem için bu alan gerekli.",
+    msgEmail: "Beklenen biçim: ad@ornek.com",
+    msgFailed: "Gönderilemedi. Tekrar deneyin veya doğrudan umut.coachsportif@gmail.com adresine yazın.",
+    msgSent: "Alındı. 24 saat içinde yanıt veriyorum.",
+    msgSending: "Gönderiliyor…",
+    msgTooMany: "Çok fazla mesaj gönderildi. Daha sonra tekrar deneyin veya doğrudan e-posta ile yazın.",
+  },
+}[lang];
+
 const digits = isPlaceholder(settings.phone) ? "" : settings.phone.replace(/[^\d+]/g, "");
 // "06 31…" → "33631…" for wa.me, which wants the international number without "+"
 const whatsapp = digits && `https://wa.me/${digits.replace(/^\+/, "").replace(/^0/, "33")}`;
 const contacts = [
   whatsapp && { label: "WhatsApp", value: settings.phone, href: whatsapp, external: true },
-  digits && { label: "Téléphone", value: settings.phone, href: `tel:${digits}`, external: false },
-  !isPlaceholder(settings.email) && { label: "E-mail", value: settings.email, href: `mailto:${settings.email}`, external: false },
+  digits && { label: copy.phone, value: settings.phone, href: `tel:${digits}`, external: false },
+  !isPlaceholder(settings.email) && { label: copy.email, value: settings.email, href: `mailto:${settings.email}`, external: false },
 ].filter((c): c is { label: string; value: string; href: string; external: boolean } => Boolean(c));
 
-const steps = [
-  { index: "01", title: "Prendre contact", text: "Par le formulaire, WhatsApp, téléphone ou e-mail. Réponse sous 24 h." },
-  {
-    index: "02",
-    title: "Première séance : le bilan",
-    text: "Mensurations détaillées, vos objectifs et votre historique. Le bilan est inclus dans les offres.",
-  },
-  { index: "03", title: "Démarrage", text: "Un programme écrit pour vous, puis ajusté chaque semaine." },
-];
+const steps = copy.steps.map((step, i) => ({ ...step, index: String(i + 1).padStart(2, "0") }));
 
-// Goals Umut works on (docs/04-contenu.md § Programmes, publics)
-const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de force", "Posture", "Coaching en ligne", "Autre"].map(
-  (label) => ({ value: label, label }),
-);
+// Goals Umut works on (docs/04-contenu.md § Programmes, publics). The value
+// sent stays the French label whatever the page's language: Umut reads it in /admin
+const frenchGoals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de force", "Posture", "Coaching en ligne", "Autre"];
+const goals = copy.goals.map((label, i) => ({ value: frenchGoals[i] ?? label, label }));
 ---
 
-<BaseLayout
-  title="Réserver une séance"
-  description="Réservez votre première séance de coaching musculation avec umut. : formulaire, WhatsApp, téléphone ou e-mail, réponse sous 24 h."
->
-  <PageHeader index="05" label="réserver" title="Réserver une séance." lead="Par WhatsApp, téléphone ou e-mail · réponse sous 24 h." />
+<BaseLayout title={copy.title} description={copy.description}>
+  <PageHeader index="05" label={copy.label} title={copy.heading} lead={copy.lead} />
 
   <section class="section">
     <div class="container-site grid items-start gap-12 lg:grid-cols-12 lg:gap-8">
       <div class="flex flex-col gap-12 lg:col-span-5">
         <div class="flex flex-col gap-6">
-          <SectionLabel index="01" label="étapes" as="h2" />
+          <SectionLabel index="01" label={copy.stepsLabel} as="h2" />
           <ol data-stagger class="flex flex-col border-t border-graphite">
             {steps.map((step) => (
               <li class="flex gap-5 border-b border-line py-5">
@@ -61,7 +179,7 @@ const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de f
         </div>
 
         <div class="flex flex-col gap-6">
-          <SectionLabel index="02" label="contact direct" as="h2" />
+          <SectionLabel index="02" label={copy.directLabel} as="h2" />
           <ul class="flex flex-col border-t border-graphite">
             {contacts.map((c) => (
               <li class="border-b border-line">
@@ -80,7 +198,7 @@ const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de f
           {settings.bookingUrl && (
             <div>
               <Button variant="ghost" href={settings.bookingUrl} attrs={{ target: "_blank", rel: "noopener" }}>
-                agenda en ligne
+                {copy.agenda}
               </Button>
             </div>
           )}
@@ -88,39 +206,51 @@ const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de f
       </div>
 
       <div id="contact" class="card scroll-mt-24 p-6 sm:p-8 lg:col-span-6 lg:col-start-7">
-        <form data-contact action="/api/messages" method="post" novalidate class="flex flex-col gap-6" aria-labelledby="form-title">
+        <form
+          data-contact
+          action="/api/messages"
+          method="post"
+          novalidate
+          class="flex flex-col gap-6"
+          aria-labelledby="form-title"
+          data-msg-required={copy.msgRequired}
+          data-msg-email={copy.msgEmail}
+          data-msg-failed={copy.msgFailed}
+          data-msg-sent={copy.msgSent}
+          data-msg-sending={copy.msgSending}
+          data-msg-too-many={copy.msgTooMany}
+        >
           <div class="flex flex-col gap-2">
-            <SectionLabel index="03" label="formulaire" />
+            <SectionLabel index="03" label={copy.formLabel} />
             <h2 id="form-title" class="text-h3">
-              Écrivez-moi.
+              {copy.formTitle}
             </h2>
-            <p class="font-mono text-micro text-mesure">* champ obligatoire</p>
+            <p class="font-mono text-micro text-mesure">{copy.required}</p>
           </div>
-          <Field label="Nom" name="name" required autocomplete="name" />
-          <Field label="E-mail" name="email" type="email" required autocomplete="email" help="→ réponse sous 24 h" />
-          <Field label="Téléphone" name="phone" type="tel" autocomplete="tel" help="Facultatif, pour un rappel ou WhatsApp." />
-          <Field label="Objectif" name="goal" as="select" placeholder="Choisir (facultatif)" options={goals} />
-          <Field label="Message" name="message" as="textarea" required rows={5} />
+          <Field label={copy.name} name="name" required autocomplete="name" />
+          <Field label={copy.email} name="email" type="email" required autocomplete="email" help={copy.emailHelp} />
+          <Field label={copy.phone} name="phone" type="tel" autocomplete="tel" help={copy.phoneHelp} />
+          <Field label={copy.goal} name="goal" as="select" placeholder={copy.goalPlaceholder} options={goals} />
+          <Field label={copy.message} name="message" as="textarea" required rows={5} />
           <!-- Honeypot: hidden from people and assistive tech, filled by bots -->
           <div class="hidden" aria-hidden="true">
-            <label for="field-website">Site web</label>
+            <label for="field-website">{copy.website}</label>
             <input id="field-website" name="website" type="text" tabindex="-1" autocomplete="off" />
           </div>
           <p class="text-small text-mesure">
-            Vos informations servent uniquement à vous répondre. Voir la <a href="/confidentialite">politique de confidentialité</a>.
+            {copy.privacyBefore}
+            <a href={localePath(lang, "/confidentialite")}>{copy.privacyLink}</a>.
           </p>
           <div class="flex flex-col gap-4">
             <div>
               <Button type="submit" icon="arrow">
-                Envoyer ma demande
+                {copy.send}
               </Button>
             </div>
             <p data-form-status role="status" class="font-mono text-small empty:hidden"></p>
           </div>
           <noscript>
-            <p class="font-mono text-small text-mesure">
-              Le formulaire a besoin de JavaScript. Écrivez directement par WhatsApp, téléphone ou e-mail.
-            </p>
+            <p class="font-mono text-small text-mesure">{copy.noscript}</p>
           </noscript>
         </form>
       </div>
@@ -131,10 +261,6 @@ const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de f
 <script>
   // Contact form: field checks with the microcopy of docs/04-contenu.md, then
   // a JSON POST to /api/messages (same origin: nginx, or Vite's proxy in dev).
-  const REQUIRED = "Ce champ est nécessaire pour vous répondre.";
-  const EMAIL = "Format attendu : nom@exemple.fr";
-  const FAILED = "L'envoi n'a pas abouti. Réessayez ou écrivez directement à umut.coachsportif@gmail.com.";
-  const SENT = "Reçu. Je vous réponds sous 24 h.";
 
   type Control = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
@@ -166,11 +292,25 @@ const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de f
     control.setAttribute("aria-describedby", [id, ...help].join(" "));
   };
 
-  const check = (control: Control): boolean => {
+  // Messages in the page's language, from the form's data-msg-* attributes
+  type Messages = { required: string; email: string; failed: string; sent: string; sending: string; tooMany: string };
+  const messagesOf = (form: HTMLFormElement): Messages => {
+    const d = form.dataset;
+    return {
+      required: d.msgRequired ?? "",
+      email: d.msgEmail ?? "",
+      failed: d.msgFailed ?? "",
+      sent: d.msgSent ?? "",
+      sending: d.msgSending ?? "",
+      tooMany: d.msgTooMany ?? "",
+    };
+  };
+
+  const check = (control: Control, msg: Messages): boolean => {
     const value = control.value.trim();
     let message = "";
-    if (control.required && !value) message = REQUIRED;
-    else if (control.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) message = EMAIL;
+    if (control.required && !value) message = msg.required;
+    else if (control.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) message = msg.email;
     setError(control, message);
     return !message;
   };
@@ -179,16 +319,17 @@ const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de f
     const status = form.querySelector<HTMLElement>("[data-form-status]") as HTMLElement;
     const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]') as HTMLButtonElement;
     const controls = [...form.querySelectorAll<Control>("input:not([name=website]), textarea, select")];
+    const msg = messagesOf(form);
 
     // Re-check a field once it has been flagged, as the user corrects it
     for (const control of controls) {
-      control.addEventListener("blur", () => control.hasAttribute("aria-invalid") && check(control));
-      control.addEventListener("input", () => control.hasAttribute("aria-invalid") && check(control));
+      control.addEventListener("blur", () => control.hasAttribute("aria-invalid") && check(control, msg));
+      control.addEventListener("input", () => control.hasAttribute("aria-invalid") && check(control, msg));
     }
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const invalid = controls.filter((control) => !check(control));
+      const invalid = controls.filter((control) => !check(control, msg));
       if (invalid.length) {
         invalid[0]?.focus();
         return;
@@ -196,7 +337,7 @@ const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de f
 
       submit.disabled = true;
       status.className = "font-mono text-small text-mesure";
-      status.textContent = "Envoi…";
+      status.textContent = msg.sending;
       try {
         const res = await fetch(form.action, {
           method: "POST",
@@ -204,17 +345,16 @@ const goals = ["Perte de poids", "Prise de poids", "Prise de muscle", "Gain de f
           body: JSON.stringify(Object.fromEntries(new FormData(form))),
         });
         if (!res.ok) {
-          const body = (await res.json().catch(() => ({}))) as { message?: string };
-          // 429: the API's own message ("Trop de messages…") is the clearest
-          throw new Error(res.status === 429 && body.message ? body.message : FAILED);
+          // 429: too many messages from this address
+          throw new Error(res.status === 429 ? msg.tooMany : msg.failed);
         }
         form.reset();
         status.className = "font-mono text-small font-bold text-success";
-        status.textContent = SENT;
+        status.textContent = msg.sent;
       } catch (err) {
         status.className = "font-mono text-small text-danger";
         // A TypeError is a network failure: no message worth showing
-        status.textContent = err instanceof Error && !(err instanceof TypeError) ? err.message : FAILED;
+        status.textContent = err instanceof Error && !(err instanceof TypeError) ? err.message : msg.failed;
       } finally {
         submit.disabled = false;
       }

@@ -9,6 +9,8 @@ import Specimen from "@/components/ui/Specimen.astro";
 import UmutPicture from "@/components/ui/UmutPicture.astro";
 import { umut } from "@/data/umut";
 import type { Settings } from "@/lib/api";
+import { localePath } from "@/i18n/config";
+import { ui } from "@/i18n/ui";
 
 interface Props {
   /** Section number, given by the page: "02" */
@@ -18,13 +20,15 @@ interface Props {
 
 const { settings, index } = Astro.props;
 const { about, photos } = settings;
-const title = about.title || "Umut, coach musculation.";
-const text = about.text || "[À CONFIRMER] Parcours d'Umut en 3 à 5 lignes.";
+const { lang } = Astro.locals;
+const t = ui[lang];
+const title = about.title || t.about.defaultTitle;
+const text = about.text || t.about.defaultText;
 ---
 
 <section class="section border-y border-line bg-white" aria-labelledby="a-propos-title">
   <div class="container-site grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
-    <Specimen caption="fig. 02 — portrait" class="sm:max-w-sm lg:col-span-4 lg:max-w-none">
+    <Specimen caption={t.about.caption} class="sm:max-w-sm lg:col-span-4 lg:max-w-none">
       <UmutPicture
         uploaded={photos.about}
         fallback={umut.portrait}
@@ -33,13 +37,13 @@ const text = about.text || "[À CONFIRMER] Parcours d'Umut en 3 à 5 lignes.";
       />
     </Specimen>
     <div class="flex flex-col gap-6 lg:col-span-7 lg:col-start-6">
-      <SectionLabel index={index} label="à propos" />
+      <SectionLabel index={index} label={t.sectionLabels.aPropos} />
       <h2 id="a-propos-title" class="text-h2">
         {title}
       </h2>
       <p class="max-w-[62ch] whitespace-pre-line text-mesure">{text}</p>
       {about.tags.length > 0 && (
-        <ul class="flex flex-wrap gap-2" aria-label="Spécialités">
+        <ul class="flex flex-wrap gap-2" aria-label={t.about.specialties}>
           {about.tags.map((tag) => (
             <li>
               <Tag>#{tag}</Tag>
@@ -48,8 +52,8 @@ const text = about.text || "[À CONFIRMER] Parcours d'Umut en 3 à 5 lignes.";
         </ul>
       )}
       <div>
-        <Button variant="ghost" href="/a-propos">
-          en savoir plus
+        <Button variant="ghost" href={localePath(lang, "/a-propos")}>
+          {t.about.more}
         </Button>
       </div>
     </div>

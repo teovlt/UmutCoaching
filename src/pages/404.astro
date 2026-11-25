@@ -4,17 +4,42 @@
 import Button from "@/components/ui/Button.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { localePath } from "@/i18n/config";
 
 Astro.response.status = 404;
+const { lang } = Astro.locals;
+const copy = {
+  fr: {
+    title: "Page introuvable",
+    description: "Cette page n'existe pas ou a été déplacée.",
+    label: "erreur 404",
+    heading: "Cette page ne figure pas dans le protocole.",
+    back: "retour à l'accueil",
+  },
+  en: {
+    title: "Page not found",
+    description: "This page does not exist or has been moved.",
+    label: "error 404",
+    heading: "This page is not part of the protocol.",
+    back: "back to the home page",
+  },
+  tr: {
+    title: "Sayfa bulunamadı",
+    description: "Bu sayfa mevcut değil veya taşınmış.",
+    label: "hata 404",
+    heading: "Bu sayfa protokolde yer almıyor.",
+    back: "ana sayfaya dön",
+  },
+}[lang];
 ---
 
-<BaseLayout title="Page introuvable" description="Cette page n'existe pas ou a été déplacée." noindex>
+<BaseLayout title={copy.title} description={copy.description} noindex>
   <section class="container-site flex min-h-[60vh] flex-col justify-center gap-6 py-16">
-    <SectionLabel label="erreur 404" />
-    <h1 class="max-w-[18ch] text-h1">Cette page ne figure pas dans le protocole.</h1>
+    <SectionLabel label={copy.label} />
+    <h1 class="max-w-[18ch] text-h1">{copy.heading}</h1>
     <div>
-      <Button variant="ghost" href="/">
-        retour à l'accueil
+      <Button variant="ghost" href={localePath(lang, "/")}>
+        {copy.back}
       </Button>
     </div>
   </section>

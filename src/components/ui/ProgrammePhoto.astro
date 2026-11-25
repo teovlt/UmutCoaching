@@ -27,5 +27,12 @@ const classes = ["aspect-[3/2] w-full object-cover", className];
 {p.image.url ? (
   <img src={p.image.url} alt={p.image.alt || p.title} width="900" height="600" loading={loading} decoding="async" class:list={classes} />
 ) : (
-  <Image src={fallback.src} alt={fallback.alt} widths={[480, 800, 1200]} sizes={sizes} loading={loading} class:list={classes} />
+  <Image
+    src={fallback.src}
+    alt={fallback.alt[Astro.locals.lang]}
+    widths={[480, 800, 1200]}
+    sizes={sizes}
+    loading={loading}
+    class:list={classes}
+  />
 )}

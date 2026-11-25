@@ -7,22 +7,43 @@ import PageHeader from "@/components/sections/PageHeader.astro";
 import ProgramCard from "@/components/ui/ProgramCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getFaqs, getProgrammes } from "@/lib/api";
+import { ui } from "@/i18n/ui";
 
-const [programmes, faqs] = await Promise.all([getProgrammes(), getFaqs("programmes")]);
+const { lang } = Astro.locals;
+const [programmes, faqs] = await Promise.all([getProgrammes(lang), getFaqs("programmes", lang)]);
+const copy = {
+  fr: {
+    title: "Programmes",
+    description:
+      "Les offres de coaching umut. : coaching individuel en salle et coaching en ligne, chacune avec un bilan de départ et un programme ajusté chaque semaine.",
+    heading: "Choisissez votre format.",
+    lead: "Chaque offre commence par un bilan de départ, puis un programme écrit pour vous et revu chaque semaine.",
+    offers: "Offres",
+  },
+  en: {
+    title: "Programmes",
+    description:
+      "umut. coaching offers: one-to-one coaching at the gym and online coaching, each with a starting assessment and a programme adjusted every week.",
+    heading: "Choose your format.",
+    lead: "Every offer starts with a starting assessment, then a programme written for you and reviewed every week.",
+    offers: "Offers",
+  },
+  tr: {
+    title: "Programlar",
+    description:
+      "umut. koçluk teklifleri: salonda birebir koçluk ve online koçluk; her biri başlangıç değerlendirmesi ve her hafta güncellenen bir programla.",
+    heading: "Formatınızı seçin.",
+    lead: "Her teklif bir başlangıç değerlendirmesiyle başlar, ardından size özel yazılan ve her hafta gözden geçirilen bir program gelir.",
+    offers: "Teklifler",
+  },
+}[lang];
+const t = ui[lang];
 ---
 
-<BaseLayout
-  title="Programmes"
-  description="Les offres de coaching umut. : coaching individuel en salle et coaching en ligne, chacune avec un bilan de départ et un programme ajusté chaque semaine."
->
-  <PageHeader
-    index="02"
-    label="programmes"
-    title="Choisissez votre format."
-    lead="Chaque offre commence par un bilan de départ, puis un programme écrit pour vous et revu chaque semaine."
-  />
+<BaseLayout title={copy.title} description={copy.description}>
+  <PageHeader index="02" label={t.sectionLabels.programmes} title={copy.heading} lead={copy.lead} />
 
-  <section class="section" aria-label="Offres">
+  <section class="section" aria-label={copy.offers}>
     <div class="container-site">
       {programmes.length > 0 ? (
         <ul data-stagger class:list={["grid gap-4 md:grid-cols-2", programmes.length >= 3 && "lg:grid-cols-3"]}>
@@ -33,7 +54,7 @@ const [programmes, faqs] = await Promise.all([getProgrammes(), getFaqs("programm
           ))}
         </ul>
       ) : (
-        <p class="font-mono text-small text-mesure">Offres [À CONFIRMER]</p>
+        <p class="font-mono text-small text-mesure">{t.programs.empty}</p>
       )}
     </div>
   </section>
