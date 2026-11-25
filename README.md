@@ -51,6 +51,7 @@ pnpm dev               # http://localhost:4321 · styleguide : /styleguide
    ```bash
    node dist/seed/seedUser.js      # crée le compte admin (interactif)
    node dist/seed/seedContent.js   # contenu de départ, sans écraser l'existant
+   # node dist/seed/seedContent.js --overwrite   # remet programmes, FAQ et infos seedés à leurs valeurs de départ
    ```
 
 `SITE_URL` est lue au build : après l'avoir changée, redéployer. Les photos envoyées depuis l'admin sont stockées dans le volume `uploads` (conservé entre les déploiements).
