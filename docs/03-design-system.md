@@ -166,7 +166,7 @@ Voir `02-architecture.md` § Header. Footer `.on-dark`, 4 colonnes desktop, file
   livrée avec le site (`src/data/umut.ts`, `src/assets/images/umut/`), **en couleur** comme celles de l'admin
   (le N&B est réservé aux illustrations Unsplash, ce qui distingue le vrai coach des illustrations).
   Jamais de photo d'illustration à sa place.
-- `ui/ProgrammePhoto.astro` : photo 3:2 d'une offre (celle de l'admin, sinon la photo d'Umut associée à son format), en tête de `ProgramCard` et sur la fiche programme.
+- `ui/ProgrammePhoto.astro` : photo 3:2 d'une offre (celle de l'admin, sinon la photo d'Umut propre à l'offre, différente pour chaque offre), en tête de `ProgramCard` et sur la fiche programme.
 
 ## 8. Mouvement
 Un mouvement **mécanique et précis**, comme un instrument de mesure : tout part de la profondeur (3D en CSS), rien ne rebondit.

@@ -1,13 +1,13 @@
 ---
 // A programme's 3:2 picture: the photo uploaded in /admin if any (already
-// WebP from the API, D19), else Umut's default photo for its format
-// (src/data/umut.ts), optimised by astro:assets, in colour.
+// WebP from the API, D19), else Umut's default photo for this offer
+// (src/data/umut.ts, a different one per offer), optimised by astro:assets, in colour.
 import { Image } from "astro:assets";
 import { programmeDefault } from "@/data/umut";
 import type { Programme } from "@/lib/types";
 
 interface Props {
-  programme: Pick<Programme, "image" | "format" | "title">;
+  programme: Pick<Programme, "image" | "slug" | "title">;
   /** Rendered width hint for srcset, in CSS px */
   sizes?: string | undefined;
   loading?: "lazy" | "eager" | undefined;
@@ -20,7 +20,7 @@ const {
   loading = "lazy",
   class: className,
 } = Astro.props;
-const fallback = programmeDefault[p.format];
+const fallback = programmeDefault(p.slug);
 const classes = ["aspect-[3/2] w-full object-cover", className];
 ---
 

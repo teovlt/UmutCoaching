@@ -6,12 +6,12 @@
 import type { ImageMetadata } from "astro";
 import bilanPhoto from "@/assets/images/umut/bilan-photo.jpg";
 import dosSalle from "@/assets/images/umut/dos-salle.jpg";
-import heroPose from "@/assets/images/umut/hero-pose-salle.jpg";
+import heroMontagne from "@/assets/images/umut/hero-montagne.jpg";
+import poseSalle from "@/assets/images/umut/hero-pose-salle.jpg";
 import portrait from "@/assets/images/umut/portrait.jpg";
 import poseProfil from "@/assets/images/umut/pose-profil.jpg";
 import poseProjecteur from "@/assets/images/umut/pose-projecteur.jpg";
 import seancePoulie from "@/assets/images/umut/seance-poulie.jpg";
-import type { ProgrammeFormat } from "@/lib/types";
 
 export type UmutPhoto = {
   src: ImageMetadata;
@@ -19,7 +19,8 @@ export type UmutPhoto = {
 };
 
 export const umut = {
-  hero: { src: heroPose, alt: "Umut torse nu, biceps contracté, dans une salle aux murs blancs et à la charpente métallique" },
+  hero: { src: heroMontagne, alt: "Umut souriant en randonnée, sac au dos, au-dessus d'un lac de montagne" },
+  poseSalle: { src: poseSalle, alt: "Umut torse nu, biceps contracté, dans une salle aux murs blancs et à la charpente métallique" },
   portrait: { src: portrait, alt: "Portrait d'Umut, souriant, bras croisés devant un mur en béton" },
   seance: { src: seancePoulie, alt: "Umut à l'entraînement, tirage à la poulie assis sur un banc" },
   bilan: { src: bilanPhoto, alt: "Umut se prenant en photo dans le miroir de la salle, téléphone en main" },
@@ -31,9 +32,23 @@ export const umut = {
 /** "En salle" strip on /a-propos */
 export const umutGallery: UmutPhoto[] = [umut.projecteur, umut.profil, umut.dos];
 
-/** Default picture of a programme without its own photo, by format */
-export const programmeDefault: Record<ProgrammeFormat, UmutPhoto> = {
-  salle: umut.seance,
-  "en-ligne": umut.bilan,
-  hybride: umut.seance,
+/** Default picture of each seeded programme: one photo per offer */
+const programmeBySlug: Record<string, UmutPhoto> = {
+  "coaching-individuel": umut.seance,
+  "coaching-en-ligne": umut.bilan,
+  nutrition: umut.poseSalle,
+  "pre-post-natal": umut.profil,
+};
+
+/** Photos for programmes created later in /admin without their own photo */
+const programmePool: UmutPhoto[] = [umut.projecteur, umut.dos, umut.poseSalle, umut.profil, umut.seance, umut.bilan];
+
+/** Default picture of a programme without its own photo: by offer, else
+ *  picked from the pool by its slug, so it stays the same on every page */
+export const programmeDefault = (slug: string): UmutPhoto => {
+  const known = programmeBySlug[slug];
+  if (known) return known;
+  let hash = 0;
+  for (const char of slug) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  return programmePool[hash % programmePool.length] ?? umut.seance;
 };
