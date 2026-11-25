@@ -6,6 +6,7 @@ import PageHeader from "@/components/sections/PageHeader.astro";
 import Button from "@/components/ui/Button.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import Tag from "@/components/ui/Tag.astro";
+import Specimen from "@/components/ui/Specimen.astro";
 import UmutPicture from "@/components/ui/UmutPicture.astro";
 import { umut, umutGallery } from "@/data/umut";
 import { Image } from "astro:assets";
@@ -34,13 +35,15 @@ const facts = [
 
   <section class="section" aria-labelledby="parcours-title">
     <div class="container-site grid items-start gap-10 lg:grid-cols-12 lg:gap-8">
-      <UmutPicture
-        uploaded={photos.about}
-        fallback={umut.portrait}
-        loading="eager"
-        sizes="(min-width: 1024px) 40vw, (min-width: 640px) 384px, 100vw"
-        class="border border-line sm:max-w-sm lg:col-span-5 lg:max-w-none"
-      />
+      <Specimen caption="fig. 01 — portrait" class="sm:max-w-sm lg:col-span-5 lg:max-w-none">
+        <UmutPicture
+          uploaded={photos.about}
+          fallback={umut.portrait}
+          loading="eager"
+          sizes="(min-width: 1024px) 40vw, (min-width: 640px) 384px, 100vw"
+          class="border border-line"
+        />
+      </Specimen>
       <div class="flex flex-col gap-6 lg:col-span-6 lg:col-start-7">
         <SectionLabel index="01" label="parcours" />
         <h2 id="parcours-title" class="sr-only">
@@ -66,17 +69,19 @@ const facts = [
       <h2 id="salle-title" class="sr-only">
         En salle
       </h2>
-      <ul class="grid gap-4 sm:grid-cols-3">
-        {umutGallery.map((photo) => (
+      <ul data-stagger class="grid gap-x-8 gap-y-10 sm:grid-cols-3">
+        {umutGallery.map((photo, i) => (
           <li>
-            <Image
-              src={photo.src}
-              alt={photo.alt}
-              widths={[400, 640, 900]}
-              sizes="(min-width: 640px) 33vw, 100vw"
-              loading="lazy"
-              class="aspect-[4/5] w-full border border-line object-cover"
-            />
+            <Specimen caption={`fig. ${String(i + 2).padStart(2, "0")} — en salle`}>
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                widths={[400, 640, 900]}
+                sizes="(min-width: 640px) 33vw, 100vw"
+                loading="lazy"
+                class="aspect-[4/5] w-full border border-line object-cover"
+              />
+            </Specimen>
           </li>
         ))}
       </ul>

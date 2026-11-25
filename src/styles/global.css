@@ -145,3 +145,253 @@
     color: var(--color-cobalt-300);
   }
 }
+
+/* ---------- Mouvement (docs/03-design-system.md §8) ------------------------
+   Tout est armé par la classe `motion` posée sur <html> par le script en tête
+   de BaseLayout, et seulement sans prefers-reduced-motion : sans JavaScript,
+   ou avec le mouvement réduit, tout est visible et immobile. */
+@layer components {
+  /* -- Apparition au scroll : chaque bloc d'une section monte et se redresse
+     (bascule en X), les éléments d'une liste [data-stagger] en cascade. ----- */
+  .motion main :is(section, header) > .container-site > *,
+  .motion main section.container-site > *,
+  .motion [data-stagger] > * {
+    opacity: 0;
+    transform: perspective(var(--perspective)) translate3d(0, var(--reveal-y), 0) rotateX(var(--reveal-tilt));
+    transform-origin: 50% 100%;
+    transition:
+      opacity var(--duration-reveal) var(--ease-labo),
+      transform var(--duration-reveal) var(--ease-labo);
+    transition-delay: calc(var(--i, 0) * var(--stagger));
+  }
+  .motion main :is(section, header) > .container-site > .is-in,
+  .motion main section.container-site > .is-in,
+  .motion .is-in[data-stagger] > *,
+  .motion .is-in [data-stagger] > * {
+    opacity: 1;
+    transform: none;
+  }
+  /* Rang dans le bloc ou dans la liste : décalage de la cascade */
+  :is(.container-site, [data-stagger]) > :nth-child(2) {
+    --i: 1;
+  }
+  :is(.container-site, [data-stagger]) > :nth-child(3) {
+    --i: 2;
+  }
+  :is(.container-site, [data-stagger]) > :nth-child(4) {
+    --i: 3;
+  }
+  :is(.container-site, [data-stagger]) > :nth-child(n + 5) {
+    --i: 4;
+  }
+  /* Une liste attend que son bloc soit arrivé : elle commence juste après */
+  .motion .is-in [data-stagger] > :nth-child(1),
+  .motion .is-in[data-stagger] > :nth-child(1) {
+    transition-delay: calc(2 * var(--stagger));
+  }
+  .motion .is-in [data-stagger] > :nth-child(2),
+  .motion .is-in[data-stagger] > :nth-child(2) {
+    transition-delay: calc(4 * var(--stagger));
+  }
+  .motion .is-in [data-stagger] > :nth-child(3),
+  .motion .is-in[data-stagger] > :nth-child(3) {
+    transition-delay: calc(6 * var(--stagger));
+  }
+  .motion .is-in [data-stagger] > :nth-child(n + 4),
+  .motion .is-in[data-stagger] > :nth-child(n + 4) {
+    transition-delay: calc(8 * var(--stagger));
+  }
+
+  /* Le filet de « 01 / méthode ——— » se trace quand son bloc arrive */
+  .motion .section-label::after {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-reveal) var(--ease-labo) calc(var(--i, 0) * var(--stagger) + 2 * var(--stagger));
+  }
+  .motion .is-in .section-label::after,
+  .motion .section-label.is-in::after {
+    transform: scaleX(1);
+  }
+
+  /* -- Titre du hero : chaque mot bascule depuis l'arrière, l'un après
+     l'autre (animation « signature » de l'accueil, avec la courbe). -------- */
+  .hero-word {
+    display: inline-block;
+  }
+  .motion .hero-word {
+    animation: word-in 1s var(--ease-labo) both;
+    animation-delay: calc(var(--i, 0) * 2 * var(--stagger) + var(--stagger));
+    transform-origin: 50% 100% -0.5em;
+  }
+
+  /* -- Inclinaison 3D au pointeur (script dans BaseLayout) : cartes et
+     photos suivent la souris, avancent en Z au survol. Souris uniquement. -- */
+  [data-tilt] {
+    transform: perspective(var(--perspective)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--lift, 0));
+    transition: transform var(--duration-slow) var(--ease-labo);
+  }
+  [data-tilt][data-tilting] {
+    transition-duration: var(--duration-fast);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .motion [data-tilt]:hover {
+      --lift: var(--tilt-lift);
+    }
+  }
+  /* Photo dans une carte : léger zoom au survol (la carte coupe le débord) */
+  [data-tilt] .tilt-zoom {
+    transition: scale var(--duration-slow) var(--ease-labo);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .motion [data-tilt]:hover .tilt-zoom {
+      scale: 1.04;
+    }
+  }
+
+  /* -- « Spécimen » : photo posée dans une scène 3D, un cadre graphite décalé
+     derrière elle, en profondeur ; il se déplace quand la photo s'incline. -- */
+  .specimen {
+    position: relative;
+    transform-style: preserve-3d;
+  }
+  .specimen-frame {
+    position: absolute;
+    inset: 0;
+    border: var(--border-strong);
+    transform: translate3d(var(--specimen-offset), var(--specimen-offset), var(--specimen-depth));
+    pointer-events: none;
+  }
+  .motion .specimen-frame {
+    transition: transform var(--duration-reveal) var(--ease-labo) calc(3 * var(--stagger));
+  }
+  /* Avant son arrivée, le cadre est collé à la photo, puis il recule */
+  .motion .specimen-frame {
+    transform: translate3d(0, 0, 0);
+  }
+  .motion .is-in .specimen-frame {
+    transform: translate3d(var(--specimen-offset), var(--specimen-offset), var(--specimen-depth));
+  }
+
+  /* -- Cube filaire du bandeau final : six faces en filets, tourne lentement */
+  .wire-cube {
+    width: var(--cube-size);
+    height: var(--cube-size);
+    perspective: var(--perspective);
+  }
+  .wire-cube-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(-24deg) rotateY(38deg);
+  }
+  .motion .wire-cube-body {
+    animation: cube-turn 28s linear infinite;
+  }
+  .wire-cube-face {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--color-muted);
+  }
+  .wire-cube-face:nth-child(1) {
+    transform: translateZ(calc(var(--cube-size) / 2));
+  }
+  .wire-cube-face:nth-child(2) {
+    transform: rotateY(180deg) translateZ(calc(var(--cube-size) / 2));
+  }
+  .wire-cube-face:nth-child(3) {
+    transform: rotateY(90deg) translateZ(calc(var(--cube-size) / 2));
+  }
+  .wire-cube-face:nth-child(4) {
+    transform: rotateY(-90deg) translateZ(calc(var(--cube-size) / 2));
+  }
+  .wire-cube-face:nth-child(5) {
+    transform: rotateX(90deg) translateZ(calc(var(--cube-size) / 2));
+  }
+  .wire-cube-face:nth-child(6) {
+    transform: rotateX(-90deg) translateZ(calc(var(--cube-size) / 2));
+  }
+  /* Le point « . » de umut., suspendu au centre du cube : trois carrés
+     croisés, visible sous tous les angles */
+  .wire-cube-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.625rem;
+    height: 0.625rem;
+    margin: -0.3125rem;
+    background: var(--color-cobalt-400);
+  }
+  .wire-cube-dot:nth-last-child(2) {
+    transform: rotateY(90deg);
+  }
+  .wire-cube-dot:nth-last-child(1) {
+    transform: rotateX(90deg);
+  }
+
+  /* -- FAQ : la réponse se déplie en douceur (navigateurs récents) -------- */
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size var(--duration-slow) var(--ease-labo),
+      content-visibility var(--duration-slow) allow-discrete;
+  }
+  .faq-item[open]::details-content {
+    block-size: auto;
+  }
+}
+
+:root {
+  interpolate-size: allow-keywords;
+}
+
+@keyframes word-in {
+  from {
+    opacity: 0;
+    transform: perspective(var(--perspective)) translate3d(0, 0.35em, 0) rotateX(-80deg);
+  }
+}
+@keyframes cube-turn {
+  from {
+    transform: rotateX(-24deg) rotateY(38deg);
+  }
+  to {
+    transform: rotateX(-24deg) rotateY(398deg);
+  }
+}
+
+/* -- Transition entre pages (navigation native, sans JavaScript) : l'en-tête
+   reste en place, le contenu glisse. ---------------------------------------- */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: page-out var(--duration-page) var(--ease-labo) both;
+}
+::view-transition-new(root) {
+  animation: page-in var(--duration-page) var(--ease-labo) both;
+}
+body > header {
+  view-transition-name: site-header;
+}
+::view-transition-group(site-header) {
+  animation: none;
+}
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, calc(var(--reveal-y) * -0.4), 0);
+  }
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-y), 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}

@@ -98,7 +98,7 @@ const jsonLd = {
             Déroulé.
           </h2>
         </div>
-        <ol class="flex flex-col border-t border-graphite">
+        <ol data-stagger class="flex flex-col border-t border-graphite">
           {p.steps.map((step, i) => (
             <li class="grid gap-2 border-b border-line py-5 sm:grid-cols-12 sm:gap-8">
               <span class="font-mono text-label font-bold sm:col-span-3">{step.label || String(i + 1).padStart(2, "0")}</span>

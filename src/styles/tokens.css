@@ -111,5 +111,17 @@
   --focus-offset: 2px;
   --duration-fast: 120ms;
   --duration-base: 200ms;
+  /* Mouvement 3D (docs/03-design-system.md §8) */
+  --duration-slow: 450ms; /* retour d'inclinaison, zoom photo          */
+  --duration-reveal: 800ms; /* apparition d'un bloc au scroll            */
+  --duration-page: 380ms; /* transition entre deux pages               */
+  --stagger: 90ms; /* décalage entre éléments d'une même liste  */
+  --perspective: 62.5rem; /* 1000 px : profondeur des scènes 3D        */
+  --reveal-y: 2.5rem; /* 40 px : montée d'un bloc qui apparaît     */
+  --reveal-tilt: 14deg; /* bascule d'un bloc qui apparaît (rotateX)  */
+  --tilt-lift: 1.25rem; /* 20 px : avancée en Z d'une carte survolée */
+  --specimen-offset: 1.25rem; /* 20 px : cadre décalé derrière une photo   */
+  --specimen-depth: -2rem; /* profondeur du cadre derrière une photo    */
+  --cube-size: 10rem; /* 160 px : cube filaire du bandeau final    */
   --tap-min: 44px;
 }

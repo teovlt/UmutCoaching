@@ -103,7 +103,7 @@ const offers = programmes.map((p) => ({ ...p, featured: p.id === featuredId }));
               Ce que comprend chaque offre.
             </h2>
           </div>
-          <ul class:list={["grid gap-4 md:grid-cols-2", offers.length >= 3 && "lg:grid-cols-3"]}>
+          <ul data-stagger class:list={["grid gap-4 md:grid-cols-2", offers.length >= 3 && "lg:grid-cols-3"]}>
             {offers.map((p) => (
               <li>
                 <PricingCard programme={p} />

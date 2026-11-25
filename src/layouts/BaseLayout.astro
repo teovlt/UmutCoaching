@@ -37,6 +37,19 @@ const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, "\\u003c") : un
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="generator" content={Astro.generator} />
     {jsonLdText && <script type="application/ld+json" set:html={jsonLdText} />}
+    {/* Arms the animations (docs/03-design-system.md §8) before the first
+       paint, so nothing flashes. Not with reduced motion. If the motion
+       script never runs, everything is shown again after 2.5 s. */}
+    <script is:inline>
+      (() => {
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const root = document.documentElement;
+        root.classList.add("motion");
+        setTimeout(() => {
+          if (!window.__motion) root.classList.remove("motion");
+        }, 2500);
+      })();
+    </script>
   </head>
   <body>
     <a
@@ -50,5 +63,9 @@ const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, "\\u003c") : un
       <slot />
     </main>
     <Footer />
+    <script>
+      import { startMotion } from "@/lib/motion";
+      startMotion();
+    </script>
   </body>
 </html>

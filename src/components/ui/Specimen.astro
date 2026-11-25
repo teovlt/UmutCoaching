@@ -1,0 +1,22 @@
+---
+// A photo shown as a lab "specimen" (docs/03-design-system.md §8): set in a
+// 3D scene that follows the mouse, with a graphite frame floating behind it
+// in depth, and an optional mono caption ("fig. 01 — …"). Layout classes go
+// on the outer <figure>; the tilt lives on an inner element so it never
+// fights the scroll reveal.
+interface Props {
+  /** "fig. 01 — en salle" */
+  caption?: string | undefined;
+  class?: string | undefined;
+}
+
+const { caption, class: className } = Astro.props;
+---
+
+<figure class:list={["flex flex-col gap-3", className]}>
+  <div class="specimen" data-tilt>
+    <span class="specimen-frame" aria-hidden="true"></span>
+    <slot />
+  </div>
+  {caption && <figcaption class="pt-3 font-mono text-micro text-mesure uppercase">{caption}</figcaption>}
+</figure>

@@ -23,7 +23,7 @@ const { temoignages, index } = Astro.props;
           Les chiffres parlent.
         </h2>
       </div>
-      <ul class="grid gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+      <ul data-stagger class="grid gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {temoignages.map((t) => (
           <li>
             <figure class="flex h-full flex-col gap-5 border-t border-line-dark pt-6">

@@ -3,6 +3,7 @@
 // The solid cobalt button is fine here: white text on cobalt-500 is 6.6:1.
 import Button from "@/components/ui/Button.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
+import WireCube from "@/components/ui/WireCube.astro";
 
 interface Props {
   index: string;
@@ -13,18 +14,21 @@ const { index, title = "Première séance : on mesure où vous en êtes." } = A
 ---
 
 <section class="on-dark section" aria-labelledby="cta-title">
-  <div class="container-site flex flex-col gap-8">
-    <SectionLabel index={index} label="prochaine étape" />
-    <h2 id="cta-title" class="max-w-[22ch] text-h2">
-      {title}
-    </h2>
-    <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-      <Button href="/reserver" icon="arrow">
-        Réserver une séance
-      </Button>
-      <Button variant="ghost" href="/reserver#contact">
-        poser une question
-      </Button>
+  <div class="container-site grid items-center gap-8 lg:grid-cols-12">
+    <div class="flex flex-col gap-8 lg:col-span-8">
+      <SectionLabel index={index} label="prochaine étape" />
+      <h2 id="cta-title" class="max-w-[22ch] text-h2">
+        {title}
+      </h2>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Button href="/reserver" icon="arrow">
+          Réserver une séance
+        </Button>
+        <Button variant="ghost" href="/reserver#contact">
+          poser une question
+        </Button>
+      </div>
     </div>
+    <WireCube class="hidden justify-self-center lg:col-span-3 lg:col-start-10 lg:block" />
   </div>
 </section>

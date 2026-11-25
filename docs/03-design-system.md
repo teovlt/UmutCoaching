@@ -169,9 +169,29 @@ Voir `02-architecture.md` § Header. Footer `.on-dark`, 4 colonnes desktop, file
 - `ui/ProgrammePhoto.astro` : photo 3:2 d'une offre (celle de l'admin, sinon la photo d'Umut associée à son format), en tête de `ProgramCard` et sur la fiche programme.
 
 ## 8. Mouvement
-- Durées : 120 ms (hover couleur), 200 ms (transform), 1,2 s (tracé de courbe).
-- Courbe : `--ease-labo`. Pas de parallax, pas de scroll-jacking, pas d'apparition en cascade de chaque paragraphe.
-- Une seule animation « signature » par page (le tracé de courbe).
+Un mouvement **mécanique et précis**, comme un instrument de mesure : tout part de la profondeur (3D en CSS), rien ne rebondit.
+Code : `src/styles/global.css` (fin du fichier), `src/lib/motion.ts`, tokens « Mouvement 3D » de `tokens.css`.
+
+- Durées : 120 ms (hover couleur, suivi du pointeur), 200 ms (transform), 450 ms (retour d'inclinaison, zoom photo),
+  800 ms (apparition), 380 ms (changement de page), 1,2 s (tracé de courbe). Décalage de cascade `--stagger` 90 ms.
+- Courbe unique : `--ease-labo`. Pas de parallax au scroll, pas de scroll-jacking, pas de lib d'animation.
+- **Apparition au scroll** : chaque bloc enfant direct d'un `.container-site` de section monte et se redresse
+  (`translateY --reveal-y` + `rotateX --reveal-tilt`, perspective `--perspective`), une seule fois. Les listes marquées
+  `data-stagger` (cartes, étapes, galerie) arrivent ensuite en cascade. Le filet des `SectionLabel` se trace.
+- **Hero** : les trois mots du H1 basculent depuis l'arrière l'un après l'autre (animation signature de l'accueil).
+- **Inclinaison 3D** `data-tilt` : cartes d'offre / de tarif et photos suivent le pointeur (7° max) et avancent en Z
+  au survol (`--tilt-lift`) ; la photo d'une carte zoome légèrement (`.tilt-zoom`). Souris uniquement, rien au tactile.
+- **Spécimen** `ui/Specimen.astro` : photo posée dans une scène 3D, cadre graphite 1 px flottant derrière elle en
+  profondeur (`--specimen-offset`, `--specimen-depth`), légende mono « fig. 01 — … ». Hero, à propos, galerie, étapes de /methode.
+- **Cube filaire** `ui/WireCube.astro` : six faces en filets `muted` qui tournent lentement dans le `CtaBand`
+  (≥ 1024 px), le point cobalt-400 de « umut. » suspendu au centre. Décoratif (`aria-hidden`).
+- **Changement de page** : View Transitions natives entre documents (`@view-transition`), sans JavaScript ;
+  l'en-tête reste en place, le contenu glisse.
+- FAQ : la réponse se déplie en douceur (`::details-content`, navigateurs récents ; ailleurs, ouverture instantanée).
+- Propriétés animées : opacité, transform (dont `scale`), stroke ; seule exception, la hauteur du déplié de FAQ.
+- **Sûreté** : tout est armé par la classe `motion` sur `<html>`, posée avant le premier rendu et seulement sans
+  `prefers-reduced-motion`. Sans JavaScript ou en mouvement réduit, tout est visible et immobile ; si le script
+  ne démarre pas, la page se réaffiche d'elle-même après 2,5 s.
 
 ## 9. Accessibilité (rappel)
 Contrastes ci-dessus · focus visible partout · cibles ≥ 44 px · labels explicites (pas de placeholder seul) ·

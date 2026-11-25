@@ -87,7 +87,8 @@ Dockerfile, server/Dockerfile, compose.yaml, nginx.conf   déploiement Dokploy
 - HTML sémantique : un seul `<h1>` par page, `<nav aria-label>`, `<main id="contenu">`, lien d'évitement.
 - Accessibilité **WCAG 2.2 AA** : contrastes (voir tableau dans le design system), focus visible
   (déjà global), cibles ≥ 44 px, menu mobile au clavier (Échap ferme, focus piégé, `aria-expanded`).
-- `prefers-reduced-motion` respecté (déjà global). Animations : opacité/transform/stroke uniquement.
+- `prefers-reduced-motion` respecté (déjà global). Animations : opacité/transform/stroke uniquement, règles et composants
+  de mouvement (apparitions 3D, `data-tilt`, `Specimen`, cube, transitions de page) dans `docs/03-design-system.md` §8.
 - Performance : Lighthouse ≥ 95 partout, 0 JS par défaut, pas de lib d'animation, pas de carrousel lourd.
 - Mobile-first. Tester à 360, 768, 1024, 1280, 1440 px.
 - Pas de dépendance ajoutée sans la justifier dans `docs/05-decisions.md`.

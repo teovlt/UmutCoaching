@@ -1,0 +1,24 @@
+---
+// Decorative wireframe cube (docs/03-design-system.md §8): six 1 px faces
+// turning slowly on a graphite background, the cobalt-400 "." of umut.
+// floating at its centre. Still with reduced motion.
+interface Props {
+  class?: string | undefined;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={["wire-cube", className]} aria-hidden="true">
+  <div class="wire-cube-body">
+    <span class="wire-cube-face"></span>
+    <span class="wire-cube-face"></span>
+    <span class="wire-cube-face"></span>
+    <span class="wire-cube-face"></span>
+    <span class="wire-cube-face"></span>
+    <span class="wire-cube-face"></span>
+    <span class="wire-cube-dot"></span>
+    <span class="wire-cube-dot"></span>
+    <span class="wire-cube-dot"></span>
+  </div>
+</div>

@@ -6,6 +6,7 @@ import PageHeader from "@/components/sections/PageHeader.astro";
 import { Image } from "astro:assets";
 import ProgressChart from "@/components/ui/ProgressChart.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
+import Specimen from "@/components/ui/Specimen.astro";
 import SquareList from "@/components/ui/SquareList.astro";
 import { stock } from "@/data/stock";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -76,14 +77,16 @@ const example = [60, 62.5, 62.5, 65, 67.5, 67.5, 70, 72.5].map((value, i) => ({
           <p class="text-lead text-mesure">{step.lead}</p>
         </div>
         <div class="flex flex-col gap-6 lg:col-span-6 lg:col-start-7">
-          <Image
-            src={step.photo.src}
-            alt={step.photo.alt}
-            widths={[480, 800, 1200]}
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            loading={i === 0 ? "eager" : "lazy"}
-            class="aspect-[3/2] w-full border border-line object-cover grayscale contrast-110"
-          />
+          <Specimen caption={`fig. ${step.index} — ${step.title.toLowerCase()}`}>
+            <Image
+              src={step.photo.src}
+              alt={step.photo.alt}
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              loading={i === 0 ? "eager" : "lazy"}
+              class="aspect-[3/2] w-full border border-line object-cover grayscale contrast-110"
+            />
+          </Specimen>
           <SquareList items={step.items} class="border-t border-graphite pt-6" />
         </div>
       </div>
